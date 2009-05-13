@@ -1,0 +1,31 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <!-- TODO: Add vendor details -->
+        <!--
+        <vendor name="Example Company" url="http://www.example.com"/>
+        -->
+    </plugin-info>
+	<customfield-type
+		key="watcherfieldtype"
+		name="Watcher Field"
+		class="com.atlassian.jira.issue.customfields.impl.WatcherFieldType">
+		<description>
+			Used for modifing watchers on issue creation/update
+		</description>
+		<resource
+			type="i18n"
+			name="i18n"
+			location="com.atlassian.jira.issue.customfields.impl.WatcherFieldType"
+			/>
+		<resource
+			type="velocity"
+			name="view"
+			location="templates/plugins/fields/view/view-multiuser.vm"/>
+		<resource
+			type="velocity"
+			name="edit"
+			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
+	</customfield-type>
+</atlassian-plugin>
