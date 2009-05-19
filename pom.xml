@@ -11,7 +11,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.atlassian.jira.plugin.workflow</groupId>
+    <groupId>com.atlassian.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
     <version>1.0</version>
 
