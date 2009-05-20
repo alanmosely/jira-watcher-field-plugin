@@ -12,7 +12,7 @@
 		name="Watcher Field"
 		class="com.atlassian.jira.issue.customfields.impl.WatcherFieldType">
 		<description>
-			Used for modifing watchers on issue creation/update
+			Used for modifying watchers on issue creation/update
 		</description>
 		<resource
 			type="i18n"
