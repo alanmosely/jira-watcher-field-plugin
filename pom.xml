@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.atlassian.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>

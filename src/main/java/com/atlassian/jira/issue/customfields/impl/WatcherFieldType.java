@@ -44,6 +44,7 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.opensymphony.user.User;
 
@@ -52,15 +53,17 @@ import com.opensymphony.user.User;
  * "Manage Watcher List" permissions to modify users when creating/updating issues.
  * 
  * @author Ray Barham
- * @see MultiUserCFType
+ * @see com.atlassian.jira.issue.customfields.impl.MultiUserCFType
  */
 public class WatcherFieldType extends MultiUserCFType {
 
 	private final JiraAuthenticationContext _AuthenticationContext;
+	private final PermissionManager _PermissionManager;
 	private final WatcherManager _WatcherManager;
 	
 	/**
-	 * Overriden, calls super constructor.
+	 * Overridden, calls super constructor.
+	 * @see com.atlassian.jira.issue.customfields.impl.MultiUserCFType
 	 */
 	public WatcherFieldType(CustomFieldValuePersister customFieldValuePersister,
 			StringConverter stringConverter,
@@ -73,6 +76,7 @@ public class WatcherFieldType extends MultiUserCFType {
 				multiUserConverter, applicationProperties,
 				authenticationContext, searchService);
 		_AuthenticationContext = authenticationContext;
+		_PermissionManager = ComponentManager.getInstance().getPermissionManager();
 		_WatcherManager = ComponentManager.getInstance().getWatcherManager();
 	}
 
@@ -95,11 +99,12 @@ public class WatcherFieldType extends MultiUserCFType {
 	}
 	
 	/**
-	 * Overriden, see AbstractMultiCFType.createValue.  Adds a list of watchers to an issue.
+	 * Overridden, adds a list of watchers to an issue.
 	 * 
 	 * @param customField See AbstractMultiCFType.createValue.
 	 * @param issue See AbstractMultiCFType.createValue.
 	 * @param value List of User objects to add as watchers.
+	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#createValue(CustomField, Issue, Object)
 	 */
 	public void createValue(CustomField customField, Issue issue, Object value) {
 		addWatchers(issue, (List)value);
@@ -119,6 +124,16 @@ public class WatcherFieldType extends MultiUserCFType {
 		
 		return false;
 	}
+	
+	/**
+	 * Checks if a user is a JIRA administrator.
+	 * 
+	 * @param user The user the check
+	 * @return True if has permissions, false otherwise.
+	 */
+	public boolean isJiraAdmin(User user){
+		return _PermissionManager.hasPermission(Permissions.ADMINISTER, user);
+	}
 
 	/**
 	 * Checks if a user the authenticated user has the "Manage Watcher List" permission.
@@ -127,17 +142,18 @@ public class WatcherFieldType extends MultiUserCFType {
 	 * @return True if has permissions, false otherwise.
 	 */
 	public boolean isUserPermitted(Issue issue){
-		return ComponentManager.getInstance().getPermissionManager().hasPermission(
+		return _PermissionManager.hasPermission(
 			Permissions.MANAGE_WATCHER_LIST, 
 			issue.getProjectObject(),
 			_AuthenticationContext.getUser());
 	}
 
 	/**
-	 * Overriden, see AbstractMultiCFType.getValueFromIssue.  Returns the a list of watchers
+	 * Overridden, returns the a list of watchers
 	 * on the passed issue
 	 * 
 	 * @return List of User objects that are watchers on the passed issue.
+	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getValueFromIssue(CustomField, Issue)
 	 */
 	public Object getValueFromIssue(CustomField field, Issue issue) {
 		if(!issue.isCreated()){
@@ -148,18 +164,24 @@ public class WatcherFieldType extends MultiUserCFType {
 	}
 	
 	/**
-	 * Overriden, see AbstractCustomFieldType.getVelocityParameters.  Adds the "hasPermissions" parameter to velocity
-	 * with true if the authenticated user has "Manage Watcher List" permissions, false otherwise. 
+	 * Overridden, adds the "hasPermissions" parameter to velocity
+	 * with true if the authenticated user has "Manage Watcher List" permissions, false otherwise.
+	 * @see com.atlassian.jira.issue.customfields.impl.AbstractCustomFieldType#getVelocityParameters(Issue, CustomField, FieldLayoutItem) 
 	 */
 	public Map getVelocityParameters(Issue issue, CustomField field,
 			FieldLayoutItem fieldLayoutItem) {
 		
 		Map params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+		params.put("hasPermission", new Boolean(false));
 
-		if(isUserPermitted(issue)){
-			params.put("hasPermission", new Boolean(true));
-		}else{
-			params.put("hasPermission", new Boolean(false));
+		try{
+			if(isUserPermitted(issue)){
+				params.put("hasPermission", new Boolean(true));
+			}
+		}catch(Exception e){
+			if(isJiraAdmin(_AuthenticationContext.getUser())){
+				params.put("hasPermission", new Boolean(true));
+			}
 		}
 
 		return params; 
@@ -197,12 +219,13 @@ public class WatcherFieldType extends MultiUserCFType {
 	}
 
 	/**
-	 * Overrides AbstractMultiCFType.updateValue.  Updates an issue with a list of watchers.
+	 * Overridden, updates an issue with a list of watchers.
 	 * 
 	 * @param customField See AbstractMultiCFType.createValue.
 	 * @param issue See AbstractMultiCFType.createValue.
 	 * @param value List of User objects to update as watchers.  Note, any user not in this list that was previously
 	 * a watcher will be removed.
+	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#updateValue(CustomField, Issue, Object)
 	 */
 	public void updateValue(CustomField customField, Issue issue, Object value) {
 		List newWatchers = (List)value;
@@ -217,5 +240,4 @@ public class WatcherFieldType extends MultiUserCFType {
 		
 		addWatchers(issue, newWatchers);
 	}
-
 }
