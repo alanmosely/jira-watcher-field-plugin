@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import webwork.action.ActionContext;
+
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -149,6 +151,27 @@ public class WatcherFieldType extends MultiUserCFType {
 	}
 
 	/**
+	 * Overridden, returns the value reported in the changelog
+	 * 
+	 * @return The full names of watching users in a comma separated list.
+	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getChangelogValue(CustomField, Object)
+	 */
+	public String getChangelogValue(CustomField field, Object value) {
+		List watcherList = (List)value;
+
+		if(watcherList == null || watcherList.isEmpty())
+			return "None";
+
+		String output = "";
+		for(Iterator i = watcherList.iterator(); i.hasNext();){
+			User user = (User)i.next();
+			output += user.getFullName() + (i.hasNext()? ", " : "");
+		}
+		
+		return output;
+	}
+	
+	/**
 	 * Overridden, returns the a list of watchers
 	 * on the passed issue
 	 * 
@@ -217,7 +240,7 @@ public class WatcherFieldType extends MultiUserCFType {
 			}
 		}
 	}
-
+	
 	/**
 	 * Overridden, updates an issue with a list of watchers.
 	 * 
@@ -230,7 +253,7 @@ public class WatcherFieldType extends MultiUserCFType {
 	public void updateValue(CustomField customField, Issue issue, Object value) {
 		List newWatchers = (List)value;
 		List currWatchers = getWatchers(issue);
-		
+
 		if(!currWatchers.isEmpty()){
 			if(newWatchers != null){
 				currWatchers.removeAll(newWatchers);
@@ -239,5 +262,22 @@ public class WatcherFieldType extends MultiUserCFType {
 		}
 		
 		addWatchers(issue, newWatchers);
+	}
+	
+	/**
+	 * Overridden, returns true if the current watcher list is equal to the new ones provided.
+	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
+	 */
+	public boolean valuesEqual(Object v1, Object v2) {
+		Map params = ActionContext.getParameters();
+		Issue issue = (Issue)params.get("issueObject");
+		List currWatchers = (List)getWatchers(issue);
+		List newWatchers = (List)v2;
+		
+		if(currWatchers.equals(newWatchers)){
+			return true;
+		}
+		
+		return false;
 	}
 }
