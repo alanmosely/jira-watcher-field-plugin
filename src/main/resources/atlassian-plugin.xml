@@ -8,12 +8,10 @@
         -->
     </plugin-info>
 	<customfield-type
-		key="watcherfieldtype"
-		name="Watcher Field"
-		class="com.atlassian.jira.issue.customfields.impl.WatcherFieldType">
-		<description>
-			Used for modifying watchers on issue creation/update
-		</description>
+			key="watcherfieldtype"
+			i18n-name-key="watcherfield.type.name"
+			class="com.atlassian.jira.issue.customfields.impl.WatcherFieldType">
+		<description key="watcherfield.type.desc" />
 		<resource
 			type="i18n"
 			name="i18n"
@@ -28,4 +26,29 @@
 			name="edit"
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
+	<customfield-searcher
+			key="watcherfieldsearcher"
+		    i18n-name-key="watcherfield.searcher.name"
+		    class="com.atlassian.jira.issue.customfields.searchers.WatcherSearcher">
+	    <description key="watcherfield.searcher.desc" />
+    	<resource
+			type="i18n"
+			name="i18n"
+			location="com.atlassian.jira.issue.customfields.impl.WatcherFieldType"
+			/>
+	    <resource
+	    	type="velocity"
+	    	name="search"
+	    	location="templates/plugins/fields/edit-searcher/search-userpicker.vm"
+	    	/>
+	    <resource
+	    	type="velocity"
+	    	name="view"
+	    	location="templates/plugins/fields/view-searcher/view-searcher-basictext.vm"
+	    	/>
+	    <valid-customfield-type
+	    	package="${project.groupId}.${project.artifactId}"
+	    	key="watcherfieldtype"
+	    	/>
+	</customfield-searcher>
 </atlassian-plugin>
