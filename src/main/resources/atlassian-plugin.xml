@@ -7,6 +7,27 @@
         <vendor name="Example Company" url="http://www.example.com"/>
         -->
     </plugin-info>
+    <webwork1
+    		key="managewatchersreindex"
+    		i18n-name-key="watcherfield.manager.name"
+    	>
+    	<description key="watcherfield.manager.desc" />
+    	<resource
+			type="i18n"
+			name="i18n"
+			location="com.atlassian.jira.issue.customfields.impl.WatcherFieldType"
+			/>
+		<actions>
+			<!-- Copied and modified from actions.xml -->
+		    <action name="com.atlassian.jira.web.action.issue.ManageWatchersReindex" alias="ManageWatchers">
+		        <view name="success">/secure/views/issue/managewatchers.jsp</view>
+		        <view name="input">/secure/views/issue/managewatchers.jsp</view>
+		        <view name="error">/secure/views/issue/managewatchers.jsp</view>
+		        <view name="watchingnotenabled">/secure/views/issue/managewatchers.jsp</view>
+		        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
+		    </action>
+	    </actions>
+    </webwork1>
 	<customfield-type
 			key="watcherfieldtype"
 			i18n-name-key="watcherfield.type.name"
@@ -29,7 +50,7 @@
 	<customfield-searcher
 			key="watcherfieldsearcher"
 		    i18n-name-key="watcherfield.searcher.name"
-		    class="com.atlassian.jira.issue.customfields.searchers.WatcherSearcher">
+		    class="com.atlassian.jira.issue.customfields.searchers.UserPickerSearcher">
 	    <description key="watcherfield.searcher.desc" />
     	<resource
 			type="i18n"
