@@ -26,6 +26,16 @@
 		        <view name="watchingnotenabled">/secure/views/issue/managewatchers.jsp</view>
 		        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
 		    </action>
+		    <!-- Copied and modified from actions.xml -->
+		    <action name="com.atlassian.jira.web.action.issue.ViewIssueReindex" alias="ViewIssue">
+		        <view name="success">/secure/views/issue/viewissue.jsp</view>
+		        <view name="issuenotfound">/secure/views/issuenotfound.jsp</view>
+		        <view name="permissionviolation">/secure/views/permissionviolation.jsp</view>
+		
+		        <command name="moveIssueLink" alias="MoveIssueLink">
+		            <view name="error">/secure/views/issue/viewissue.jsp</view>
+		        </command>
+		    </action>
 	    </actions>
     </webwork1>
 	<customfield-type

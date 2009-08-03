@@ -65,6 +65,7 @@ public class WatcherFieldType extends MultiUserCFType {
 	
 	/**
 	 * Overridden, calls super constructor.
+	 * 
 	 * @see com.atlassian.jira.issue.customfields.impl.MultiUserCFType
 	 */
 	public WatcherFieldType(CustomFieldValuePersister customFieldValuePersister,
@@ -189,6 +190,7 @@ public class WatcherFieldType extends MultiUserCFType {
 	/**
 	 * Overridden, adds the "hasPermissions" parameter to velocity
 	 * with true if the authenticated user has "Manage Watcher List" permissions, false otherwise.
+	 * 
 	 * @see com.atlassian.jira.issue.customfields.impl.AbstractCustomFieldType#getVelocityParameters(Issue, CustomField, FieldLayoutItem) 
 	 */
 	public Map getVelocityParameters(Issue issue, CustomField field,
@@ -266,6 +268,7 @@ public class WatcherFieldType extends MultiUserCFType {
 	
 	/**
 	 * Overridden, returns true if the current watcher list is equal to the new ones provided.
+	 * 
 	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
 	 */
 	public boolean valuesEqual(Object v1, Object v2) {
