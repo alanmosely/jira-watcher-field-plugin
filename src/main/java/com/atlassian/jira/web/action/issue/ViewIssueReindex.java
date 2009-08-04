@@ -18,7 +18,7 @@ import com.atlassian.jira.issue.vote.VoteManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.trackback.TrackbackManager;
-import com.atlassian.plugin.PluginAccessor;
+import com.atlassian.plugin.PluginManager;
 
 public class ViewIssueReindex extends ViewIssue {
 
@@ -33,7 +33,7 @@ public class ViewIssueReindex extends ViewIssue {
 			IssueLinkManager issueLinkManager,
 			VoteManager voteManager,
 			WatcherManager watcherManager,
-			PluginAccessor pluginAccessor,
+			PluginManager pluginManager,
 			FieldManager fieldManager,
 			FieldScreenRendererFactory fieldScreenRendererFactory,
 			FieldLayoutManager fieldLayoutManager,
@@ -44,7 +44,7 @@ public class ViewIssueReindex extends ViewIssue {
 			AttachmentService attachmentService,
 			AggregateTimeTrackingCalculatorFactory aggregateTimeTrackingCalculatorFactory) {
 		super(trackbackManager, thumbnailManager, subTaskManager,
-				issueLinkManager, voteManager, watcherManager, pluginAccessor,
+				issueLinkManager, voteManager, watcherManager, pluginManager,
 				fieldManager, fieldScreenRendererFactory, fieldLayoutManager,
 				rendererManager, commentManager, projectRoleManager,
 				commentService, attachmentService,
