@@ -48,74 +48,84 @@ import com.opensymphony.user.EntityNotFoundException;
  * @see com.atlassian.jira.plugin.votersAndWatchers.ManageWatcherAlias
  */
 public class ManageWatchersReindex extends ManageWatchers {
-	private static final long serialVersionUID = 7850186457142561095L;
-	private static final Logger log = Logger.getLogger(ManageWatchersReindex.class);
-	private final IssueIndexManager issueIndexManager;
+    private static final long serialVersionUID = 7850186457142561095L;
+    private static final Logger log = Logger.getLogger(ManageWatchersReindex.class);
+    private final IssueIndexManager issueIndexManager;
 
-	public ManageWatchersReindex(WatcherManager watcherManager,
-			VelocityManager velocityManager,
-			UserPickerSearchService searchService) {
-		super(watcherManager, velocityManager, searchService);
-		issueIndexManager = ComponentManager.getInstance().getIndexManager();
-	}
-	
-	/**
-	 * Reindexes the current issue
-	 */
-	protected void reindexIssue(){
-		try {
-			if(issueIndexManager.isIndexingEnabled()){
-				issueIndexManager.reIndex(getIssueObject());
-			}
-		} catch (IndexException e) {
-			log.error("Error reindexing " + getIssueObject().getKey() + ": ", e);
-		}
-	}
-	/**
-	 * Causes the current issue to be reindexed when watchers are added.
-	 * 
-	 * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
-	 */
-	public String doStartWatchers() throws EntityNotFoundException,
-			GenericEntityException {
-		String result = super.doStartWatchers();
-		reindexIssue();
-		
-		return result;
-	}
-	
-	/**
-	 * Causes the current issue to be reindexed when the current users starts watching the issue.
-	 * 
-	 * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
-	 */
-	public String doStartWatching() throws GenericEntityException {
-		String result = super.doStartWatching();
-		reindexIssue();
-		
-		return result;
-	}
-	
-	/**
-	 * Causes the current issue to be reindexed when watchers are removed.
-	 * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
-	 */
-	public String doStopWatchers() throws EntityNotFoundException,
-			GenericEntityException {
-		String result = super.doStopWatchers();
-		reindexIssue();
-		
-		return result;
-	}
-	
-	/**
-	 * Causes the current issue to be reindexed when the current users stops watching the issue.
-	 * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
-	 */
-	public String doStopWatching() throws GenericEntityException {
-		String result = super.doStopWatching();
-		reindexIssue();
-		
-		return result;
-	}
+    /**
+     * Default constructor
+     * 
+     * @param watcherManager
+     * @param velocityManager
+     * @param searchService
+     * @override
+     */
+    public ManageWatchersReindex(WatcherManager watcherManager,
+            VelocityManager velocityManager,
+            UserPickerSearchService searchService) {
+        super(watcherManager, velocityManager, searchService);
+        issueIndexManager = ComponentManager.getInstance().getIndexManager();
+    }
+
+    /**
+     * Reindexes the current issue
+     */
+    protected void reindexIssue(){
+        try {
+            if(issueIndexManager.isIndexingEnabled()){
+                issueIndexManager.reIndex(getIssueObject());
+            }
+        } catch (IndexException e) {
+            log.error("Error reindexing " + getIssueObject().getKey() + ": ", e);
+        }
+    }
+    /**
+     * Causes the current issue to be reindexed when watchers are added.
+     * 
+     * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
+     */
+    public String doStartWatchers() throws EntityNotFoundException,
+    GenericEntityException {
+        String result = super.doStartWatchers();
+        reindexIssue();
+
+        return result;
+    }
+
+    /**
+     * Causes the current issue to be reindexed when the current users starts watching the issue.
+     * 
+     * @throws org.ofbiz.core.entity.GenericEntityException
+     */
+    public String doStartWatching() throws GenericEntityException {
+        String result = super.doStartWatching();
+        reindexIssue();
+
+        return result;
+    }
+
+    /**
+     * Causes the current issue to be reindexed when watchers are removed.
+     * 
+     * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
+     */
+    public String doStopWatchers() throws EntityNotFoundException,
+    GenericEntityException {
+        String result = super.doStopWatchers();
+        reindexIssue();
+
+        return result;
+    }
+
+    /**
+     * Causes the current issue to be reindexed when the current users stops watching the issue.
+     * 
+     * @throws org.ofbiz.core.entity.GenericEntityException
+     */
+    public String doStopWatching() throws GenericEntityException {
+        String result = super.doStopWatching();
+        reindexIssue();
+
+        return result;
+    }
 }

@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 package com.atlassian.jira.issue.customfields.impl;
 
 import java.util.Collections;
@@ -59,228 +59,235 @@ import com.opensymphony.user.User;
  */
 public class WatcherFieldType extends MultiUserCFType {
 
-	private final JiraAuthenticationContext _AuthenticationContext;
-	private final PermissionManager _PermissionManager;
-	private final WatcherManager _WatcherManager;
-	
-	/**
-	 * Overridden, calls super constructor.
-	 * 
-	 * @see com.atlassian.jira.issue.customfields.impl.MultiUserCFType
-	 */
-	public WatcherFieldType(CustomFieldValuePersister customFieldValuePersister,
-			StringConverter stringConverter,
-			GenericConfigManager genericConfigManager,
-			MultiUserConverter multiUserConverter,
-			ApplicationProperties applicationProperties,
-			JiraAuthenticationContext authenticationContext,
-			UserPickerSearchService searchService) {
-		super(customFieldValuePersister, stringConverter, genericConfigManager,
-				multiUserConverter, applicationProperties,
-				authenticationContext, searchService);
-		_AuthenticationContext = authenticationContext;
-		_PermissionManager = ComponentManager.getInstance().getPermissionManager();
-		_WatcherManager = ComponentManager.getInstance().getWatcherManager();
-	}
+    private final JiraAuthenticationContext _AuthenticationContext;
+    private final PermissionManager _PermissionManager;
+    private final WatcherManager _WatcherManager;
 
-	/**
-	 * Add a list of users as watchers on an issue.
-	 * 
-	 * @param issue The issue to add watchers to.
-	 * @param userList A list of User objects to add as watchers.
-	 */
-	protected void addWatchers(Issue issue, List userList){
-		if(userList != null && isIssueEditable(issue)){
-			for(Iterator i = userList.iterator(); i.hasNext();){
-				User user = (User)i.next();
-				
-				if(!_WatcherManager.isWatching(user, issue.getGenericValue())){
-					_WatcherManager.startWatching(user, issue.getGenericValue());
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Overridden, adds a list of watchers to an issue.
-	 * 
-	 * @param customField See AbstractMultiCFType.createValue.
-	 * @param issue See AbstractMultiCFType.createValue.
-	 * @param value List of User objects to add as watchers.
-	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#createValue(CustomField, Issue, Object)
-	 */
-	public void createValue(CustomField customField, Issue issue, Object value) {
-		addWatchers(issue, (List)value);
-	}
+    /**
+     * Overridden, calls super constructor.
+     * @param customFieldValuePersister 
+     * @param stringConverter 
+     * @param genericConfigManager 
+     * @param multiUserConverter 
+     * @param applicationProperties 
+     * @param authenticationContext 
+     * @param searchService 
+     * 
+     * @see com.atlassian.jira.issue.customfields.impl.MultiUserCFType
+     */
+    public WatcherFieldType(CustomFieldValuePersister customFieldValuePersister,
+            StringConverter stringConverter,
+            GenericConfigManager genericConfigManager,
+            MultiUserConverter multiUserConverter,
+            ApplicationProperties applicationProperties,
+            JiraAuthenticationContext authenticationContext,
+            UserPickerSearchService searchService) {
+        super(customFieldValuePersister, stringConverter, genericConfigManager,
+                multiUserConverter, applicationProperties,
+                authenticationContext, searchService);
+        _AuthenticationContext = authenticationContext;
+        _PermissionManager = ComponentManager.getInstance().getPermissionManager();
+        _WatcherManager = ComponentManager.getInstance().getWatcherManager();
+    }
 
-	/**
-	 * Checks to see if the issue can be edited.  It checks to see if the issue has been create, if it is
-	 * editable, and if the authenticated user has permissions.
-	 * 
-	 * @param issue The issue being edited.
-	 * @return True if able to edit, false otherwise.
-	 */
-	protected boolean isIssueEditable(Issue issue){
-		if(issue.isCreated() && issue.isEditable() && isUserPermitted(issue)){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Checks if a user is a JIRA administrator.
-	 * 
-	 * @param user The user the check
-	 * @return True if has permissions, false otherwise.
-	 */
-	public boolean isJiraAdmin(User user){
-		return _PermissionManager.hasPermission(Permissions.ADMINISTER, user);
-	}
+    /**
+     * Add a list of users as watchers on an issue.
+     * 
+     * @param issue The issue to add watchers to.
+     * @param userList A list of User objects to add as watchers.
+     */
+    protected void addWatchers(Issue issue, List userList){
+        if(userList != null && isIssueEditable(issue)){
+            for(Iterator i = userList.iterator(); i.hasNext();){
+                User user = (User)i.next();
 
-	/**
-	 * Checks if a user the authenticated user has the "Manage Watcher List" permission.
-	 * 
-	 * @param issue The issue the user is trying to add watchers to.
-	 * @return True if has permissions, false otherwise.
-	 */
-	public boolean isUserPermitted(Issue issue){
-		return _PermissionManager.hasPermission(
-			Permissions.MANAGE_WATCHER_LIST, 
-			issue.getProjectObject(),
-			_AuthenticationContext.getUser());
-	}
+                if(!_WatcherManager.isWatching(user, issue.getGenericValue())){
+                    _WatcherManager.startWatching(user, issue.getGenericValue());
+                }
+            }
+        }
+    }
 
-	/**
-	 * Overridden, returns the value reported in the changelog
-	 * 
-	 * @return The full names of watching users in a comma separated list.
-	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getChangelogValue(CustomField, Object)
-	 */
-	public String getChangelogValue(CustomField field, Object value) {
-		List watcherList = (List)value;
+    /**
+     * Overridden, adds a list of watchers to an issue.
+     * 
+     * @param customField See AbstractMultiCFType.createValue.
+     * @param issue See AbstractMultiCFType.createValue.
+     * @param value List of User objects to add as watchers.
+     * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#createValue(CustomField, Issue, Object)
+     */
+    public void createValue(CustomField customField, Issue issue, Object value) {
+        addWatchers(issue, (List)value);
+    }
 
-		if(watcherList == null || watcherList.isEmpty())
-			return "None";
+    /**
+     * Checks to see if the issue can be edited.  It checks to see if the issue has been create, if it is
+     * editable, and if the authenticated user has permissions.
+     * 
+     * @param issue The issue being edited.
+     * @return True if able to edit, false otherwise.
+     */
+    protected boolean isIssueEditable(Issue issue){
+        if(issue.isCreated() && issue.isEditable() && isUserPermitted(issue)){
+            return true;
+        }
 
-		String output = "";
-		for(Iterator i = watcherList.iterator(); i.hasNext();){
-			User user = (User)i.next();
-			output += user.getFullName() + (i.hasNext()? ", " : "");
-		}
-		
-		return output;
-	}
-	
-	/**
-	 * Overridden, returns the a list of watchers
-	 * on the passed issue
-	 * 
-	 * @return List of User objects that are watchers on the passed issue.
-	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getValueFromIssue(CustomField, Issue)
-	 */
-	public Object getValueFromIssue(CustomField field, Issue issue) {
-		if(!issue.isCreated()){
-			return super.getValueFromIssue(field, issue);
-		}
-		
+        return false;
+    }
+
+    /**
+     * Checks if a user is a JIRA administrator.
+     * 
+     * @param user The user the check
+     * @return True if has permissions, false otherwise.
+     */
+    public boolean isJiraAdmin(User user){
+        return _PermissionManager.hasPermission(Permissions.ADMINISTER, user);
+    }
+
+    /**
+     * Checks if a user the authenticated user has the "Manage Watcher List" permission.
+     * 
+     * @param issue The issue the user is trying to add watchers to.
+     * @return True if has permissions, false otherwise.
+     */
+    public boolean isUserPermitted(Issue issue){
+        return _PermissionManager.hasPermission(
+                Permissions.MANAGE_WATCHER_LIST, 
+                issue.getProjectObject(),
+                _AuthenticationContext.getUser());
+    }
+
+    /**
+     * Overridden, returns the value reported in the changelog
+     * 
+     * @return The full names of watching users in a comma separated list.
+     * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getChangelogValue(CustomField, Object)
+     */
+    public String getChangelogValue(CustomField field, Object value) {
+        List watcherList = (List)value;
+
+        if(watcherList == null || watcherList.isEmpty())
+            return "None";
+
+        String output = "";
+        for(Iterator i = watcherList.iterator(); i.hasNext();){
+            User user = (User)i.next();
+            output += user.getFullName() + (i.hasNext()? ", " : "");
+        }
+
+        return output;
+    }
+
+    /**
+     * Overridden, returns the a list of watchers
+     * on the passed issue
+     * 
+     * @return List of User objects that are watchers on the passed issue.
+     * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getValueFromIssue(CustomField, Issue)
+     */
+    public Object getValueFromIssue(CustomField field, Issue issue) {
+        if(!issue.isCreated()){
+            return super.getValueFromIssue(field, issue);
+        }
+
         return getWatchers(issue);
-	}
-	
-	/**
-	 * Overridden, adds the "hasPermissions" parameter to velocity
-	 * with true if the authenticated user has "Manage Watcher List" permissions, false otherwise.
-	 * 
-	 * @see com.atlassian.jira.issue.customfields.impl.AbstractCustomFieldType#getVelocityParameters(Issue, CustomField, FieldLayoutItem) 
-	 */
-	public Map getVelocityParameters(Issue issue, CustomField field,
-			FieldLayoutItem fieldLayoutItem) {
-		
-		Map params = super.getVelocityParameters(issue, field, fieldLayoutItem);
-		params.put("hasPermission", new Boolean(false));
+    }
 
-		try{
-			if(isUserPermitted(issue)){
-				params.put("hasPermission", new Boolean(true));
-			}
-		}catch(Exception e){
-			if(isJiraAdmin(_AuthenticationContext.getUser())){
-				params.put("hasPermission", new Boolean(true));
-			}
-		}
+    /**
+     * Overridden, adds the "hasPermissions" parameter to velocity
+     * with true if the authenticated user has "Manage Watcher List" permissions, false otherwise.
+     * 
+     * @see com.atlassian.jira.issue.customfields.impl.AbstractCustomFieldType#getVelocityParameters(Issue, CustomField, FieldLayoutItem) 
+     */
+    public Map getVelocityParameters(Issue issue, CustomField field,
+            FieldLayoutItem fieldLayoutItem) {
 
-		return params; 
-	}
-	
-	/**
-	 * Get a list of of watchers on an issue.
-	 * 
-	 * @param issue The issue to get watchers from.
-	 * @return A List of User objects that are watchers on the passed issue.
-	 */
-	protected List getWatchers(Issue issue){
-		List currWatchers = (List)_WatcherManager.getCurrentWatchList(issue.getGenericValue());
-		Collections.sort(currWatchers, new UserComparator());
-		
-		return currWatchers;
-	}
+        Map params = super.getVelocityParameters(issue, field, fieldLayoutItem);
+        params.put("hasPermission", new Boolean(false));
 
-	/**
-	 * Remove a list of users as watchers on an issue.
-	 * 
-	 * @param issue The issue to add watchers to.
-	 * @param userList A list of User objects to remove from being watchers.
-	 */
-	protected void removeWatchers(Issue issue, List userList){
-		if(userList != null && isIssueEditable(issue)){
-			for(Iterator i = userList.iterator(); i.hasNext();){
-				User user = (User)i.next();
-				
-				if(_WatcherManager.isWatching(user, issue.getGenericValue())){
-					_WatcherManager.stopWatching(user, issue.getGenericValue());
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Overridden, updates an issue with a list of watchers.
-	 * 
-	 * @param customField See AbstractMultiCFType.createValue.
-	 * @param issue See AbstractMultiCFType.createValue.
-	 * @param value List of User objects to update as watchers.  Note, any user not in this list that was previously
-	 * a watcher will be removed.
-	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#updateValue(CustomField, Issue, Object)
-	 */
-	public void updateValue(CustomField customField, Issue issue, Object value) {
-		List newWatchers = (List)value;
-		List currWatchers = getWatchers(issue);
+        try{
+            if(isUserPermitted(issue)){
+                params.put("hasPermission", new Boolean(true));
+            }
+        }catch(Exception e){
+            if(isJiraAdmin(_AuthenticationContext.getUser())){
+                params.put("hasPermission", new Boolean(true));
+            }
+        }
 
-		if(!currWatchers.isEmpty()){
-			if(newWatchers != null){
-				currWatchers.removeAll(newWatchers);
-			}
-			removeWatchers(issue, currWatchers);
-		}
-		
-		addWatchers(issue, newWatchers);
-	}
-	
-	/**
-	 * Overridden, returns true if the current watcher list is equal to the new ones provided.
-	 * 
-	 * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
-	 */
-	public boolean valuesEqual(Object v1, Object v2) {
-		Map params = ActionContext.getParameters();
-		Issue issue = (Issue)params.get("issueObject");
-		List currWatchers = (List)getWatchers(issue);
-		List newWatchers = (List)v2;
-		
-		if(currWatchers.equals(newWatchers)){
-			return true;
-		}
-		
-		return false;
-	}
+        return params; 
+    }
+
+    /**
+     * Get a list of of watchers on an issue.
+     * 
+     * @param issue The issue to get watchers from.
+     * @return A List of User objects that are watchers on the passed issue.
+     */
+    protected List getWatchers(Issue issue){
+        List currWatchers = (List)_WatcherManager.getCurrentWatchList(issue.getGenericValue());
+        Collections.sort(currWatchers, new UserComparator());
+
+        return currWatchers;
+    }
+
+    /**
+     * Remove a list of users as watchers on an issue.
+     * 
+     * @param issue The issue to add watchers to.
+     * @param userList A list of User objects to remove from being watchers.
+     */
+    protected void removeWatchers(Issue issue, List userList){
+        if(userList != null && isIssueEditable(issue)){
+            for(Iterator i = userList.iterator(); i.hasNext();){
+                User user = (User)i.next();
+
+                if(_WatcherManager.isWatching(user, issue.getGenericValue())){
+                    _WatcherManager.stopWatching(user, issue.getGenericValue());
+                }
+            }
+        }
+    }
+
+    /**
+     * Overridden, updates an issue with a list of watchers.
+     * 
+     * @param customField See AbstractMultiCFType.createValue.
+     * @param issue See AbstractMultiCFType.createValue.
+     * @param value List of User objects to update as watchers.  Note, any user not in this list that was previously
+     * a watcher will be removed.
+     * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#updateValue(CustomField, Issue, Object)
+     */
+    public void updateValue(CustomField customField, Issue issue, Object value) {
+        List newWatchers = (List)value;
+        List currWatchers = getWatchers(issue);
+
+        if(!currWatchers.isEmpty()){
+            if(newWatchers != null){
+                currWatchers.removeAll(newWatchers);
+            }
+            removeWatchers(issue, currWatchers);
+        }
+
+        addWatchers(issue, newWatchers);
+    }
+
+    /**
+     * Overridden, returns true if the current watcher list is equal to the new ones provided.
+     * 
+     * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
+     */
+    public boolean valuesEqual(Object v1, Object v2) {
+        Map params = ActionContext.getParameters();
+        Issue issue = (Issue)params.get("issueObject");
+        List currWatchers = (List)getWatchers(issue);
+        List newWatchers = (List)v2;
+
+        if(currWatchers.equals(newWatchers)){
+            return true;
+        }
+
+        return false;
+    }
 }

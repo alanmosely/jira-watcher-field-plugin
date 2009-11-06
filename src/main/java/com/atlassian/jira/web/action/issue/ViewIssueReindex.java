@@ -20,68 +20,90 @@ import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.trackback.TrackbackManager;
 import com.atlassian.plugin.PluginManager;
 
+/**
+ * @author Ray
+ *
+ */
 public class ViewIssueReindex extends ViewIssue {
 
-	private static final long serialVersionUID = 6593985225886472089L;
-	private final IssueIndexManager issueIndexManager;
-	private boolean isReindexIssue;
-	
-	public ViewIssueReindex(
-			TrackbackManager trackbackManager,
-			ThumbnailManager thumbnailManager,
-			SubTaskManager subTaskManager,
-			IssueLinkManager issueLinkManager,
-			VoteManager voteManager,
-			WatcherManager watcherManager,
-			PluginManager pluginManager,
-			FieldManager fieldManager,
-			FieldScreenRendererFactory fieldScreenRendererFactory,
-			FieldLayoutManager fieldLayoutManager,
-			RendererManager rendererManager,
-			CommentManager commentManager,
-			ProjectRoleManager projectRoleManager,
-			CommentService commentService,
-			AttachmentService attachmentService,
-			AggregateTimeTrackingCalculatorFactory aggregateTimeTrackingCalculatorFactory) {
-		super(trackbackManager, thumbnailManager, subTaskManager,
-				issueLinkManager, voteManager, watcherManager, pluginManager,
-				fieldManager, fieldScreenRendererFactory, fieldLayoutManager,
-				rendererManager, commentManager, projectRoleManager,
-				commentService, attachmentService,
-				aggregateTimeTrackingCalculatorFactory);
-		
-		issueIndexManager = ComponentManager.getInstance().getIndexManager();
-		isReindexIssue = false;
-	}
-	
-	/**
-	 * If the current user is set to watcher this issue, reindex the issue after adding.
-	 */
-	protected String doExecute() throws Exception {
-		String result = super.doExecute();
+    private static final long serialVersionUID = 6593985225886472089L;
+    private final IssueIndexManager issueIndexManager;
+    private boolean isReindexIssue;
 
-		if(isReindexIssue){
-			try {
-				if(issueIndexManager.isIndexingEnabled()){
-					issueIndexManager.reIndex(getIssueObject());
-				}
-			} catch (IndexException e) {
-				log.error("Error reindexing " + getIssueObject().getKey() + ": ", e);
-			}
-			
-			isReindexIssue = false;
-		}
-				
-		return result;
-	}
-	
-	/**
-	 * Sets the issue to be reindex on doExecute
-	 * 
-	 * @param watch	The username of the user to start watching.
-	 */
-	public void setWatch(String watch) {
-		isReindexIssue = true;
-		super.setWatch(watch);
-	}
+    /**
+     * @param trackbackManager
+     * @param thumbnailManager
+     * @param subTaskManager
+     * @param issueLinkManager
+     * @param voteManager
+     * @param watcherManager
+     * @param pluginManager
+     * @param fieldManager
+     * @param fieldScreenRendererFactory
+     * @param fieldLayoutManager
+     * @param rendererManager
+     * @param commentManager
+     * @param projectRoleManager
+     * @param commentService
+     * @param attachmentService
+     * @param aggregateTimeTrackingCalculatorFactory
+     */
+    public ViewIssueReindex(
+            TrackbackManager trackbackManager,
+            ThumbnailManager thumbnailManager,
+            SubTaskManager subTaskManager,
+            IssueLinkManager issueLinkManager,
+            VoteManager voteManager,
+            WatcherManager watcherManager,
+            PluginManager pluginManager,
+            FieldManager fieldManager,
+            FieldScreenRendererFactory fieldScreenRendererFactory,
+            FieldLayoutManager fieldLayoutManager,
+            RendererManager rendererManager,
+            CommentManager commentManager,
+            ProjectRoleManager projectRoleManager,
+            CommentService commentService,
+            AttachmentService attachmentService,
+            AggregateTimeTrackingCalculatorFactory aggregateTimeTrackingCalculatorFactory) {
+        super(trackbackManager, thumbnailManager, subTaskManager,
+                issueLinkManager, voteManager, watcherManager, pluginManager,
+                fieldManager, fieldScreenRendererFactory, fieldLayoutManager,
+                rendererManager, commentManager, projectRoleManager,
+                commentService, attachmentService,
+                aggregateTimeTrackingCalculatorFactory);
+
+        issueIndexManager = ComponentManager.getInstance().getIndexManager();
+        isReindexIssue = false;
+    }
+
+    /**
+     * If the current user is set to watcher this issue, reindex the issue after adding.
+     */
+    protected String doExecute() throws Exception {
+        String result = super.doExecute();
+
+        if(isReindexIssue){
+            try {
+                if(issueIndexManager.isIndexingEnabled()){
+                    issueIndexManager.reIndex(getIssueObject());
+                }
+            } catch (IndexException e) {
+                log.error("Error reindexing " + getIssueObject().getKey() + ": ", e);
+            }
+
+            isReindexIssue = false;
+        }
+
+        return result;
+    }
+
+    /**
+     * Sets the issue to be reindex on doExecute
+     * 
+     * @param watch	The username of the user to start watching.
+     */
+    public void setWatch(String watch) {
+        isReindexIssue = true;
+        super.setWatch(watch);
+    }
 }
