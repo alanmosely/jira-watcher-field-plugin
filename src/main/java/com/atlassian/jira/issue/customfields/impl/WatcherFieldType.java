@@ -26,6 +26,7 @@
 
 package com.atlassian.jira.issue.customfields.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -279,12 +280,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
      */
     public boolean valuesEqual(Object v1, Object v2) {
-        Map params = ActionContext.getParameters();
-        Issue issue = (Issue)params.get("issueObject");
-        List currWatchers = (List)getWatchers(issue);
-        List newWatchers = (List)v2;
-
-        if(currWatchers.equals(newWatchers)){
+        if(((List)v1).equals((v2 != null?(List)v2 : new ArrayList()))){
             return true;
         }
 
