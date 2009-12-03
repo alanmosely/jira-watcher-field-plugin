@@ -28,10 +28,10 @@
 
     <properties>
         <atlassian.plugin.key>com.atlassian.jira.plugin.workflow.jira-watcher-field</atlassian.plugin.key>
-        <atlassian.product.version>3.13.3</atlassian.product.version>
-        <atlassian.product.test-lib.version>3.13.3</atlassian.product.test-lib.version>
+        <atlassian.product.version>3.13.5</atlassian.product.version>
+        <atlassian.product.test-lib.version>3.13.5</atlassian.product.test-lib.version>
 		<atlassian.plugin.application.version.min>3.11</atlassian.plugin.application.version.min>
-		<atlassian.plugin.application.version.max>3.13.2</atlassian.plugin.application.version.max>
+		<atlassian.plugin.application.version.max>3.13.5</atlassian.plugin.application.version.max>
     </properties>
 
 	<developers>

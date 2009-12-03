@@ -21,8 +21,9 @@ import com.atlassian.jira.trackback.TrackbackManager;
 import com.atlassian.plugin.PluginManager;
 
 /**
- * @author Ray
- *
+ * Used to reindex the issue if the user select to watch the issue via that quick link in the issue.
+ * 
+ * @author Ray Barham
  */
 public class ViewIssueReindex extends ViewIssue {
 
@@ -31,6 +32,7 @@ public class ViewIssueReindex extends ViewIssue {
     private boolean isReindexIssue;
 
     /**
+     * @see com.atlassian.jira.web.action.issue.ViewIssue#ViewIssue(TrackbackManager, ThumbnailManager, SubTaskManager, IssueLinkManager, VoteManager, WatcherManager, com.atlassian.plugin.PluginAccessor, FieldManager, FieldScreenRendererFactory, FieldLayoutManager, RendererManager, CommentManager, ProjectRoleManager, CommentService, AttachmentService, AggregateTimeTrackingCalculatorFactory)
      * @param trackbackManager
      * @param thumbnailManager
      * @param subTaskManager
@@ -77,7 +79,7 @@ public class ViewIssueReindex extends ViewIssue {
     }
 
     /**
-     * If the current user is set to watcher this issue, reindex the issue after adding.
+     * If the current user is set to watch this issue, reindex the issue after adding.
      */
     protected String doExecute() throws Exception {
         String result = super.doExecute();

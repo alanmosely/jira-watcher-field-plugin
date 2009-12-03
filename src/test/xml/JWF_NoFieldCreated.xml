@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+
+___ Exported on ___________________
+
+     on                                  : Monday, November 30, 2009 1:49:29 PM CST
+     by                                  : admin ( Admin )
+
+___ Environment _________________
+
+     JIRA Build                          : Enterprise Edition, Version: 3.13.5-#360
+     JIRA Installation Type              : unknown
+     Java Version                        : 1.5.0_18 - Sun Microsystems Inc.
+     Current Working Directory           : C:\Users\Ray\workspace\jira-watcher-field
+     Maximum Allowable Memory            : 559MB
+     Total Memory                        : 127MB
+     Free Memory                         : 82MB
+     Used Memory                         : 45MB
+     Total PermGen Memory                : 288MB
+     Free PermGen Memory                 : 252MB
+     Used PermGen Memory                 : 35MB
+     JVM Input Arguments                 : -XX:MaxPermSize=256m -Xms128m -Xmx564m -Djira.home=C:\Users\Ray\workspace\jira-watcher-field\target/jira-home -Xdebug -Xnoagent -Xrunjdwp:server=y,transport=dt_socket,address=5006,suspend=n -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:C:\Users\Ray\workspace\jira-watcher-field\debug\jira\jira-config/jira-home/database|
+		cargo.datasource.driver=org.hsqldb.jdbcDriver|
+		cargo.datasource.username=sa|
+		cargo.datasource.password=|
+		cargo.datasource.type=javax.sql.DataSource|
+		cargo.datasource.jndi=jdbc/JiraDS -Dcargo.logging=debug -Dcatalina.home=C:\Users\Ray\workspace\jira-watcher-field\target\apache-tomcat-5.5.23-jdk14 -Dcatalina.base=C:\Users\Ray\workspace\jira-watcher-field\debug\jira\tomcat5x -Djava.io.tmpdir=C:\Users\Ray\workspace\jira-watcher-field\debug\jira\tomcat5x\temp
+
+___ Database Configuration ______
+
+     Loading entityengine.xml from       : file:/C:/Users/Ray/workspace/jira-watcher-field/debug/jira/jira-webapp/WEB-INF/classes/entityengine.xml
+     Entity model data source name       : defaultDS
+     Entity model field type name        : hsql
+     Entity model schema name            : PUBLIC
+     Database Version                    : HSQL Database Engine - 1.8.0
+     Database Driver                     : HSQL Database Engine Driver - 1.8.0
+     Database URL                        : jdbc:hsqldb:C:UsersRayworkspacejira-watcher-fielddebugjirajira-config/jira-home/database
+     Database JNDI address               : java:comp/env/jdbc/JiraDS
+
+___ Application Properties ______
+
+     Edition                             : Enterprise
+     Version                             : 3.13.5
+     Build #                             : 360
+     Installation Type                   : unknown
+     Server ID                           : AH5G-ZOQK-ZOBB-SZUB
+     Default Language                    : English (United States)
+     External User Management            : OFF
+     CROWD Integration                   : OFF
+
+___ Database Statistics _________
+
+     Issues                              : 3
+     Projects                            : 1
+     Custom Fields                       : 0
+     Workflows                           : 1
+     Users                               : 2
+     Groups                              : 3
+
+___ File Paths __________________
+
+     Location of atlassian-jira.log      : C:\Users\Ray\workspace\jira-watcher-field\atlassian-jira.log
+     Index Path                          : C:\Users\Ray\workspace\jira-watcher-field\target\index
+     Attachment Path                     : 
+
+___ Plugins _____________________
+
+     JIRA Watcher Field                  : com.atlassian.jira.issue.customfields.impl.jira-watcher-field
+          Version                             : 1.1.0
+          Status                              : enabled
+          Vendor                              : 
+          Description                         : Custom field type that allows watchers to be modified on the creation and update of issue.
+
+     User Format                         : jira.user.format
+          Version                             : 1.0
+          Status                              : enabled
+          Vendor                              : Atlassian Pty Ltd
+          Description                         : This plugin renders a user in JIRA.
+
+
+___ Listeners ___________________
+
+     Instance Count                      : 3
+
+     Issue Cache Listener                : com.atlassian.jira.event.listeners.cache.IssueCacheListener
+     Mail Listener                       : com.atlassian.jira.event.listeners.mail.MailListener
+     Issue Index Listener                : com.atlassian.jira.event.listeners.search.IssueIndexListener
+
+___ Services ____________________
+
+     Instance Count                      : 1
+
+     Mail Queue Service                  : com.atlassian.jira.service.services.mail.MailQueueService
+          Service Delay                       : 60000ms
+     Last Run                            : 11/30/09 1:28 PM
+
+___ Trusted Applications ________
+
+     Instance Count                      : 0
+
+
+ -->
+<entity-engine-xml>
+    <ChangeGroup id="10000" issue="10000" author="admin" created="2009-11-25 15:53:27.625"/>
+    <ChangeGroup id="10001" issue="10000" author="admin" created="2009-11-25 15:53:37.165"/>
+    <ChangeGroup id="10002" issue="10000" author="admin" created="2009-11-25 15:58:46.626"/>
+    <ChangeGroup id="10003" issue="10000" author="admin" created="2009-11-25 15:59:13.553"/>
+    <ChangeGroup id="10004" issue="10000" author="admin" created="2009-11-25 15:59:17.21"/>
+    <ChangeGroup id="10005" issue="10000" author="admin" created="2009-11-25 15:59:23.529"/>
+    <ChangeGroup id="10006" issue="10000" author="admin" created="2009-11-25 15:59:44.99"/>
+    <ChangeGroup id="10007" issue="10000" author="admin" created="2009-11-25 15:59:51.13"/>
+    <ChangeGroup id="10008" issue="10000" author="admin" created="2009-11-25 15:59:56.132"/>
+    <ChangeGroup id="10009" issue="10000" author="admin" created="2009-11-25 16:00:02.9"/>
+    <ChangeGroup id="10010" issue="10000" author="admin" created="2009-11-25 16:02:17.71"/>
+    <ChangeGroup id="10011" issue="10000" author="admin" created="2009-11-25 16:02:24.86"/>
+    <ChangeGroup id="10012" issue="10000" author="admin" created="2009-11-25 16:06:48.751"/>
+    <ChangeGroup id="10020" issue="10000" author="admin" created="2009-11-25 16:12:13.052"/>
+    <ChangeGroup id="10021" issue="10000" author="admin" created="2009-11-25 16:12:21.566"/>
+    <ChangeGroup id="10022" issue="10010" author="admin" created="2009-11-25 16:20:44.965"/>
+    <ChangeGroup id="10023" issue="10010" author="admin" created="2009-11-25 16:21:02.945"/>
+    <ChangeGroup id="10024" issue="10010" author="admin" created="2009-11-25 16:21:30.661"/>
+    <ChangeItem id="10000" group="10000" fieldtype="custom" field="Watchers" oldstring="None" newstring="Bob"/>
+    <ChangeItem id="10001" group="10001" fieldtype="custom" field="Watchers" oldstring="Bob" newstring="Admin, Bob"/>
+    <ChangeItem id="10002" group="10002" fieldtype="jira" field="Workflow" oldvalue="10000" oldstring="jira" newvalue="10010" newstring="Copy of jira"/>
+    <ChangeItem id="10003" group="10003" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="3" newstring="In Progress"/>
+    <ChangeItem id="10004" group="10003" fieldtype="custom" field="Watchers" oldstring="Admin, Bob" newstring="Admin"/>
+    <ChangeItem id="10005" group="10004" fieldtype="jira" field="status" oldvalue="3" oldstring="In Progress" newvalue="1" newstring="Open"/>
+    <ChangeItem id="10006" group="10005" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="3" newstring="In Progress"/>
+    <ChangeItem id="10007" group="10005" fieldtype="custom" field="Watchers" oldstring="Admin" newstring="Bob"/>
+    <ChangeItem id="10008" group="10006" fieldtype="jira" field="status" oldvalue="3" oldstring="In Progress" newvalue="1" newstring="Open"/>
+    <ChangeItem id="10009" group="10007" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="3" newstring="In Progress"/>
+    <ChangeItem id="10010" group="10007" fieldtype="custom" field="Watchers" oldstring="Bob" newstring="Admin, Bob"/>
+    <ChangeItem id="10011" group="10008" fieldtype="jira" field="status" oldvalue="3" oldstring="In Progress" newvalue="1" newstring="Open"/>
+    <ChangeItem id="10012" group="10009" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="3" newstring="In Progress"/>
+    <ChangeItem id="10013" group="10010" fieldtype="custom" field="Watchers" oldstring="Admin, Bob" newstring="None"/>
+    <ChangeItem id="10014" group="10011" fieldtype="jira" field="description" oldstring="This is a test" newstring="This is a test2"/>
+    <ChangeItem id="10015" group="10011" fieldtype="custom" field="Watchers" oldstring="None" newstring="None"/>
+    <ChangeItem id="10016" group="10012" fieldtype="jira" field="description" oldstring="This is a test2" newstring="This is a test3"/>
+    <ChangeItem id="10017" group="10012" fieldtype="custom" field="Watchers" oldstring="None" newstring="None"/>
+    <ChangeItem id="10020" group="10020" fieldtype="jira" field="description" oldstring="This is a test3" newstring="This is a test"/>
+    <ChangeItem id="10021" group="10021" fieldtype="jira" field="description" oldstring="This is a test" newstring="This is a test1"/>
+    <ChangeItem id="10022" group="10022" fieldtype="custom" field="Watchers" oldstring="None" newstring="Bob"/>
+    <ChangeItem id="10023" group="10023" fieldtype="custom" field="Watchers" oldstring="Bob" newstring="None"/>
+    <ChangeItem id="10024" group="10024" fieldtype="jira" field="description" oldstring="Test" newstring="Test2"/>
+    <ConfigurationContext id="10000" key="issuetype" fieldconfigscheme="10000"/>
+    <EventType id="1" name="Issue Created" description="This is the &apos;Issue Created&apos; event type." type="jira.system.event.type"/>
+    <EventType id="2" name="Issue Updated" description="This is the &apos;Issue Updated&apos; event type." type="jira.system.event.type"/>
+    <EventType id="3" name="Issue Assigned" description="This is the &apos;Issue Assigned&apos; event type." type="jira.system.event.type"/>
+    <EventType id="4" name="Issue Resolved" description="This is the &apos;Issue Resolved&apos; event type." type="jira.system.event.type"/>
+    <EventType id="5" name="Issue Closed" description="This is the &apos;Issue Closed&apos; event type." type="jira.system.event.type"/>
+    <EventType id="6" name="Issue Commented" description="This is the &apos;Issue Commented&apos; event type." type="jira.system.event.type"/>
+    <EventType id="7" name="Issue Reopened" description="This is the &apos;Issue Reopened&apos; event type." type="jira.system.event.type"/>
+    <EventType id="8" name="Issue Deleted" description="This is the &apos;Issue Deleted&apos; event type." type="jira.system.event.type"/>
+    <EventType id="9" name="Issue Moved" description="This is the &apos;Issue Moved&apos; event type." type="jira.system.event.type"/>
+    <EventType id="10" name="Work Logged On Issue" description="This is the &apos;Work Logged On Issue&apos; event type." type="jira.system.event.type"/>
+    <EventType id="11" name="Work Started On Issue" description="This is the &apos;Work Started On Issue&apos; event type." type="jira.system.event.type"/>
+    <EventType id="12" name="Work Stopped On Issue" description="This is the &apos;Work Stopped On Issue&apos; event type." type="jira.system.event.type"/>
+    <EventType id="13" name="Generic Event" description="This is the &apos;Generic Event&apos; event type." type="jira.system.event.type"/>
+    <EventType id="14" name="Issue Comment Edited" description="This is the &apos;Issue Comment Edited&apos; event type." type="jira.system.event.type"/>
+    <EventType id="15" name="Issue Worklog Updated" description="This is the &apos;Issue Worklog Updated&apos; event type." type="jira.system.event.type"/>
+    <EventType id="16" name="Issue Worklog Deleted" description="This is the &apos;Issue Worklog Deleted&apos; event type." type="jira.system.event.type"/>
+    <FieldConfigScheme id="10000" name="Default Issue Type Scheme" description="Default issue type scheme is the list of global issue types. All newly created issue types will automatically be added to this scheme." fieldid="issuetype"/>
+    <FieldConfigSchemeIssueType id="10001" fieldconfigscheme="10000" fieldconfiguration="10000"/>
+    <FieldConfiguration id="10000" name="Default Configuration for Issue Type" description="Default configuration generated by JIRA" fieldid="issuetype"/>
+    <FieldScreen id="1" name="Default Screen" description="Allows to update all system fields."/>
+    <FieldScreen id="2" name="Workflow Screen" description="This screen is used in the workflow and enables you to assign issues"/>
+    <FieldScreen id="3" name="Resolve Issue Screen" description="Allows to set resolution, change fix versions and assign an issue."/>
+    <FieldScreen id="10000" name="Start Progress" description=""/>
+    <FieldScreenLayoutItem id="10000" fieldidentifier="summary" sequence="0" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10001" fieldidentifier="issuetype" sequence="1" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10002" fieldidentifier="security" sequence="2" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10003" fieldidentifier="priority" sequence="3" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10004" fieldidentifier="duedate" sequence="4" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10005" fieldidentifier="components" sequence="5" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10006" fieldidentifier="versions" sequence="6" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10007" fieldidentifier="fixVersions" sequence="7" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10008" fieldidentifier="assignee" sequence="8" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10009" fieldidentifier="reporter" sequence="9" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10010" fieldidentifier="environment" sequence="10" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10011" fieldidentifier="description" sequence="11" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10012" fieldidentifier="timetracking" sequence="12" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10013" fieldidentifier="attachment" sequence="13" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10014" fieldidentifier="assignee" sequence="0" fieldscreentab="10001"/>
+    <FieldScreenLayoutItem id="10015" fieldidentifier="resolution" sequence="0" fieldscreentab="10002"/>
+    <FieldScreenLayoutItem id="10016" fieldidentifier="fixVersions" sequence="1" fieldscreentab="10002"/>
+    <FieldScreenLayoutItem id="10017" fieldidentifier="assignee" sequence="2" fieldscreentab="10002"/>
+    <FieldScreenScheme id="1" name="Default Screen Scheme" description="Default Screen Scheme"/>
+    <FieldScreenSchemeItem id="10000" fieldscreen="1" fieldscreenscheme="1"/>
+    <FieldScreenTab id="10000" name="Field Tab" sequence="0" fieldscreen="1"/>
+    <FieldScreenTab id="10001" name="Field Tab" sequence="0" fieldscreen="2"/>
+    <FieldScreenTab id="10002" name="Field Tab" sequence="0" fieldscreen="3"/>
+    <FieldScreenTab id="10010" name="Field Tab" sequence="0" fieldscreen="10000"/>
+    <GenericConfiguration id="10000" datatype="DefaultValue" datakey="10000" xmlvalue="&lt;string&gt;1&lt;/string&gt;"/>
+    <Issue id="10000" key="TST-1" project="10000" reporter="admin" assignee="admin" type="1" summary="Test bug" description="This is a test1" priority="3" status="3" created="2009-11-25 15:49:03.867" updated="2009-11-25 16:12:21.565" votes="0" workflowId="10010"/>
+    <Issue id="10010" key="TST-2" project="10000" reporter="admin" assignee="bob" type="3" summary="Test task" description="Test2" priority="3" status="1" created="2009-11-25 16:20:18.554" updated="2009-11-25 16:21:30.66" votes="0" workflowId="10020"/>
+    <Issue id="10020" key="TST-3" project="10000" reporter="admin" assignee="admin" type="1" summary="Test Issue" priority="3" status="1" created="2009-11-30 10:18:43.199" updated="2009-11-30 10:18:43.199" votes="0" workflowId="10030"/>
+    <IssueType id="1" sequence="1" name="Bug" description="A problem which impairs or prevents the functions of the product." iconurl="/images/icons/bug.gif"/>
+    <IssueType id="2" sequence="2" name="New Feature" description="A new feature of the product, which has yet to be developed." iconurl="/images/icons/newfeature.gif"/>
+    <IssueType id="3" sequence="3" name="Task" description="A task that needs to be done." iconurl="/images/icons/task.gif"/>
+    <IssueType id="4" sequence="4" name="Improvement" description="An improvement or enhancement to an existing feature or task." iconurl="/images/icons/improvement.gif"/>
+    <IssueTypeScreenScheme id="1" name="Default Issue Type Screen Scheme" description="The default issue type screen scheme"/>
+    <IssueTypeScreenSchemeEntity id="10000" scheme="1" fieldscreenscheme="1"/>
+    <ListenerConfig id="10000" clazz="com.atlassian.jira.event.listeners.cache.IssueCacheListener" name="Issue Cache Listener"/>
+    <ListenerConfig id="10001" clazz="com.atlassian.jira.event.listeners.mail.MailListener" name="Mail Listener"/>
+    <ListenerConfig id="10002" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
+    <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="0" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
+    <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
+    <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="NotificationScheme" associationType="ProjectScheme"/>
+    <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="WorkflowScheme" associationType="ProjectScheme"/>
+    <Notification id="10000" scheme="10000" eventTypeId="1" type="Current_Assignee"/>
+    <Notification id="10001" scheme="10000" eventTypeId="1" type="Current_Reporter"/>
+    <Notification id="10002" scheme="10000" eventTypeId="1" type="All_Watchers"/>
+    <Notification id="10003" scheme="10000" eventTypeId="2" type="Current_Assignee"/>
+    <Notification id="10004" scheme="10000" eventTypeId="2" type="Current_Reporter"/>
+    <Notification id="10005" scheme="10000" eventTypeId="2" type="All_Watchers"/>
+    <Notification id="10006" scheme="10000" eventTypeId="3" type="Current_Assignee"/>
+    <Notification id="10007" scheme="10000" eventTypeId="3" type="Current_Reporter"/>
+    <Notification id="10008" scheme="10000" eventTypeId="3" type="All_Watchers"/>
+    <Notification id="10009" scheme="10000" eventTypeId="4" type="Current_Assignee"/>
+    <Notification id="10010" scheme="10000" eventTypeId="4" type="Current_Reporter"/>
+    <Notification id="10011" scheme="10000" eventTypeId="4" type="All_Watchers"/>
+    <Notification id="10012" scheme="10000" eventTypeId="5" type="Current_Assignee"/>
+    <Notification id="10013" scheme="10000" eventTypeId="5" type="Current_Reporter"/>
+    <Notification id="10014" scheme="10000" eventTypeId="5" type="All_Watchers"/>
+    <Notification id="10015" scheme="10000" eventTypeId="6" type="Current_Assignee"/>
+    <Notification id="10016" scheme="10000" eventTypeId="6" type="Current_Reporter"/>
+    <Notification id="10017" scheme="10000" eventTypeId="6" type="All_Watchers"/>
+    <Notification id="10018" scheme="10000" eventTypeId="7" type="Current_Assignee"/>
+    <Notification id="10019" scheme="10000" eventTypeId="7" type="Current_Reporter"/>
+    <Notification id="10020" scheme="10000" eventTypeId="7" type="All_Watchers"/>
+    <Notification id="10021" scheme="10000" eventTypeId="8" type="Current_Assignee"/>
+    <Notification id="10022" scheme="10000" eventTypeId="8" type="Current_Reporter"/>
+    <Notification id="10023" scheme="10000" eventTypeId="8" type="All_Watchers"/>
+    <Notification id="10024" scheme="10000" eventTypeId="9" type="Current_Assignee"/>
+    <Notification id="10025" scheme="10000" eventTypeId="9" type="Current_Reporter"/>
+    <Notification id="10026" scheme="10000" eventTypeId="9" type="All_Watchers"/>
+    <Notification id="10027" scheme="10000" eventTypeId="10" type="Current_Assignee"/>
+    <Notification id="10028" scheme="10000" eventTypeId="10" type="Current_Reporter"/>
+    <Notification id="10029" scheme="10000" eventTypeId="10" type="All_Watchers"/>
+    <Notification id="10030" scheme="10000" eventTypeId="11" type="Current_Assignee"/>
+    <Notification id="10031" scheme="10000" eventTypeId="11" type="Current_Reporter"/>
+    <Notification id="10032" scheme="10000" eventTypeId="11" type="All_Watchers"/>
+    <Notification id="10033" scheme="10000" eventTypeId="12" type="Current_Assignee"/>
+    <Notification id="10034" scheme="10000" eventTypeId="12" type="Current_Reporter"/>
+    <Notification id="10035" scheme="10000" eventTypeId="12" type="All_Watchers"/>
+    <Notification id="10036" scheme="10000" eventTypeId="13" type="Current_Assignee"/>
+    <Notification id="10037" scheme="10000" eventTypeId="13" type="Current_Reporter"/>
+    <Notification id="10038" scheme="10000" eventTypeId="13" type="All_Watchers"/>
+    <Notification id="10040" scheme="10000" eventTypeId="14" type="Current_Assignee"/>
+    <Notification id="10041" scheme="10000" eventTypeId="14" type="Current_Reporter"/>
+    <Notification id="10042" scheme="10000" eventTypeId="14" type="All_Watchers"/>
+    <Notification id="10043" scheme="10000" eventTypeId="15" type="Current_Assignee"/>
+    <Notification id="10044" scheme="10000" eventTypeId="15" type="Current_Reporter"/>
+    <Notification id="10045" scheme="10000" eventTypeId="15" type="All_Watchers"/>
+    <Notification id="10046" scheme="10000" eventTypeId="16" type="Current_Assignee"/>
+    <Notification id="10047" scheme="10000" eventTypeId="16" type="Current_Reporter"/>
+    <Notification id="10048" scheme="10000" eventTypeId="16" type="All_Watchers"/>
+    <NotificationScheme id="10000" name="Default Notification Scheme"/>
+    <OSCurrentStep id="10017" entryId="10010" stepId="3" actionId="0" owner="" startDate="2009-11-25 16:00:02.896" status="Underway"/>
+    <OSCurrentStep id="10020" entryId="10020" stepId="1" actionId="0" owner="" startDate="2009-11-25 16:20:18.553" status="Open"/>
+    <OSCurrentStep id="10030" entryId="10030" stepId="1" actionId="0" owner="" startDate="2009-11-30 10:18:43.194" status="Open"/>
+    <OSCurrentStepPrev id="10011" previousId="10010"/>
+    <OSCurrentStepPrev id="10012" previousId="10011"/>
+    <OSCurrentStepPrev id="10013" previousId="10012"/>
+    <OSCurrentStepPrev id="10014" previousId="10013"/>
+    <OSCurrentStepPrev id="10015" previousId="10014"/>
+    <OSCurrentStepPrev id="10016" previousId="10015"/>
+    <OSCurrentStepPrev id="10017" previousId="10016"/>
+    <OSGroup id="10000" name="jira-administrators"/>
+    <OSGroup id="10001" name="jira-developers"/>
+    <OSGroup id="10002" name="jira-users"/>
+    <OSHistoryStep id="10000" entryId="10000" stepId="1" actionId="0" owner="" startDate="2009-11-25 15:49:03.857" status="Open"/>
+    <OSHistoryStep id="10010" entryId="10010" stepId="1" actionId="4" owner="" startDate="2009-11-25 15:49:03.857" finishDate="2009-11-25 15:59:13.545" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10011" entryId="10010" stepId="3" actionId="301" owner="" startDate="2009-11-25 15:59:13.546" finishDate="2009-11-25 15:59:17.203" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10012" entryId="10010" stepId="1" actionId="4" owner="" startDate="2009-11-25 15:59:17.205" finishDate="2009-11-25 15:59:23.521" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10013" entryId="10010" stepId="3" actionId="301" owner="" startDate="2009-11-25 15:59:23.522" finishDate="2009-11-25 15:59:44.986" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10014" entryId="10010" stepId="1" actionId="4" owner="" startDate="2009-11-25 15:59:44.988" finishDate="2009-11-25 15:59:51.123" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10015" entryId="10010" stepId="3" actionId="301" owner="" startDate="2009-11-25 15:59:51.124" finishDate="2009-11-25 15:59:56.128" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10016" entryId="10010" stepId="1" actionId="4" owner="" startDate="2009-11-25 15:59:56.13" finishDate="2009-11-25 16:00:02.892" status="Finished" caller="admin"/>
+    <OSHistoryStepPrev id="10011" previousId="10010"/>
+    <OSHistoryStepPrev id="10012" previousId="10011"/>
+    <OSHistoryStepPrev id="10013" previousId="10012"/>
+    <OSHistoryStepPrev id="10014" previousId="10013"/>
+    <OSHistoryStepPrev id="10015" previousId="10014"/>
+    <OSHistoryStepPrev id="10016" previousId="10015"/>
+    <OSMembership id="10000" userName="admin" groupName="jira-administrators"/>
+    <OSMembership id="10001" userName="admin" groupName="jira-developers"/>
+    <OSMembership id="10002" userName="admin" groupName="jira-users"/>
+    <OSMembership id="10010" userName="bob" groupName="jira-users"/>
+    <OSMembership id="10011" userName="bob" groupName="jira-developers"/>
+    <OSPropertyEntry id="10000" entityName="user.format.mapping" entityId="1" propertyKey="profileLink" type="5"/>
+    <OSPropertyEntry id="10001" entityName="user.format.mapping" entityId="1" propertyKey="fullName" type="5"/>
+    <OSPropertyEntry id="10002" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkSearcher" type="5"/>
+    <OSPropertyEntry id="10003" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkExternal" type="5"/>
+    <OSPropertyEntry id="10004" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkActionHeader" type="5"/>
+    <OSPropertyEntry id="10005" entityName="user.format.mapping" entityId="1" propertyKey="fullProfile" type="5"/>
+    <OSPropertyEntry id="10006" entityName="jira.properties" entityId="1" propertyKey="jira.i18n.language.index" type="5"/>
+    <OSPropertyEntry id="10007" entityName="jira.properties" entityId="1" propertyKey="jira.sid.key" type="5"/>
+    <OSPropertyEntry id="10008" entityName="jira.properties" entityId="1" propertyKey="webwork.i18n.encoding" type="5"/>
+    <OSPropertyEntry id="10009" entityName="jira.properties" entityId="1" propertyKey="jira.title" type="5"/>
+    <OSPropertyEntry id="10010" entityName="jira.properties" entityId="1" propertyKey="jira.baseurl" type="5"/>
+    <OSPropertyEntry id="10011" entityName="jira.properties" entityId="1" propertyKey="jira.mode" type="5"/>
+    <OSPropertyEntry id="10012" entityName="jira.properties" entityId="1" propertyKey="jira.option.indexing" type="1"/>
+    <OSPropertyEntry id="10013" entityName="jira.properties" entityId="1" propertyKey="jira.path.index" type="5"/>
+    <OSPropertyEntry id="10014" entityName="jira.properties" entityId="1" propertyKey="License Message Text" type="6"/>
+    <OSPropertyEntry id="10015" entityName="jira.properties" entityId="1" propertyKey="License Hash 1 Text" type="6"/>
+    <OSPropertyEntry id="10016" entityName="jira.properties" entityId="1" propertyKey="jira.edition" type="5"/>
+    <OSPropertyEntry id="10017" entityName="OSUser" entityId="10000" propertyKey="email" type="5"/>
+    <OSPropertyEntry id="10018" entityName="OSUser" entityId="10000" propertyKey="fullName" type="5"/>
+    <OSPropertyEntry id="10019" entityName="jira.properties" entityId="1" propertyKey="jira.setup" type="5"/>
+    <OSPropertyEntry id="10020" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowunassigned" type="1"/>
+    <OSPropertyEntry id="10021" entityName="jira.properties" entityId="1" propertyKey="jira.option.user.externalmanagement" type="1"/>
+    <OSPropertyEntry id="10022" entityName="jira.properties" entityId="1" propertyKey="jira.option.voting" type="1"/>
+    <OSPropertyEntry id="10023" entityName="jira.properties" entityId="1" propertyKey="jira.option.watching" type="1"/>
+    <OSPropertyEntry id="10024" entityName="jira.properties" entityId="1" propertyKey="jira.option.issuelinking" type="1"/>
+    <OSPropertyEntry id="10025" entityName="jira.properties" entityId="1" propertyKey="jira.option.emailvisible" type="5"/>
+    <OSPropertyEntry id="10026" entityName="jira.properties" entityId="1" propertyKey="jira.version.patched" type="5"/>
+    <OSPropertyEntry id="10027" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.environment" type="5"/>
+    <OSPropertyEntry id="10028" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.timetrack" type="5"/>
+    <OSPropertyEntry id="10029" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.days.per.week" type="5"/>
+    <OSPropertyEntry id="10030" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.hours.per.day" type="5"/>
+    <OSPropertyEntry id="10031" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.original.timetrack" type="5"/>
+    <OSPropertyEntry id="10040" entityName="jira.properties" entityId="1" propertyKey="jira.scheme.default.issue.type" type="5"/>
+    <OSPropertyEntry id="10041" entityName="jira.properties" entityId="1" propertyKey="jira.constant.default.resolution" type="5"/>
+    <OSPropertyEntry id="10042" entityName="jira.properties" entityId="1" propertyKey="webwork.multipart.maxSize" type="5"/>
+    <OSPropertyEntry id="10043" entityName="OSUser" entityId="10010" propertyKey="email" type="5"/>
+    <OSPropertyEntry id="10044" entityName="OSUser" entityId="10010" propertyKey="fullName" type="5"/>
+    <OSPropertyNumber id="10012" value="1"/>
+    <OSPropertyNumber id="10020" value="0"/>
+    <OSPropertyNumber id="10021" value="0"/>
+    <OSPropertyNumber id="10022" value="1"/>
+    <OSPropertyNumber id="10023" value="1"/>
+    <OSPropertyNumber id="10024" value="0"/>
+    <OSPropertyString id="10000" value="jira.user.format:profile-link-user-format"/>
+    <OSPropertyString id="10001" value="jira.user.format:full-name-user-format"/>
+    <OSPropertyString id="10002" value="jira.user.format:profile-link-searcher-user-format"/>
+    <OSPropertyString id="10003" value="jira.user.format:profile-link-external-user-format"/>
+    <OSPropertyString id="10004" value="jira.user.format:profile-link-action-header-user-format"/>
+    <OSPropertyString id="10005" value="jira.user.format:full-profile-user-format"/>
+    <OSPropertyString id="10006" value="english"/>
+    <OSPropertyString id="10007" value="AH5G-ZOQK-ZOBB-SZUB"/>
+    <OSPropertyString id="10008" value="UTF-8"/>
+    <OSPropertyString id="10009" value="Your Company JIRA"/>
+    <OSPropertyString id="10010" value="http://localhost:1990/jira"/>
+    <OSPropertyString id="10011" value="private"/>
+    <OSPropertyString id="10013" value="C:\Users\Ray\workspace\jira-watcher-field\target\index"/>
+    <OSPropertyString id="10016" value="enterprise"/>
+    <OSPropertyString id="10017" value="admin@home.com"/>
+    <OSPropertyString id="10018" value="Admin"/>
+    <OSPropertyString id="10019" value="true"/>
+    <OSPropertyString id="10025" value="show"/>
+    <OSPropertyString id="10026" value="360"/>
+    <OSPropertyString id="10027" value="For example operating system, software platform and/or hardware specifications (include as appropriate for the issue)."/>
+    <OSPropertyString id="10028">
+        <value><![CDATA[An estimate of how much work remains until this issue will be resolved.<br>
+The format of this is ' *w *d *h *m ' (representing weeks, days, hours and minutes - where * can be any number)<br>
+Examples: 4d, 5h 30m, 60m and 3w.]]></value>
+    </OSPropertyString>
+    <OSPropertyString id="10029" value="7"/>
+    <OSPropertyString id="10030" value="24"/>
+    <OSPropertyString id="10031" value="This value can not be changed after work has begun on the issue."/>
+    <OSPropertyString id="10040" value="10000"/>
+    <OSPropertyString id="10041" value="1"/>
+    <OSPropertyString id="10042" value="10485760"/>
+    <OSPropertyString id="10043" value="bob@home.com"/>
+    <OSPropertyString id="10044" value="Bob"/>
+    <OSPropertyText id="10014" value="QmPXSmQrOPpOrNnRopTwPqoMPnQNQqMnqUVwXUNStwuWXrVqsUwuuWuTosstvsVwXnouvUUnoqorsuummmmmUUnoqorsuummmmmUUIXvW2XoeXjdpWGboplkXiWJbosboUUp"/>
+    <OSPropertyText id="10015" value="ORnRmcjvflsbHUrjrRidupWComuDSeQxdLAutpiOXqffDmmi2KUMAN6s&lt;IW8qZnI0RH82u2KjCrYVS4lTOcZ8kGCKRjk"/>
+    <OSUser id="10000" name="admin" passwordHash="x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A=="/>
+    <OSUser id="10010" name="bob" passwordHash="BBaia6VUM0KGsZVJGOyte6bDNXW0nfkV/zNntc737Nk7HwtDZjZmeyezYwEVQ5cfHIHDFR1e9yczUBwf8zw0rw=="/>
+    <OSWorkflowEntry id="10000" name="jira" state="3"/>
+    <OSWorkflowEntry id="10010" name="Copy of jira" state="1"/>
+    <OSWorkflowEntry id="10020" name="Copy of jira" state="1"/>
+    <OSWorkflowEntry id="10030" name="Copy of jira" state="1"/>
+    <OptionConfiguration id="10000" fieldid="issuetype" optionid="1" fieldconfig="10000" sequence="0"/>
+    <OptionConfiguration id="10001" fieldid="issuetype" optionid="2" fieldconfig="10000" sequence="1"/>
+    <OptionConfiguration id="10002" fieldid="issuetype" optionid="3" fieldconfig="10000" sequence="2"/>
+    <OptionConfiguration id="10003" fieldid="issuetype" optionid="4" fieldconfig="10000" sequence="3"/>
+    <PermissionScheme id="0" name="Default Permission Scheme" description="This is the default Permission Scheme. Any new projects that are created will be assigned this scheme"/>
+    <PluginVersion id="10000" name="Workflow Plugin" key="com.atlassian.jira.plugin.system.workflow" version="1.0" created="2009-11-25 15:41:39.092"/>
+    <PluginVersion id="10001" name="Issue Operations Plugin" key="com.atlassian.jira.plugin.system.issueoperations" version="1.0" created="2009-11-25 15:41:39.103"/>
+    <PluginVersion id="10002" name="Custom Field Types &amp; Searchers" key="com.atlassian.jira.plugin.system.customfieldtypes" version="1.0" created="2009-11-25 15:41:39.103"/>
+    <PluginVersion id="10003" name="Portlets Plugin" key="com.atlassian.jira.plugin.system.portlets" version="1.0" created="2009-11-25 15:41:39.103"/>
+    <PluginVersion id="10004" name="Wiki Renderer Macros Plugin" key="com.atlassian.jira.plugin.system.renderers.wiki.macros" version="1.0" created="2009-11-25 15:41:39.104"/>
+    <PluginVersion id="10005" name="User Format" key="jira.user.format" version="1.0" created="2009-11-25 15:41:39.104"/>
+    <PluginVersion id="10006" name="View Project Operations Sections" key="jira.webfragments.view.project.operations" version="1.0" created="2009-11-25 15:41:39.104"/>
+    <PluginVersion id="10007" name="JIRA Watcher Field" key="com.atlassian.jira.issue.customfields.impl.jira-watcher-field" version="1.1.0" created="2009-11-25 15:41:39.105"/>
+    <PluginVersion id="10008" name="Top Navigation Bar" key="jira.top.navigation.bar" version="1.0" created="2009-11-25 15:41:39.105"/>
+    <PluginVersion id="10009" name="Project Role Actors Plugin" key="com.atlassian.jira.plugin.system.projectroleactors" version="1.0" created="2009-11-25 15:41:39.105"/>
+    <PluginVersion id="10010" name="Renderer Component Factories Plugin" key="com.atlassian.jira.plugin.wiki.renderercomponentfactories" version="1.0" created="2009-11-25 15:41:39.106"/>
+    <PluginVersion id="10011" name="Web Resources Plugin" key="jira.webresources" version="1.0" created="2009-11-25 15:41:39.107"/>
+    <PluginVersion id="10012" name="JIRA Footer" key="jira.footer" version="1.0" created="2009-11-25 15:41:39.108"/>
+    <PluginVersion id="10013" name="Preset Filters Sections" key="jira.webfragments.preset.filters" version="1.0" created="2009-11-25 15:41:39.111"/>
+    <PluginVersion id="10014" name="Admin Menu Sections" key="jira.webfragments.admin" version="1.0" created="2009-11-25 15:41:39.111"/>
+    <PluginVersion id="10015" name="User Profile Links" key="jira.webfragments.user.profile.links" version="1.0" created="2009-11-25 15:41:39.111"/>
+    <PluginVersion id="10016" name="Reports Plugin" key="com.atlassian.jira.plugin.system.reports" version="1.0" created="2009-11-25 15:41:39.112"/>
+    <PluginVersion id="10017" name="Webwork Plugin" key="com.atlassian.jira.plugin.system.webwork1" version="1.0" created="2009-11-25 15:41:39.112"/>
+    <PluginVersion id="10018" name="User Navigation Bar Sections" key="jira.webfragments.user.navigation.bar" version="1.0" created="2009-11-25 15:41:39.112"/>
+    <PluginVersion id="10019" name="Issue Tab Panels Plugin" key="com.atlassian.jira.plugin.system.issuetabpanels" version="1.0" created="2009-11-25 15:41:39.113"/>
+    <PluginVersion id="10020" name="Content Link Resolvers Plugin" key="com.atlassian.jira.plugin.wiki.contentlinkresolvers" version="1.0" created="2009-11-25 15:41:39.113"/>
+    <PluginVersion id="10021" name="Browse Project Operations Sections" key="jira.webfragments.browse.project.operations" version="1.0" created="2009-11-25 15:41:39.115"/>
+    <PluginVersion id="10022" name="Issue Views Plugin" key="jira.issueviews" version="1.0" created="2009-11-25 15:41:39.116"/>
+    <PluginVersion id="10023" name="Renderer Plugin" key="com.atlassian.jira.plugin.system.jirarenderers" version="1.0" created="2009-11-25 15:41:39.116"/>
+    <PluginVersion id="10024" name="Project Panels Plugin" key="com.atlassian.jira.plugin.system.project" version="1.0" created="2009-11-25 15:41:39.117"/>
+    <PortalPage id="10000" pagename="System Dashboard" sequence="0" favCount="0"/>
+    <PortletConfiguration id="10000" portalpage="10000" portletId="INTRODUCTION" columnNumber="0" position="0"/>
+    <PortletConfiguration id="10001" portalpage="10000" portletId="PROJECTS" columnNumber="0" position="1"/>
+    <PortletConfiguration id="10002" portalpage="10000" portletId="SAVEDFILTERS" columnNumber="1" position="0"/>
+    <PortletConfiguration id="10003" portalpage="10000" portletId="ASSIGNEDTOME" columnNumber="1" position="1"/>
+    <PortletConfiguration id="10004" portalpage="10000" portletId="INPROGRESS" columnNumber="1" position="2"/>
+    <PortletConfiguration id="10005" portalpage="10000" portletId="USERISSUES" columnNumber="1" position="3"/>
+    <PortletConfiguration id="10006" portalpage="10000" portletId="ADMIN" columnNumber="1" position="4"/>
+    <Priority id="1" sequence="1" name="Blocker" description="Blocks development and/or testing work, production could not run." iconurl="/images/icons/priority_blocker.gif" statusColor="#cc0000"/>
+    <Priority id="2" sequence="2" name="Critical" description="Crashes, loss of data, severe memory leak." iconurl="/images/icons/priority_critical.gif" statusColor="#ff0000"/>
+    <Priority id="3" sequence="3" name="Major" description="Major loss of function." iconurl="/images/icons/priority_major.gif" statusColor="#009900"/>
+    <Priority id="4" sequence="4" name="Minor" description="Minor loss of function, or other problem where easy workaround is present." iconurl="/images/icons/priority_minor.gif" statusColor="#006600"/>
+    <Priority id="5" sequence="5" name="Trivial" description="Cosmetic problem like misspelt words or misaligned text." iconurl="/images/icons/priority_trivial.gif" statusColor="#003300"/>
+    <Project id="10000" name="Test" url="" lead="admin" description="" key="TST" counter="3" assigneetype="2"/>
+    <ProjectRole id="10000" name="Users" description="A project role that represents users in a project"/>
+    <ProjectRole id="10001" name="Developers" description="A project role that represents developers in a project"/>
+    <ProjectRole id="10002" name="Administrators" description="A project role that represents administrators in a project"/>
+    <ProjectRoleActor id="10000" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
+    <ProjectRoleActor id="10001" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
+    <ProjectRoleActor id="10002" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
+    <ProjectRoleActor id="10003" pid="10000" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
+    <ProjectRoleActor id="10004" pid="10000" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
+    <ProjectRoleActor id="10005" pid="10000" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
+    <Resolution id="1" sequence="1" name="Fixed" description="A fix for this issue is checked into the tree and tested."/>
+    <Resolution id="2" sequence="2" name="Won&apos;t Fix" description="The problem described is an issue which will never be fixed."/>
+    <Resolution id="3" sequence="3" name="Duplicate" description="The problem is a duplicate of an existing issue."/>
+    <Resolution id="4" sequence="4" name="Incomplete" description="The problem is not completely described."/>
+    <Resolution id="5" sequence="5" name="Cannot Reproduce" description="All attempts at reproducing this issue failed, or not enough information was available to reproduce the issue. Reading the code produces no clues as to why this behavior would occur. If more information appears later, please reopen the issue."/>
+    <SchemePermissions id="10000" permission="0" type="group" parameter="jira-administrators"/>
+    <SchemePermissions id="10001" permission="1" type="group" parameter="jira-users"/>
+    <SchemePermissions id="10002" permission="27" type="group" parameter="jira-developers"/>
+    <SchemePermissions id="10003" permission="24" type="group" parameter="jira-developers"/>
+    <SchemePermissions id="10004" scheme="0" permission="23" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10005" scheme="0" permission="10" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10006" scheme="0" permission="11" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10007" scheme="0" permission="15" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10008" scheme="0" permission="19" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10009" scheme="0" permission="13" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10010" scheme="0" permission="17" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10011" scheme="0" permission="14" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10012" scheme="0" permission="21" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10013" scheme="0" permission="12" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10014" scheme="0" permission="16" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10015" scheme="0" permission="18" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10016" scheme="0" permission="25" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10017" scheme="0" permission="28" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10018" scheme="0" permission="30" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10019" scheme="0" permission="20" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10020" scheme="0" permission="43" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10021" scheme="0" permission="42" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10022" scheme="0" permission="41" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10023" scheme="0" permission="40" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10024" scheme="0" permission="31" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10025" scheme="0" permission="32" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10026" scheme="0" permission="34" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10027" scheme="0" permission="35" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10028" scheme="0" permission="36" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10029" scheme="0" permission="37" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10030" scheme="0" permission="38" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10031" scheme="0" permission="39" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10032" permission="22" type="group" parameter="jira-users"/>
+    <SchemePermissions id="10033" scheme="0" permission="29" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10040" permission="33" type="group" parameter="jira-users"/>
+    <SchemePermissions id="10041" permission="44" type="group" parameter="jira-administrators"/>
+    <SequenceValueItem seqName="ChangeGroup" seqId="10030"/>
+    <SequenceValueItem seqName="ChangeItem" seqId="10030"/>
+    <SequenceValueItem seqName="ConfigurationContext" seqId="10020"/>
+    <SequenceValueItem seqName="FieldConfigScheme" seqId="10020"/>
+    <SequenceValueItem seqName="FieldConfigSchemeIssueType" seqId="10020"/>
+    <SequenceValueItem seqName="FieldConfiguration" seqId="10020"/>
+    <SequenceValueItem seqName="FieldScreen" seqId="10010"/>
+    <SequenceValueItem seqName="FieldScreenLayoutItem" seqId="10050"/>
+    <SequenceValueItem seqName="FieldScreenScheme" seqId="10000"/>
+    <SequenceValueItem seqName="FieldScreenSchemeItem" seqId="10010"/>
+    <SequenceValueItem seqName="FieldScreenTab" seqId="10020"/>
+    <SequenceValueItem seqName="GenericConfiguration" seqId="10010"/>
+    <SequenceValueItem seqName="Issue" seqId="10030"/>
+    <SequenceValueItem seqName="IssueTypeScreenSchemeEntity" seqId="10010"/>
+    <SequenceValueItem seqName="ListenerConfig" seqId="10010"/>
+    <SequenceValueItem seqName="Notification" seqId="10050"/>
+    <SequenceValueItem seqName="NotificationScheme" seqId="10010"/>
+    <SequenceValueItem seqName="OSCurrentStep" seqId="10040"/>
+    <SequenceValueItem seqName="OSGroup" seqId="10010"/>
+    <SequenceValueItem seqName="OSMembership" seqId="10020"/>
+    <SequenceValueItem seqName="OSPropertyEntry" seqId="10050"/>
+    <SequenceValueItem seqName="OSUser" seqId="10020"/>
+    <SequenceValueItem seqName="OSWorkflowEntry" seqId="10040"/>
+    <SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
+    <SequenceValueItem seqName="PluginVersion" seqId="10030"/>
+    <SequenceValueItem seqName="PortalPage" seqId="10010"/>
+    <SequenceValueItem seqName="PortletConfiguration" seqId="10010"/>
+    <SequenceValueItem seqName="Project" seqId="10010"/>
+    <SequenceValueItem seqName="ProjectRole" seqId="10010"/>
+    <SequenceValueItem seqName="ProjectRoleActor" seqId="10010"/>
+    <SequenceValueItem seqName="SchemePermissions" seqId="10050"/>
+    <SequenceValueItem seqName="ServiceConfig" seqId="10010"/>
+    <SequenceValueItem seqName="SharePermissions" seqId="10010"/>
+    <SequenceValueItem seqName="UpgradeHistory" seqId="10040"/>
+    <SequenceValueItem seqName="Workflow" seqId="10010"/>
+    <SequenceValueItem seqName="WorkflowScheme" seqId="10010"/>
+    <SequenceValueItem seqName="WorkflowSchemeEntity" seqId="10010"/>
+    <ServiceConfig id="10000" time="60000" clazz="com.atlassian.jira.service.services.mail.MailQueueService" name="Mail Queue Service"/>
+    <SharePermissions id="10000" entityId="10000" entityType="PortalPage" type="global"/>
+    <Status id="1" sequence="1" name="Open" description="The issue is open and ready for the assignee to start work on it." iconurl="/images/icons/status_open.gif"/>
+    <Status id="3" sequence="3" name="In Progress" description="This issue is being actively worked on at the moment by the assignee." iconurl="/images/icons/status_inprogress.gif"/>
+    <Status id="4" sequence="4" name="Reopened" description="This issue was once resolved, but the resolution was deemed incorrect. From here issues are either marked assigned or resolved." iconurl="/images/icons/status_reopened.gif"/>
+    <Status id="5" sequence="5" name="Resolved" description="A resolution has been taken, and it is awaiting verification by reporter. From here issues are either reopened, or are closed." iconurl="/images/icons/status_resolved.gif"/>
+    <Status id="6" sequence="6" name="Closed" description="The issue is considered finished, the resolution is correct. Issues which are closed can be reopened." iconurl="/images/icons/status_closed.gif"/>
+    <UpgradeHistory id="10000" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask1_2"/>
+    <UpgradeHistory id="10002" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build10"/>
+    <UpgradeHistory id="10021" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build101"/>
+    <UpgradeHistory id="10022" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build102"/>
+    <UpgradeHistory id="10003" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build11"/>
+    <UpgradeHistory id="10023" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build130"/>
+    <UpgradeHistory id="10024" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build132"/>
+    <UpgradeHistory id="10025" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build150"/>
+    <UpgradeHistory id="10026" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build151"/>
+    <UpgradeHistory id="10027" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build152"/>
+    <UpgradeHistory id="10028" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build175"/>
+    <UpgradeHistory id="10029" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build176"/>
+    <UpgradeHistory id="10030" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build205"/>
+    <UpgradeHistory id="10031" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build207"/>
+    <UpgradeHistory id="10032" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build257"/>
+    <UpgradeHistory id="10033" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build258"/>
+    <UpgradeHistory id="10004" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build27"/>
+    <UpgradeHistory id="10034" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build296"/>
+    <UpgradeHistory id="10035" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build317"/>
+    <UpgradeHistory id="10036" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build325"/>
+    <UpgradeHistory id="10037" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build326"/>
+    <UpgradeHistory id="10005" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build35"/>
+    <UpgradeHistory id="10006" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build47"/>
+    <UpgradeHistory id="10007" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build48"/>
+    <UpgradeHistory id="10008" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build51"/>
+    <UpgradeHistory id="10009" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build52"/>
+    <UpgradeHistory id="10010" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build56"/>
+    <UpgradeHistory id="10011" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build60"/>
+    <UpgradeHistory id="10020" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build83"/>
+    <UpgradeHistory id="10001" upgradeclass="com.atlassian.jira.upgrade.tasks.professional.UpgradeTask1_2"/>
+    <UserAssociation sourceName="bob" sinkNodeId="10020" sinkNodeEntity="Issue" associationType="WatchIssue"/>
+    <Workflow id="10000" name="Copy of jira">
+        <descriptor><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+  <meta name="jira.update.author.name">admin</meta>
+  <meta name="jira.updated.date">1259186289611</meta>
+  <meta name="jira.description">The default JIRA workflow.</meta>
+  <initial-actions>
+    <action id="1" name="Create Issue">
+      <meta name="jira.i18n.title">common.forms.create</meta>
+      <validators>
+        <validator name="" type="class">
+          <arg name="class.name">com.atlassian.jira.workflow.validator.PermissionValidator</arg>
+          <arg name="permission">Create Issue</arg>
+        </validator>
+      </validators>
+      <results>
+        <unconditional-result old-status="Finished" status="Open" step="1">
+          <post-functions>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueCreateFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="eventTypeId">1</arg>
+              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+  </initial-actions>
+  <common-actions>
+    <action id="2" name="Close Issue" view="resolveissue">
+      <meta name="jira.i18n.title">closeissue.title</meta>
+      <meta name="jira.i18n.submit">closeissue.close</meta>
+      <meta name="jira.i18n.description">closeissue.desc</meta>
+      <restrict-to>
+        <conditions type="AND">
+          <condition type="class">
+            <arg name="class.name">com.atlassian.jira.workflow.condition.PermissionCondition</arg>
+            <arg name="permission">Resolve Issue</arg>
+          </condition>
+          <condition type="class">
+            <arg name="class.name">com.atlassian.jira.workflow.condition.PermissionCondition</arg>
+            <arg name="permission">Close Issue</arg>
+          </condition>
+        </conditions>
+      </restrict-to>
+      <results>
+        <unconditional-result old-status="Finished" status="Closed" step="6">
+          <post-functions>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="eventTypeId">5</arg>
+              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+    <action id="4" name="Start Progress" view="fieldscreen">
+      <meta name="jira.i18n.title">startprogress.title</meta>
+      <meta name="jira.fieldscreen.id">10000</meta>
+      <meta name="jira.description"></meta>
+      <restrict-to>
+        <conditions>
+          <condition type="class">
+            <arg name="class.name">com.atlassian.jira.workflow.condition.AllowOnlyAssignee</arg>
+          </condition>
+        </conditions>
+      </restrict-to>
+      <results>
+        <unconditional-result old-status="Finished" status="Underway" step="3">
+          <post-functions>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+              <arg name="field.name">resolution</arg>
+              <arg name="field.value"></arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="eventTypeId">11</arg>
+              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+    <action id="3" name="Reopen Issue" view="commentassign">
+      <meta name="jira.i18n.title">issue.operations.reopen.issue</meta>
+      <meta name="jira.i18n.submit">issue.operations.reopen.issue</meta>
+      <meta name="jira.i18n.description">issue.operations.reopen.description</meta>
+      <restrict-to>
+        <conditions>
+          <condition type="class">
+            <arg name="class.name">com.atlassian.jira.workflow.condition.PermissionCondition</arg>
+            <arg name="permission">Resolve Issue</arg>
+          </condition>
+        </conditions>
+      </restrict-to>
+      <results>
+        <unconditional-result old-status="Finished" status="Reopened" step="5">
+          <post-functions>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+              <arg name="field.name">resolution</arg>
+              <arg name="field.value"></arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="eventTypeId">7</arg>
+              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+    <action id="5" name="Resolve Issue" view="resolveissue">
+      <meta name="jira.i18n.title">resolveissue.title</meta>
+      <meta name="jira.i18n.submit">resolveissue.resolve</meta>
+      <meta name="jira.i18n.description">resolveissue.desc.line1</meta>
+      <restrict-to>
+        <conditions>
+          <condition type="class">
+            <arg name="class.name">com.atlassian.jira.workflow.condition.PermissionCondition</arg>
+            <arg name="permission">Resolve Issue</arg>
+          </condition>
+        </conditions>
+      </restrict-to>
+      <results>
+        <unconditional-result old-status="Finished" status="Resolved" step="4">
+          <post-functions>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+            </function>
+            <function type="class">
+              <arg name="eventTypeId">4</arg>
+              <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+  </common-actions>
+  <steps>
+    <step id="1" name="Open">
+      <meta name="jira.status.id">1</meta>
+      <actions>
+<common-action id="4" />
+<common-action id="5" />
+<common-action id="2" />
+      </actions>
+    </step>
+    <step id="3" name="In Progress">
+      <meta name="jira.status.id">3</meta>
+      <actions>
+<common-action id="5" />
+<common-action id="2" />
+        <action id="301" name="Stop Progress">
+          <meta name="jira.i18n.title">stopprogress.title</meta>
+          <restrict-to>
+            <conditions>
+              <condition type="class">
+                <arg name="class.name">com.atlassian.jira.workflow.condition.AllowOnlyAssignee</arg>
+              </condition>
+            </conditions>
+          </restrict-to>
+          <results>
+            <unconditional-result old-status="Finished" status="Assigned" step="1">
+              <post-functions>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueFieldFunction</arg>
+                  <arg name="field.name">resolution</arg>
+                  <arg name="field.value"></arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="eventTypeId">12</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="4" name="Resolved">
+      <meta name="jira.status.id">5</meta>
+      <actions>
+<common-action id="3" />
+        <action id="701" name="Close Issue" view="commentassign">
+          <meta name="jira.i18n.title">closeissue.title</meta>
+          <meta name="jira.i18n.submit">closeissue.close</meta>
+          <meta name="jira.i18n.description">closeissue.desc</meta>
+          <meta name="jira.description">Closing an issue indicates there is no more work to be done on it, and it has been verified as complete.</meta>
+          <restrict-to>
+            <conditions>
+              <condition type="class">
+                <arg name="class.name">com.atlassian.jira.workflow.condition.PermissionCondition</arg>
+                <arg name="permission">Close Issue</arg>
+              </condition>
+            </conditions>
+          </restrict-to>
+          <results>
+            <unconditional-result old-status="Finished" status="Closed" step="6">
+              <post-functions>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.UpdateIssueStatusFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.misc.CreateCommentFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.GenerateChangeHistoryFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="class.name">com.atlassian.jira.workflow.function.issue.IssueReindexFunction</arg>
+                </function>
+                <function type="class">
+                  <arg name="eventTypeId">5</arg>
+                  <arg name="class.name">com.atlassian.jira.workflow.function.event.FireIssueEventFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="5" name="Reopened">
+      <meta name="jira.status.id">4</meta>
+      <actions>
+<common-action id="5" />
+<common-action id="2" />
+<common-action id="4" />
+      </actions>
+    </step>
+    <step id="6" name="Closed">
+      <meta name="jira.issue.editable">false</meta>
+      <meta name="jira.status.id">6</meta>
+      <actions>
+<common-action id="3" />
+      </actions>
+    </step>
+  </steps>
+</workflow>
+]]></descriptor>
+    </Workflow>
+    <WorkflowScheme id="10000" name="Test" description=""/>
+    <WorkflowSchemeEntity id="10000" scheme="10000" workflow="Copy of jira" issuetype="0"/>
+<!-- 
+
+
+___ Entities ______________________
+
+     Total                               : 440
+
+     ChangeGroup                         : 18
+     ChangeItem                          : 23
+     ConfigurationContext                : 1
+     EventType                           : 16
+     FieldConfigScheme                   : 1
+     FieldConfigSchemeIssueType          : 1
+     FieldConfiguration                  : 1
+     FieldScreen                         : 4
+     FieldScreenLayoutItem               : 18
+     FieldScreenScheme                   : 1
+     FieldScreenSchemeItem               : 1
+     FieldScreenTab                      : 4
+     GenericConfiguration                : 1
+     Issue                               : 3
+     IssueType                           : 4
+     IssueTypeScreenScheme               : 1
+     IssueTypeScreenSchemeEntity         : 1
+     ListenerConfig                      : 3
+     NodeAssociation                     : 4
+     Notification                        : 48
+     NotificationScheme                  : 1
+     OSCurrentStep                       : 3
+     OSCurrentStepPrev                   : 7
+     OSGroup                             : 3
+     OSHistoryStep                       : 8
+     OSHistoryStepPrev                   : 6
+     OSMembership                        : 5
+     OSPropertyEntry                     : 37
+     OSPropertyNumber                    : 6
+     OSPropertyString                    : 29
+     OSPropertyText                      : 2
+     OSUser                              : 2
+     OSWorkflowEntry                     : 4
+     OptionConfiguration                 : 4
+     PermissionScheme                    : 1
+     PluginVersion                       : 25
+     PortalPage                          : 1
+     PortletConfiguration                : 7
+     Priority                            : 5
+     Project                             : 1
+     ProjectRole                         : 3
+     ProjectRoleActor                    : 6
+     Resolution                          : 5
+     SchemePermissions                   : 36
+     SequenceValueItem                   : 38
+     ServiceConfig                       : 1
+     SharePermissions                    : 1
+     Status                              : 5
+     UpgradeHistory                      : 30
+     UserAssociation                     : 1
+     Workflow                            : 1
+     WorkflowScheme                      : 1
+     WorkflowSchemeEntity                : 1
+
+ -->
+</entity-engine-xml>

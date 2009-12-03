@@ -32,8 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import webwork.action.ActionContext;
-
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
