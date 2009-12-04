@@ -19,13 +19,27 @@
     <packaging>atlassian-plugin</packaging>
     <description>Custom field type that allows watchers to be modified on the creation and update of issue.</description>
 	<url></url>
+	
 	<scm>
 		<connection>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</connection>
 		<developerConnection>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</developerConnection>
 		<tag>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/tags</tag>
 		<url>https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</url>
 	</scm>
-
+	
+	<repositories>
+		<repository>
+			<id>atlassian-m1-repository</id>
+			<url>https://maven.atlassian.com/maven1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
     <properties>
         <atlassian.plugin.key>com.atlassian.jira.plugin.workflow.jira-watcher-field</atlassian.plugin.key>
 
