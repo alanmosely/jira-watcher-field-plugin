@@ -2,7 +2,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" plugins-version="2">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>com.atlassian.jira.plugins</groupId>
@@ -26,20 +26,7 @@
 		<tag>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/tags</tag>
 		<url>https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</url>
 	</scm>
-	
-	<repositories>
-		<repository>
-			<id>atlassian-m1-repository</id>
-			<url>https://maven.atlassian.com/maven1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	
+
     <properties>
         <atlassian.plugin.key>com.atlassian.jira.plugin.workflow.jira-watcher-field</atlassian.plugin.key>
 
