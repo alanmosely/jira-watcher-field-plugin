@@ -303,8 +303,6 @@ ___ Trusted Applications ________
     <OSPropertyEntry id="10011" entityName="jira.properties" entityId="1" propertyKey="jira.mode" type="5"/>
     <OSPropertyEntry id="10012" entityName="jira.properties" entityId="1" propertyKey="jira.option.indexing" type="1"/>
     <OSPropertyEntry id="10013" entityName="jira.properties" entityId="1" propertyKey="jira.path.index" type="5"/>
-    <OSPropertyEntry id="10014" entityName="jira.properties" entityId="1" propertyKey="License Message Text" type="6"/>
-    <OSPropertyEntry id="10015" entityName="jira.properties" entityId="1" propertyKey="License Hash 1 Text" type="6"/>
     <OSPropertyEntry id="10016" entityName="jira.properties" entityId="1" propertyKey="jira.edition" type="5"/>
     <OSPropertyEntry id="10017" entityName="OSUser" entityId="10000" propertyKey="email" type="5"/>
     <OSPropertyEntry id="10018" entityName="OSUser" entityId="10000" propertyKey="fullName" type="5"/>
@@ -365,8 +363,6 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OSPropertyString id="10042" value="10485760"/>
     <OSPropertyString id="10043" value="bob@home.com"/>
     <OSPropertyString id="10044" value="Bob"/>
-    <OSPropertyText id="10014" value="QmPXSmQrOPpOrNnRopTwPqoMPnQNQqMnqUVwXUNStwuWXrVqsUwuuWuTosstvsVwXnouvUUnoqorsuummmmmUUnoqorsuummmmmUUIXvW2XoeXjdpWGboplkXiWJbosboUUp"/>
-    <OSPropertyText id="10015" value="ORnRmcjvflsbHUrjrRidupWComuDSeQxdLAutpiOXqffDmmi2KUMAN6s&lt;IW8qZnI0RH82u2KjCrYVS4lTOcZ8kGCKRjk"/>
     <OSUser id="10000" name="admin" passwordHash="x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A=="/>
     <OSUser id="10010" name="bob" passwordHash="BBaia6VUM0KGsZVJGOyte6bDNXW0nfkV/zNntc737Nk7HwtDZjZmeyezYwEVQ5cfHIHDFR1e9yczUBwf8zw0rw=="/>
     <OSWorkflowEntry id="10000" name="jira" state="3"/>

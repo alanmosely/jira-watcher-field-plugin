@@ -2,7 +2,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" plugins-version="2">
 
     <parent>
         <groupId>com.atlassian.jira.plugins</groupId>
@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.atlassian.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>
@@ -28,10 +28,20 @@
 
     <properties>
         <atlassian.plugin.key>com.atlassian.jira.plugin.workflow.jira-watcher-field</atlassian.plugin.key>
-        <atlassian.product.version>3.11</atlassian.product.version>
-        <atlassian.product.test-lib.version>3.11</atlassian.product.test-lib.version>
-		<atlassian.plugin.application.version.min>3.11</atlassian.plugin.application.version.min>
+
+        <atlassian.product.version>3.12</atlassian.product.version>
+        <atlassian.product.data.version>3.12</atlassian.product.data.version>
+
+        <atlassian.product.test-lib.version>3.12</atlassian.product.test-lib.version>
+		<atlassian.plugin.application.version.min>3.12</atlassian.plugin.application.version.min>
 		<atlassian.plugin.application.version.max>3.13.5</atlassian.plugin.application.version.max>
+
+		<downloadSources>true</downloadSources>
+		<downloadJavadocs>true</downloadJavadocs>
+
+		<atlassian.pdk.server.url>http://localhost:1990/jira/</atlassian.pdk.server.url>
+		<atlassian.pdk.server.username>admin</atlassian.pdk.server.username>
+		<atlassian.pdk.server.password>admin</atlassian.pdk.server.password>
     </properties>
 
 	<developers>
