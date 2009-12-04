@@ -350,7 +350,7 @@ ___ Trusted Applications ________
     <OSPropertyString id="10018" value="Admin"/>
     <OSPropertyString id="10019" value="true"/>
     <OSPropertyString id="10025" value="show"/>
-    <OSPropertyString id="10026" value="360"/>
+    <OSPropertyString id="10026" value="105"/>
     <OSPropertyString id="10027" value="For example operating system, software platform and/or hardware specifications (include as appropriate for the issue)."/>
     <OSPropertyString id="10028">
         <value><![CDATA[An estimate of how much work remains until this issue will be resolved.<br>
@@ -378,31 +378,6 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OptionConfiguration id="10002" fieldid="issuetype" optionid="3" fieldconfig="10000" sequence="2"/>
     <OptionConfiguration id="10003" fieldid="issuetype" optionid="4" fieldconfig="10000" sequence="3"/>
     <PermissionScheme id="0" name="Default Permission Scheme" description="This is the default Permission Scheme. Any new projects that are created will be assigned this scheme"/>
-    <PluginVersion id="10000" name="Workflow Plugin" key="com.atlassian.jira.plugin.system.workflow" version="1.0" created="2009-11-25 15:41:39.092"/>
-    <PluginVersion id="10001" name="Issue Operations Plugin" key="com.atlassian.jira.plugin.system.issueoperations" version="1.0" created="2009-11-25 15:41:39.103"/>
-    <PluginVersion id="10002" name="Custom Field Types &amp; Searchers" key="com.atlassian.jira.plugin.system.customfieldtypes" version="1.0" created="2009-11-25 15:41:39.103"/>
-    <PluginVersion id="10003" name="Portlets Plugin" key="com.atlassian.jira.plugin.system.portlets" version="1.0" created="2009-11-25 15:41:39.103"/>
-    <PluginVersion id="10004" name="Wiki Renderer Macros Plugin" key="com.atlassian.jira.plugin.system.renderers.wiki.macros" version="1.0" created="2009-11-25 15:41:39.104"/>
-    <PluginVersion id="10005" name="User Format" key="jira.user.format" version="1.0" created="2009-11-25 15:41:39.104"/>
-    <PluginVersion id="10006" name="View Project Operations Sections" key="jira.webfragments.view.project.operations" version="1.0" created="2009-11-25 15:41:39.104"/>
-    <PluginVersion id="10007" name="JIRA Watcher Field" key="com.atlassian.jira.issue.customfields.impl.jira-watcher-field" version="1.1.0" created="2009-11-25 15:41:39.105"/>
-    <PluginVersion id="10008" name="Top Navigation Bar" key="jira.top.navigation.bar" version="1.0" created="2009-11-25 15:41:39.105"/>
-    <PluginVersion id="10009" name="Project Role Actors Plugin" key="com.atlassian.jira.plugin.system.projectroleactors" version="1.0" created="2009-11-25 15:41:39.105"/>
-    <PluginVersion id="10010" name="Renderer Component Factories Plugin" key="com.atlassian.jira.plugin.wiki.renderercomponentfactories" version="1.0" created="2009-11-25 15:41:39.106"/>
-    <PluginVersion id="10011" name="Web Resources Plugin" key="jira.webresources" version="1.0" created="2009-11-25 15:41:39.107"/>
-    <PluginVersion id="10012" name="JIRA Footer" key="jira.footer" version="1.0" created="2009-11-25 15:41:39.108"/>
-    <PluginVersion id="10013" name="Preset Filters Sections" key="jira.webfragments.preset.filters" version="1.0" created="2009-11-25 15:41:39.111"/>
-    <PluginVersion id="10014" name="Admin Menu Sections" key="jira.webfragments.admin" version="1.0" created="2009-11-25 15:41:39.111"/>
-    <PluginVersion id="10015" name="User Profile Links" key="jira.webfragments.user.profile.links" version="1.0" created="2009-11-25 15:41:39.111"/>
-    <PluginVersion id="10016" name="Reports Plugin" key="com.atlassian.jira.plugin.system.reports" version="1.0" created="2009-11-25 15:41:39.112"/>
-    <PluginVersion id="10017" name="Webwork Plugin" key="com.atlassian.jira.plugin.system.webwork1" version="1.0" created="2009-11-25 15:41:39.112"/>
-    <PluginVersion id="10018" name="User Navigation Bar Sections" key="jira.webfragments.user.navigation.bar" version="1.0" created="2009-11-25 15:41:39.112"/>
-    <PluginVersion id="10019" name="Issue Tab Panels Plugin" key="com.atlassian.jira.plugin.system.issuetabpanels" version="1.0" created="2009-11-25 15:41:39.113"/>
-    <PluginVersion id="10020" name="Content Link Resolvers Plugin" key="com.atlassian.jira.plugin.wiki.contentlinkresolvers" version="1.0" created="2009-11-25 15:41:39.113"/>
-    <PluginVersion id="10021" name="Browse Project Operations Sections" key="jira.webfragments.browse.project.operations" version="1.0" created="2009-11-25 15:41:39.115"/>
-    <PluginVersion id="10022" name="Issue Views Plugin" key="jira.issueviews" version="1.0" created="2009-11-25 15:41:39.116"/>
-    <PluginVersion id="10023" name="Renderer Plugin" key="com.atlassian.jira.plugin.system.jirarenderers" version="1.0" created="2009-11-25 15:41:39.116"/>
-    <PluginVersion id="10024" name="Project Panels Plugin" key="com.atlassian.jira.plugin.system.project" version="1.0" created="2009-11-25 15:41:39.117"/>
     <PortalPage id="10000" pagename="System Dashboard" sequence="0" favCount="0"/>
     <PortletConfiguration id="10000" portalpage="10000" portletId="INTRODUCTION" columnNumber="0" position="0"/>
     <PortletConfiguration id="10001" portalpage="10000" portletId="PROJECTS" columnNumber="0" position="1"/>
@@ -491,7 +466,6 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="OSUser" seqId="10020"/>
     <SequenceValueItem seqName="OSWorkflowEntry" seqId="10040"/>
     <SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
-    <SequenceValueItem seqName="PluginVersion" seqId="10030"/>
     <SequenceValueItem seqName="PortalPage" seqId="10010"/>
     <SequenceValueItem seqName="PortletConfiguration" seqId="10010"/>
     <SequenceValueItem seqName="Project" seqId="10010"/>
@@ -499,13 +473,11 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="ProjectRoleActor" seqId="10010"/>
     <SequenceValueItem seqName="SchemePermissions" seqId="10050"/>
     <SequenceValueItem seqName="ServiceConfig" seqId="10010"/>
-    <SequenceValueItem seqName="SharePermissions" seqId="10010"/>
     <SequenceValueItem seqName="UpgradeHistory" seqId="10040"/>
     <SequenceValueItem seqName="Workflow" seqId="10010"/>
     <SequenceValueItem seqName="WorkflowScheme" seqId="10010"/>
     <SequenceValueItem seqName="WorkflowSchemeEntity" seqId="10010"/>
     <ServiceConfig id="10000" time="60000" clazz="com.atlassian.jira.service.services.mail.MailQueueService" name="Mail Queue Service"/>
-    <SharePermissions id="10000" entityId="10000" entityType="PortalPage" type="global"/>
     <Status id="1" sequence="1" name="Open" description="The issue is open and ready for the assignee to start work on it." iconurl="/images/icons/status_open.gif"/>
     <Status id="3" sequence="3" name="In Progress" description="This issue is being actively worked on at the moment by the assignee." iconurl="/images/icons/status_inprogress.gif"/>
     <Status id="4" sequence="4" name="Reopened" description="This issue was once resolved, but the resolution was deemed incorrect. From here issues are either marked assigned or resolved." iconurl="/images/icons/status_reopened.gif"/>

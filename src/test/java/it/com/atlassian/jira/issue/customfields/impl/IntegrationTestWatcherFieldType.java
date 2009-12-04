@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.Vector;
 
+import com.atlassian.cargotestrunner.EnvironmentData;
 import com.atlassian.jira.webtests.JIRAWebTest;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -68,9 +69,8 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         setFormElement("customfield_"+FIELD_ID, "admin");
         submit();
 
-        // Check that the watchers field is shown on view and the watchers are displayed
-        assertElementPresent("rowForcustomfield_"+FIELD_ID);
-        assertElementPresent("multiuser_cf_admin");
+        // Check that the watchers field is shown on view
+        assertTextPresent("My Watchers:");
 
         // Check that the users were actually added as watchers
         clickLink("view_watchers");
@@ -124,17 +124,16 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         
         // Check adding a default watcher
         configureDefaultCustomFieldValue(FIELD_ID, "bob");
-        assertLinkPresent("multiuser_cf_bob");
+        assertLinkWithTextExists("Bob");
         
-        // Check modifying the default watcher
-        configureDefaultCustomFieldValue(FIELD_ID, "admin");
-        assertLinkPresent("multiuser_cf_admin");
-        assertLinkNotPresent("multiuser_cf_bob");
-        
-        // Check adding multiple watchers as default
-        configureDefaultCustomFieldValue(FIELD_ID, "admin, bob");
-        assertLinkPresent("multiuser_cf_admin");
-        assertLinkPresent("multiuser_cf_bob");
+        // Create a new issue with the default watchers
+        createIssueStep1("Test", "Bug");
+        setFormElement("summary", "Test Issue");
+        submit();
+
+        // Check that the users were actually added as watchers
+        clickLink("view_watchers");
+        assertFormElementPresent("stopwatch_bob");
     }
     
     /**
