@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.atlassian.jira.plugins</groupId>
         <artifactId>jira-plugin-base</artifactId>
-        <version>15</version>
+        <version>18</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -28,13 +28,13 @@
 	</scm>
 
     <properties>
-        <atlassian.plugin.key>com.atlassian.jira.plugin.workflow.jira-watcher-field</atlassian.plugin.key>
+        <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
 
-        <atlassian.product.version>3.12</atlassian.product.version>
-        <atlassian.product.data.version>3.12</atlassian.product.data.version>
+        <atlassian.product.version>3.13</atlassian.product.version>
+        <atlassian.product.data.version>3.13</atlassian.product.data.version>
 
-        <atlassian.product.test-lib.version>3.12</atlassian.product.test-lib.version>
-		<atlassian.plugin.application.version.min>3.12</atlassian.plugin.application.version.min>
+        <atlassian.product.test-lib.version>3.13</atlassian.product.test-lib.version>
+		<atlassian.plugin.application.version.min>3.11</atlassian.plugin.application.version.min>
 		<atlassian.plugin.application.version.max>3.13.5</atlassian.plugin.application.version.max>
 
 		<downloadSources>true</downloadSources>
