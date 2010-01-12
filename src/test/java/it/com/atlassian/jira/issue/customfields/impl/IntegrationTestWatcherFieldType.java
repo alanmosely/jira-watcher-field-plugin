@@ -1,13 +1,6 @@
 package it.com.atlassian.jira.issue.customfields.impl;
 
-import java.lang.reflect.Array;
-import java.util.Map;
-import java.util.Vector;
-
-import com.atlassian.cargotestrunner.EnvironmentData;
 import com.atlassian.jira.webtests.JIRAWebTest;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * Class used for integration testing for the JIRA Watcher Field Plugin.

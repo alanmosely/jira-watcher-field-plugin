@@ -18,7 +18,7 @@ import com.atlassian.jira.issue.vote.VoteManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.trackback.TrackbackManager;
-import com.atlassian.plugin.PluginManager;
+import com.atlassian.plugin.PluginAccessor;
 
 /**
  * Used to reindex the issue if the user select to watch the issue via that quick link in the issue.
@@ -57,7 +57,7 @@ public class ViewIssueReindex extends ViewIssue {
             IssueLinkManager issueLinkManager,
             VoteManager voteManager,
             WatcherManager watcherManager,
-            PluginManager pluginManager,
+            PluginAccessor pluginAccessor,
             FieldManager fieldManager,
             FieldScreenRendererFactory fieldScreenRendererFactory,
             FieldLayoutManager fieldLayoutManager,
@@ -68,7 +68,7 @@ public class ViewIssueReindex extends ViewIssue {
             AttachmentService attachmentService,
             AggregateTimeTrackingCalculatorFactory aggregateTimeTrackingCalculatorFactory) {
         super(trackbackManager, thumbnailManager, subTaskManager,
-                issueLinkManager, voteManager, watcherManager, pluginManager,
+                issueLinkManager, voteManager, watcherManager, pluginAccessor,
                 fieldManager, fieldScreenRendererFactory, fieldLayoutManager,
                 rendererManager, commentManager, projectRoleManager,
                 commentService, attachmentService,
