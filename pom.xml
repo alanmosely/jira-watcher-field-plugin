@@ -3,17 +3,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <parent>
         <groupId>com.atlassian.jira.plugins</groupId>
         <artifactId>jira-plugin-base</artifactId>
         <version>18</version>
     </parent>
-
+    
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.atlassian.jira.issue.customfields.impl</groupId>
+    <groupId>com.burningcode.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>1.2.0</version>
+    <version>2.0</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>
@@ -21,28 +20,18 @@
 	<url></url>
 	
 	<scm>
-		<connection>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</connection>
-		<developerConnection>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</developerConnection>
-		<tag>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/tags</tag>
-		<url>https://svn.atlassian.com/svn/public/contrib/jira/jira-watcher-field/trunk</url>
+		<connection>scm:svn:https://studio.plugins.atlassian.com/svn/JWFP/trunk</connection>
+		<developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/JWFP/trunk</developerConnection>
+		<tag>scm:svn:https://studio.plugins.atlassian.com/svn/JWFP/tags</tag>
+		<url>https://studio.plugins.atlassian.com/svn/JWFP/trunk</url>
 	</scm>
 
     <properties>
         <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
 
-        <atlassian.product.version>3.13</atlassian.product.version>
-        <atlassian.product.data.version>3.13</atlassian.product.data.version>
-
-        <atlassian.product.test-lib.version>3.13</atlassian.product.test-lib.version>
-		<atlassian.plugin.application.version.min>3.11</atlassian.plugin.application.version.min>
-		<atlassian.plugin.application.version.max>3.13.5</atlassian.plugin.application.version.max>
-
-		<downloadSources>true</downloadSources>
-		<downloadJavadocs>true</downloadJavadocs>
-
-		<atlassian.pdk.server.url>http://localhost:1990/jira/</atlassian.pdk.server.url>
-		<atlassian.pdk.server.username>admin</atlassian.pdk.server.username>
-		<atlassian.pdk.server.password>admin</atlassian.pdk.server.password>
+        <atlassian.product.version>4.0</atlassian.product.version>
+        <atlassian.product.data.version>4.0</atlassian.product.data.version>
+        <atlassian.product.test-lib.version>4.0</atlassian.product.test-lib.version>
     </properties>
 
 	<developers>
@@ -52,4 +41,39 @@
 			<url>www.burningcode.com</url>
 		</developer>
 	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.atlassian.maven.plugins</groupId>
+				<artifactId>maven-jira-plugin</artifactId>
+				<version>3.0.4</version>
+				<extensions>true</extensions>
+				<configuration>
+					<productVersion>${atlassian.product.version}</productVersion>
+					<productDataVersion>${atlassian.product.version}</productDataVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>atlassian-jira</artifactId>
+			<version>${atlassian.product.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-func-tests</artifactId>
+			<version>${atlassian.product.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

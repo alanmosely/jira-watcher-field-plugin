@@ -1,4 +1,4 @@
-package com.atlassian.jira.web.action.issue;
+package com.burningcode.jira.web.action.issue;
 
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.issue.attachment.AttachmentService;
@@ -12,13 +12,15 @@ import com.atlassian.jira.issue.fields.screen.FieldScreenRendererFactory;
 import com.atlassian.jira.issue.index.IndexException;
 import com.atlassian.jira.issue.index.IssueIndexManager;
 import com.atlassian.jira.issue.link.IssueLinkManager;
+import com.atlassian.jira.issue.pager.PagerManager;
 import com.atlassian.jira.issue.thumbnail.ThumbnailManager;
 import com.atlassian.jira.issue.util.AggregateTimeTrackingCalculatorFactory;
 import com.atlassian.jira.issue.vote.VoteManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.trackback.TrackbackManager;
-import com.atlassian.plugin.PluginManager;
+import com.atlassian.jira.web.action.issue.ViewIssue;
+import com.atlassian.plugin.PluginAccessor;
 
 /**
  * Used to reindex the issue if the user select to watch the issue via that quick link in the issue.
@@ -27,7 +29,7 @@ import com.atlassian.plugin.PluginManager;
  */
 public class ViewIssueReindex extends ViewIssue {
 
-    private static final long serialVersionUID = 6593985225886472089L;
+	private static final long serialVersionUID = 6593985225886472089L;
     private final IssueIndexManager issueIndexManager;
     private boolean isReindexIssue;
 
@@ -51,32 +53,32 @@ public class ViewIssueReindex extends ViewIssue {
      * @param aggregateTimeTrackingCalculatorFactory
      */
     public ViewIssueReindex(
-            TrackbackManager trackbackManager,
-            ThumbnailManager thumbnailManager,
-            SubTaskManager subTaskManager,
-            IssueLinkManager issueLinkManager,
-            VoteManager voteManager,
-            WatcherManager watcherManager,
-            PluginManager pluginManager,
-            FieldManager fieldManager,
-            FieldScreenRendererFactory fieldScreenRendererFactory,
-            FieldLayoutManager fieldLayoutManager,
-            RendererManager rendererManager,
-            CommentManager commentManager,
-            ProjectRoleManager projectRoleManager,
-            CommentService commentService,
-            AttachmentService attachmentService,
-            AggregateTimeTrackingCalculatorFactory aggregateTimeTrackingCalculatorFactory) {
-        super(trackbackManager, thumbnailManager, subTaskManager,
-                issueLinkManager, voteManager, watcherManager, pluginManager,
-                fieldManager, fieldScreenRendererFactory, fieldLayoutManager,
-                rendererManager, commentManager, projectRoleManager,
-                commentService, attachmentService,
-                aggregateTimeTrackingCalculatorFactory);
+			TrackbackManager trackbackManager,
+			ThumbnailManager thumbnailManager,
+			SubTaskManager subTaskManager,
+			IssueLinkManager issueLinkManager,
+			VoteManager voteManager,
+			WatcherManager watcherManager,
+			PluginAccessor pluginAccessor,
+			FieldManager fieldManager,
+			FieldScreenRendererFactory fieldScreenRendererFactory,
+			FieldLayoutManager fieldLayoutManager,
+			RendererManager rendererManager,
+			CommentManager commentManager,
+			ProjectRoleManager projectRoleManager,
+			CommentService commentService,
+			AttachmentService attachmentService,
+			AggregateTimeTrackingCalculatorFactory aggregateTimeTrackingCalculatorFactory,
+			PagerManager pagerManager) {
+		super(trackbackManager, thumbnailManager, subTaskManager, issueLinkManager,
+				voteManager, watcherManager, pluginAccessor, fieldManager,
+				fieldScreenRendererFactory, fieldLayoutManager, rendererManager,
+				commentManager, projectRoleManager, commentService, attachmentService,
+				aggregateTimeTrackingCalculatorFactory, pagerManager);
 
         issueIndexManager = ComponentManager.getInstance().getIndexManager();
         isReindexIssue = false;
-    }
+	}
 
     /**
      * If the current user is set to watch this issue, reindex the issue after adding.

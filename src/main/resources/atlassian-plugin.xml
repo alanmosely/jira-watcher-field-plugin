@@ -15,11 +15,11 @@
     	<resource
 			type="i18n"
 			name="i18n"
-			location="com.atlassian.jira.issue.customfields.impl.WatcherFieldType"
+			location="com.burningcode.jira.issue.customfields.impl.WatcherFieldType"
 			/>
 		<actions>
 			<!-- Copied and modified from actions.xml -->
-		    <action name="com.atlassian.jira.web.action.issue.ManageWatchersReindex" alias="ManageWatchers">
+		    <action name="com.burningcode.jira.web.action.issue.ManageWatchersReindex" alias="ManageWatchers">
 		        <view name="success">/secure/views/issue/managewatchers.jsp</view>
 		        <view name="input">/secure/views/issue/managewatchers.jsp</view>
 		        <view name="error">/secure/views/issue/managewatchers.jsp</view>
@@ -27,7 +27,7 @@
 		        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
 		    </action>
 		    <!-- Copied and modified from actions.xml -->
-		    <action name="com.atlassian.jira.web.action.issue.ViewIssueReindex" alias="ViewIssue">
+		    <action name="com.burningcode.jira.web.action.issue.ViewIssueReindex" alias="ViewIssue">
 		        <view name="success">/secure/views/issue/viewissue.jsp</view>
 		        <view name="issuenotfound">/secure/views/issuenotfound.jsp</view>
 		        <view name="permissionviolation">/secure/views/permissionviolation.jsp</view>
@@ -41,12 +41,12 @@
 	<customfield-type
 			key="watcherfieldtype"
 			i18n-name-key="watcherfield.type.name"
-			class="com.atlassian.jira.issue.customfields.impl.WatcherFieldType">
+			class="com.burningcode.jira.issue.customfields.impl.WatcherFieldType">
 		<description key="watcherfield.type.desc" />
 		<resource
 			type="i18n"
 			name="i18n"
-			location="com.atlassian.jira.issue.customfields.impl.WatcherFieldType"
+			location="com.burningcode.jira.issue.customfields.impl.WatcherFieldType"
 			/>
 		<resource
 			type="velocity"
@@ -65,7 +65,7 @@
     	<resource
 			type="i18n"
 			name="i18n"
-			location="com.atlassian.jira.issue.customfields.impl.WatcherFieldType"
+			location="com.burningcode.jira.issue.customfields.impl.WatcherFieldType"
 			/>
 	    <resource
 	    	type="velocity"

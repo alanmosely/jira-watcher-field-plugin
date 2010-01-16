@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.atlassian.jira.web.action.issue;
+package com.burningcode.jira.web.action.issue;
 
 import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
@@ -34,6 +34,7 @@ import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.index.IndexException;
 import com.atlassian.jira.issue.index.IssueIndexManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
+import com.atlassian.jira.web.action.issue.ManageWatchers;
 import com.atlassian.velocity.VelocityManager;
 import com.opensymphony.user.EntityNotFoundException;
 

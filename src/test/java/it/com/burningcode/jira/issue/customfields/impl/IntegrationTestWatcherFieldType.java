@@ -1,13 +1,6 @@
-package it.com.atlassian.jira.issue.customfields.impl;
+package it.com.burningcode.jira.issue.customfields.impl;
 
-import java.lang.reflect.Array;
-import java.util.Map;
-import java.util.Vector;
-
-import com.atlassian.cargotestrunner.EnvironmentData;
 import com.atlassian.jira.webtests.JIRAWebTest;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * Class used for integration testing for the JIRA Watcher Field Plugin.
@@ -17,8 +10,8 @@ import edu.emory.mathcs.backport.java.util.Arrays;
  * @author Ray Barham
  */
 public class IntegrationTestWatcherFieldType extends JIRAWebTest {
-    private static String FIELD_TYPE_KEY = "com.atlassian.jira.issue.customfields.impl.jira-watcher-field:watcherfieldtype";
-    private static String FIELD_TYPE_SEARCH_KEY = "com.atlassian.jira.issue.customfields.impl.jira-watcher-field:watcherfieldsearcher";
+    private static String FIELD_TYPE_KEY = "com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldtype";
+	//private static String FIELD_TYPE_SEARCH_KEY = "com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldsearcher";
     private static String FIELD_ID = "10000";
     
     /**
@@ -55,8 +48,9 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
      * Test deleting a watcher field from JIRA.
      */
     public void testDeleteWatcherField() {
-        deleteCustomField(FIELD_ID) ;
-        assertEquals(false, customFieldExists(FIELD_ID)); 
+    	assertEquals(true, customFieldExists("My Watchers"));
+        deleteCustomField(FIELD_ID);
+        assertEquals(false, customFieldExists("My Watchers")); 
     }
     
     /**
@@ -159,7 +153,8 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
     /**
      * Checks that change history is effected properly.  See issue JWF-5.
      */
-    public void testChangeHistory() {
+    @SuppressWarnings("deprecation")
+	public void testChangeHistory() {
         // Check change history when editing watchers
         testAddWatcherOnIssueEdit();
         assertLastChangeHistoryIs("TST-1", "Watchers", "None", "Admin, Bob");

@@ -147,7 +147,7 @@ ___ Trusted Applications ________
     <ChangeItem id="10030" group="10030" fieldtype="jira" field="status" oldvalue="3" oldstring="In Progress" newvalue="1" newstring="Open"/>
     <ConfigurationContext id="10000" key="issuetype" fieldconfigscheme="10000"/>
     <ConfigurationContext id="10001" key="customfield_10000" fieldconfigscheme="10001"/>
-    <CustomField id="10000" customfieldtypekey="com.atlassian.jira.issue.customfields.impl.jira-watcher-field:watcherfieldtype" customfieldsearcherkey="com.atlassian.jira.issue.customfields.impl.jira-watcher-field:watcherfieldsearcher" name="My Watchers"/>
+    <CustomField id="10000" customfieldtypekey="com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldtype" customfieldsearcherkey="com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldsearcher" name="My Watchers"/>
     <EventType id="1" name="Issue Created" description="This is the &apos;Issue Created&apos; event type." type="jira.system.event.type"/>
     <EventType id="2" name="Issue Updated" description="This is the &apos;Issue Updated&apos; event type." type="jira.system.event.type"/>
     <EventType id="3" name="Issue Assigned" description="This is the &apos;Issue Assigned&apos; event type." type="jira.system.event.type"/>
