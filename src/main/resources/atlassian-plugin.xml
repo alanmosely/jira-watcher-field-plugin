@@ -1,22 +1,18 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}">
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
-        <!-- TODO: Add vendor details -->
-        <!--
-        <vendor name="Example Company" url="http://www.example.com"/>
-        -->
     </plugin-info>
+    <resource
+		type="i18n"
+		name="i18n"
+		location="WatcherFieldType"
+		/>
     <webwork1
     		key="managewatchersreindex"
     		i18n-name-key="watcherfield.manager.name"
     	>
     	<description key="watcherfield.manager.desc" />
-    	<resource
-			type="i18n"
-			name="i18n"
-			location="com.burningcode.jira.issue.customfields.impl.WatcherFieldType"
-			/>
 		<actions>
 			<!-- Copied and modified from actions.xml -->
 		    <action name="com.burningcode.jira.web.action.issue.ManageWatchersReindex" alias="ManageWatchers">
@@ -26,16 +22,6 @@
 		        <view name="watchingnotenabled">/secure/views/issue/managewatchers.jsp</view>
 		        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
 		    </action>
-		    <!-- Copied and modified from actions.xml -->
-		    <action name="com.burningcode.jira.web.action.issue.ViewIssueReindex" alias="ViewIssue">
-		        <view name="success">/secure/views/issue/viewissue.jsp</view>
-		        <view name="issuenotfound">/secure/views/issuenotfound.jsp</view>
-		        <view name="permissionviolation">/secure/views/permissionviolation.jsp</view>
-		
-		        <command name="moveIssueLink" alias="MoveIssueLink">
-		            <view name="error">/secure/views/issue/viewissue.jsp</view>
-		        </command>
-		    </action>
 	    </actions>
     </webwork1>
 	<customfield-type
@@ -43,11 +29,6 @@
 			i18n-name-key="watcherfield.type.name"
 			class="com.burningcode.jira.issue.customfields.impl.WatcherFieldType">
 		<description key="watcherfield.type.desc" />
-		<resource
-			type="i18n"
-			name="i18n"
-			location="com.burningcode.jira.issue.customfields.impl.WatcherFieldType"
-			/>
 		<resource
 			type="velocity"
 			name="view"
@@ -57,16 +38,12 @@
 			name="edit"
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
+	<!-- 
 	<customfield-searcher
 			key="watcherfieldsearcher"
 		    i18n-name-key="watcherfield.searcher.name"
 		    class="com.atlassian.jira.issue.customfields.searchers.UserPickerSearcher">
 	    <description key="watcherfield.searcher.desc" />
-    	<resource
-			type="i18n"
-			name="i18n"
-			location="com.burningcode.jira.issue.customfields.impl.WatcherFieldType"
-			/>
 	    <resource
 	    	type="velocity"
 	    	name="search"
@@ -82,4 +59,19 @@
 	    	key="watcherfieldtype"
 	    	/>
 	</customfield-searcher>
+	 -->
+	<web-resource 
+			key="watcherfieldjs"
+			i18n-name-key="watcherfield.js.name"
+		>
+		<description key="watcherfield.js.desc" />
+		<resource
+			name="watcherfield.js"
+			type="download"
+			location="js/watcherfield.js"
+			/>
+	</web-resource>
+	<rest key="watcherfieldRest" path="/watcherfield" version="1.0">
+		<description key="watcherfield.rest.desc" />
+	</rest>
 </atlassian-plugin>

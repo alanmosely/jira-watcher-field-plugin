@@ -50,6 +50,7 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.web.FieldVisibilityManager;
+import com.atlassian.plugin.webresource.WebResourceManager;
 import com.opensymphony.user.User;
 
 /**
@@ -206,6 +207,9 @@ public class WatcherFieldType extends MultiUserCFType {
      */
     public Map<String, Object> getVelocityParameters(Issue issue, CustomField field,
             FieldLayoutItem fieldLayoutItem) {
+
+    	WebResourceManager webResourceManager = ComponentManager.getInstance().getWebResourceManager();
+    	webResourceManager.requireResource("com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldjs");
 
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
         params.put("hasPermission", new Boolean(false));
