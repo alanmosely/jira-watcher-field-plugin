@@ -1,47 +1,58 @@
 package com.burningcode.jira.rest;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import com.atlassian.jira.issue.MutableIssue;
-import com.opensymphony.user.User;
-
-@XmlRootElement(name = "issueInfo")
+@XmlRootElement(name="watcherInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Watchers {
 	@XmlAttribute
-	private String issueKey;
+	private Long issueId;
 	
-	@XmlElement(name="watchers")
-	private String[] watcherList;
+	@XmlElements({
+		@XmlElement(name="fieldIds", type=String.class)
+	})
+	private List<String> fieldIds;
+
+	@XmlElement(name="watchers", type=Watcher.class)
+	private List<Watcher> watchers;
 	
 	public Watchers(){
 	}
 	
-	public Watchers(MutableIssue issue, Collection<User> watcherList){
-		ArrayList<String> watchers = new ArrayList<String>();
-		for(User user : watcherList){
-			watchers.add(user.getName());
-		}
-		setWatchers(watchers.toArray(new String[watchers.size()]));
-		setIssueKey(issue.getKey());
+	public Watchers(Long issueId, List<Watcher> watchers, List<String> fieldIds){		
+		setWatchers(watchers);
+		setIssueId(issueId);
+		setWatcherFieldIds(fieldIds);
 	}
 
-	public String getIssueKey(){
-		return issueKey;
+	public Long getIssueId(){
+		return issueId;
 	}
 	
-	public void setIssueKey(String issueKey){
-		this.issueKey = issueKey;
+	public void setIssueId(Long issueId){
+		this.issueId = issueId;
 	}
 	
-	public String[] getWatchers(){
-		return watcherList;
+	public List<Watcher> getWatchers(){
+		return watchers;
 	}
 	
-	public void setWatchers(String[] watchers){
-		this.watcherList = watchers;
+	public void setWatchers(List<Watcher> watchers){
+		this.watchers = watchers;
+	}
+	
+	public List<String> getWatcherfieldIds(){
+		return fieldIds;
+	}
+	
+	public void setWatcherFieldIds(List<String> fieldIds){
+		this.fieldIds = fieldIds;
 	}
 }
