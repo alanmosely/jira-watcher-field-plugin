@@ -1,12 +1,21 @@
 package it.com.burningcode.jira.issue.customfields.impl;
 
+import java.util.List;
+
+import org.apache.oro.text.regex.MalformedPatternException;
+
 import com.atlassian.jira.webtests.JIRAWebTest;
+import com.burningcode.jira.rest.Watcher;
+import com.burningcode.jira.rest.Watchers;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * Class used for integration testing for the JIRA Watcher Field Plugin.
  * 
  * TODO Get integration testing on bulk change.
  * TODO Check issue security
+ * TODO Write test to check for issue JWFP-9
  * @author Ray Barham
  */
 public class IntegrationTestWatcherFieldType extends JIRAWebTest {
@@ -40,7 +49,7 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         clickButton("nextButton");
         setFormElement("fieldName", "Watchers");
         clickButton("nextButton");
-        clickButton("Update");
+        clickButton("update_submit");
         assertEquals(true, customFieldExists(FIELD_ID));
     }
     
@@ -77,9 +86,9 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
     public void testAddWatcherOnIssueEdit() {
         // Add new watchers via edit.
         gotoIssue("TST-1");
-        clickLink("edit_issue");
+        clickLink("editIssue");
         setFormElement("customfield_"+FIELD_ID, "admin, bob");
-        clickButton("Update");
+        clickButton("update_submit");
         
         // Check that the users were actually added as watchers
         clickLink("view_watchers");
@@ -102,7 +111,7 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         gotoPage("EditIssue!default.jspa?id=10010");
         assertTextInElement("customfield_"+FIELD_ID, "bob");
         setFormElement("customfield_"+FIELD_ID, "admin");
-        clickButton("Update");
+        clickButton("update_submit");
         
         // Check for the updated watchers
         clickLink("view_watchers");
@@ -162,7 +171,7 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         // Check change history doesn't change when not editing watchers
         gotoPage("EditIssue!default.jspa?id=10000");
         setFormElement("description", "HAZZAH!");
-        clickButton("Update");
+        clickButton("update_submit");
         assertTextPresent("HAZZAH!");
         assertLastChangeNotMadeToField("TST-1", "Watchers");
     }
@@ -176,7 +185,7 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         // Execute the transition.
         clickLinkWithText("Start Progress");
         setFormElement("customfield_"+FIELD_ID, "admin, bob");
-        clickButton("Start Progress");
+        clickButtonWithValue("Start Progress");
         
         // Check that the users were actually added as watchers
         clickLink("view_watchers");
@@ -190,7 +199,7 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         // Execute the transition.
         clickLinkWithText("Start Progress");
         setFormElement("customfield_"+FIELD_ID, "");
-        clickButton("Start Progress");
+        clickButtonWithValue("Start Progress");
         
         // Check that the users were actually added as watchers
         clickLink("view_watchers");
@@ -198,6 +207,84 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
         assertFormElementNotPresent("stopwatch_bob");
 
     }
+    
+    public void testRestGetWatchers() throws MalformedPatternException{
+    	gotoIssue("TST-1");
+    	clickLink("view_watchers");
+    	clickLinkWithText("Watch this issue");
+    	assertFormElementPresent("stopwatch_admin");
+    	
+    	String issueId = getIssueIdWithIssueKey("TST-1");
+    	String atlToken = page.getXsrfToken();
+    	
+    	log("Issue ID: " + issueId);
+    	log("Atl Token: " + atlToken);
+    	
+    	Client client = Client.create();
+    	String url = environmentData.getBaseUrl().toExternalForm() + "/rest/watcherfield/latest/watchers?atl_token=" + atlToken + "&issueId=" + issueId;
+    	
+    	log("Url Used: " + url);
+    	
+    	WebResource resource = client.resource(url);
+    	Watchers watchers = resource.get(Watchers.class);
+    	List<Watcher> watcherList = watchers.getWatchers();
+    	
+    	// Check that the watcherList returned contains watchers.
+    	assert watcherList.size() > 0;
+
+    	boolean isWatcherFound = false;
+    	for(Watcher watcher : watcherList){
+    		log("Found Watcher: " + watcher.getUsername());
+    		if(watcher.getUsername().compareToIgnoreCase("admin") == 0){
+    			isWatcherFound = true;
+    			break;
+    		}
+    	}
+    	assertTrue(isWatcherFound);
+    }
+    
+    /**
+     * Verifies that JWFP-13 is resolved
+     * 
+     * @throws InterruptedException
+     * @throws MessagingException
+     */
+    /* TODO Create test to test resolve issue JWFP-13
+	public void testCreateIssueViaEmail() throws InterruptedException, MessagingException {
+        log("Starting greenmail server");
+        GreenMail greenMail = new GreenMail();
+        greenMail.start();
+        
+        log("Checking that the SMTP server started.");
+        assertTrue(greenMail.getSmtp().isAlive());
+        
+        String subject = "This is created by email";
+        String message = 
+        	"project=TST\n" +  
+        	"issuetype=1\n" +
+        	"This is the subject.  It is a test subject.";
+
+        GreenMailUtil.sendTextEmail("jira-reply@localhost.com", ADMIN_EMAIL, subject, message, greenMail.getSmtp().getServerSetup());
+
+        boolean isFound = false;
+        if(greenMail.waitForIncomingEmail(120000, 1)) {
+            for(MimeMessage mimeMessage : greenMail.getReceivedMessages()){
+            	if(mimeMessage.getSubject().compareToIgnoreCase(subject) == 0){
+            		isFound = true;
+            		break;
+            	}
+            }
+        }else{
+            log("No messages found");
+        }
+        
+        assertTrue(isFound);
+        
+        String key = getIssueKeyWithSummary(subject, "TST");
+        log(key);
+      
+        greenMail.stop();
+    }*/
     
     /*
     public void testBulkEditWatchers() {

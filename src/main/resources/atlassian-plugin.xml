@@ -1,4 +1,4 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" pluginsVersion="2">
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
@@ -38,11 +38,11 @@
 			name="edit"
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
-	<!-- 
+ 
 	<customfield-searcher
 			key="watcherfieldsearcher"
 		    i18n-name-key="watcherfield.searcher.name"
-		    class="com.atlassian.jira.issue.customfields.searchers.UserPickerSearcher">
+		    class="com.burningcode.jira.issue.customfields.searchers.WatcherSearcher">
 	    <description key="watcherfield.searcher.desc" />
 	    <resource
 	    	type="velocity"
@@ -59,7 +59,7 @@
 	    	key="watcherfieldtype"
 	    	/>
 	</customfield-searcher>
-	 -->
+
 	<web-resource 
 			key="watcherfieldjs"
 			i18n-name-key="watcherfield.js.name"
@@ -71,7 +71,9 @@
 			location="js/watcherfield.js"
 			/>
 	</web-resource>
+ 
 	<rest key="watcherfieldRest" path="/watcherfield" version="1.0">
 		<description key="watcherfield.rest.desc" />
 	</rest>
+
 </atlassian-plugin>

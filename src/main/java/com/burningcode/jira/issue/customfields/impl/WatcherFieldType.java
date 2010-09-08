@@ -288,8 +288,14 @@ public class WatcherFieldType extends MultiUserCFType {
      * 
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
      */
-    public boolean valuesEqual(Object v1, Object v2) {
-        if(((List<?>)v1).equals((v2 != null?(List<?>)v2 : new ArrayList<User>()))){
+    @SuppressWarnings("unchecked")
+	public boolean valuesEqual(Object v1, Object v2) {
+    	List<User> watcherList1 = (v1 != null? (List<User>)v1 : new ArrayList<User>());
+    	List<User> watcherList2 = (v2 != null? (List<User>)v2 : new ArrayList<User>());
+    	Collections.sort(watcherList1, (Comparator<? super User>)(new UserComparator()));
+    	Collections.sort(watcherList2, (Comparator<? super User>)(new UserComparator()));
+   		
+        if(watcherList1.equals(watcherList2)){
             return true;
         }
 

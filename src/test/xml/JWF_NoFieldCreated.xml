@@ -204,6 +204,8 @@ ___ Trusted Applications ________
     <ListenerConfig id="10000" clazz="com.atlassian.jira.event.listeners.cache.IssueCacheListener" name="Issue Cache Listener"/>
     <ListenerConfig id="10001" clazz="com.atlassian.jira.event.listeners.mail.MailListener" name="Mail Listener"/>
     <ListenerConfig id="10002" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
+    <MailServer id="10000" name="localhost" description="" type="pop" servername="localhost" username="admin" password="admin"/>
+    <MailServer id="10010" name="Local Computer" description="" from="jira-reply@localhost.com" prefix="[JIRA]" smtpPort="25" type="smtp" servername="localhost"/>
     <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="0" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
     <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
     <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="NotificationScheme" associationType="ProjectScheme"/>

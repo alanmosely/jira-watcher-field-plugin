@@ -10,9 +10,13 @@ import javax.ws.rs.core.Response.Status;
 
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.exception.DataAccessException;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.security.PermissionManager;
+import com.atlassian.jira.security.Permissions;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.opensymphony.user.User;
 
@@ -26,9 +30,27 @@ import com.opensymphony.user.User;
 @Path("/watchers")
 @AnonymousAllowed
 public class WatcherResource {
+	private JiraAuthenticationContext authenticationContext;
+	private PermissionManager permissionManager;
+	private WatcherManager watcherManaer;
+
+	public WatcherResource(){
+		authenticationContext = ComponentManager.getInstance().getJiraAuthenticationContext();
+		permissionManager = ComponentManager.getInstance().getPermissionManager();
+		watcherManaer = ComponentManager.getInstance().getWatcherManager();
+	}
+
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response getWatchers(@QueryParam("issueKey") String issueKey, @QueryParam("issueId") Long issueId){
+	//public Response getWatchers(@Context HttpServletRequest request, @QueryParam("atl_token") String atlToken, @QueryParam("issueKey") String issueKey, @QueryParam("issueId") Long issueId){
+		
+		// Check that the passed users token is valid
+//		XsrfTokenGenerator tokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
+//		if(!tokenGenerator.validateToken(request, atlToken)){
+//			return Response.status(Status.UNAUTHORIZED).build();
+//		}
+
 		MutableIssue issue = null;
 		try{
 			if(issueKey != null){
@@ -43,10 +65,12 @@ public class WatcherResource {
 		}catch(DataAccessException e){
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build(); 
 		}
-	
-		JiraAuthenticationContext authenticationContext = ComponentManager.getInstance().getJiraAuthenticationContext();
+		
+//		if(!isUserPermitted(issue)){
+//			return Response.status(Status.UNAUTHORIZED).build();
+//		}
 
-		Collection<User> watcherList = ComponentManager.getInstance().getWatcherManager().getCurrentWatchList(authenticationContext.getLocale(), issue.getGenericValue());
+		Collection<User> watcherList = watcherManaer.getCurrentWatchList(authenticationContext.getLocale(), issue.getGenericValue());
 		ArrayList<Watcher> watchers = new ArrayList<Watcher>();
 		for(User watcher : watcherList){
 			watchers.add(new Watcher(watcher.getName(), watcher.getFullName()));
@@ -63,4 +87,17 @@ public class WatcherResource {
 
 		return Response.ok(new Watchers(issue.getId(), watchers, watcherFieldIds)).build();
 	}
+	
+	/**
+     * Checks if a user the authenticated user has the "View Voters and Watchers" permission.
+     * 
+     * @param issue The issue the user is trying to view watchers.
+     * @return True if has permissions, false otherwise.
+     */
+    protected boolean isUserPermitted(Issue issue){
+        return permissionManager.hasPermission(
+                Permissions.VIEW_VOTERS_AND_WATCHERS, 
+                issue.getProjectObject(),
+                authenticationContext.getUser());
+    }
 }
