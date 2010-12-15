@@ -29,6 +29,7 @@ package com.burningcode.jira.web.action.issue;
 import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
 
+import com.atlassian.jira.bc.issue.watcher.WatcherService;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.index.IndexException;
@@ -49,7 +50,7 @@ import com.opensymphony.user.EntityNotFoundException;
  * @see com.atlassian.jira.plugin.votersAndWatchers.ManageWatcherAlias
  */
 public class ManageWatchersReindex extends ManageWatchers {
-    private static final long serialVersionUID = 7850186457142561095L;
+	private static final long serialVersionUID = 7850186457142561095L;
     private static final Logger log = Logger.getLogger(ManageWatchersReindex.class);
     private final IssueIndexManager issueIndexManager;
 
@@ -61,12 +62,14 @@ public class ManageWatchersReindex extends ManageWatchers {
      * @param searchService
      * @override
      */
-    public ManageWatchersReindex(WatcherManager watcherManager,
-            VelocityManager velocityManager,
-            UserPickerSearchService searchService) {
-        super(watcherManager, velocityManager, searchService);
-        issueIndexManager = ComponentManager.getInstance().getIndexManager();
-    }
+    public ManageWatchersReindex(
+    		WatcherManager watcherManager,
+			VelocityManager velocityManager,
+			UserPickerSearchService searchService,
+			WatcherService watcherService) {
+		super(watcherManager, velocityManager, searchService, watcherService);
+		issueIndexManager = ComponentManager.getInstance().getIndexManager();
+	}
 
     /**
      * Reindexes the current issue

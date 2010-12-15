@@ -1,5 +1,6 @@
+// Javascript used for updating watcher fields after clicking on the quick watch/unwatch link.
 AJS.$(document).ready(function(){
-	AJS.$('*').ajaxComplete(function(event, XMLHttpRequest, ajaxOptions) {
+	AJS.$('#watching-toggle').ajaxComplete(function(event, XMLHttpRequest, ajaxOptions) {
 		var issueId = AJS.$(event.target).attr('rel');
 		if(XMLHttpRequest.status == 200 && issueId !== undefined){
 			var regex = new RegExp(contextPath + "/rest/api/(.+)/issues/"+issueId+"/watchers(.*)", "ig");
@@ -18,6 +19,7 @@ AJS.$(document).ready(function(){
 								html += '</span>, ';
 							});
 						}
+						html = html.replace(/(, )$/,'');
 						AJS.$(response.fieldIds).each(function(index, value){
 							AJS.$('#'+value+'-field').html(html);
 						});

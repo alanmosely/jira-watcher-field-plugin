@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.atlassian.jira.plugins</groupId>
         <artifactId>jira-plugin-base</artifactId>
-        <version>18</version>
+        <version>23</version>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.burningcode.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>2.1</version>
+    <version>2.3</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>
@@ -29,9 +29,9 @@
     <properties>
         <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
 
-        <atlassian.product.version>4.1</atlassian.product.version>
-        <atlassian.product.data.version>4.0</atlassian.product.data.version>
-        <atlassian.product.test-lib.version>4.1</atlassian.product.test-lib.version>
+        <atlassian.product.version>4.2</atlassian.product.version>
+        <atlassian.product.data.version>4.2</atlassian.product.data.version>
+        <atlassian.product.test-lib.version>4.2</atlassian.product.test-lib.version>
     </properties>
 
 	<developers>
