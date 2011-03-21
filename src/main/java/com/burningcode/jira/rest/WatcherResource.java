@@ -3,7 +3,9 @@ package com.burningcode.jira.rest;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -17,8 +19,9 @@ import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
+import com.atlassian.jira.security.xsrf.XsrfTokenGenerator;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.opensymphony.user.User;
+import com.atlassian.crowd.embedded.api.User;
 
 /**
  * Used for access watcher info for an issue using REST API
@@ -42,17 +45,17 @@ public class WatcherResource {
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response getWatchers(@QueryParam("issueKey") String issueKey, @QueryParam("issueId") Long issueId){
-	//public Response getWatchers(@Context HttpServletRequest request, @QueryParam("atl_token") String atlToken, @QueryParam("issueKey") String issueKey, @QueryParam("issueId") Long issueId){
+	public Response getWatchers(@Context HttpServletRequest request, @QueryParam("atl_token") String atlToken, @QueryParam("issueKey") String issueKey, @QueryParam("issueId") Long issueId){
 		
 		// Check that the passed users token is valid
-//		XsrfTokenGenerator tokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
-//		if(!tokenGenerator.validateToken(request, atlToken)){
-//			return Response.status(Status.UNAUTHORIZED).build();
-//		}
+		XsrfTokenGenerator tokenGenerator = ComponentManager.getComponentInstanceOfType(XsrfTokenGenerator.class);
+		if(!tokenGenerator.validateToken(request, atlToken)){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 
 		MutableIssue issue = null;
 		try{
+			// Get the issue
 			if(issueKey != null){
 				issue = ComponentManager.getInstance().getIssueManager().getIssueObject(issueKey);
 			}else if(issueId != null){
@@ -65,17 +68,24 @@ public class WatcherResource {
 		}catch(DataAccessException e){
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build(); 
 		}
-		
-//		if(!isUserPermitted(issue)){
-//			return Response.status(Status.UNAUTHORIZED).build();
-//		}
 
-		Collection<User> watcherList = watcherManaer.getCurrentWatchList(authenticationContext.getLocale(), issue.getGenericValue());
+		return this.getWatcherListResponse(issue);
+	}
+
+	protected Response getWatcherListResponse(MutableIssue issue){
+		// Check that the user has access to view the issues
+		if(!isUserPermitted(issue)){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+
+		// Get the watchers on the issue
+		Collection<User> watcherList = watcherManaer.getCurrentWatchList(issue, authenticationContext.getLocale());
 		ArrayList<Watcher> watchers = new ArrayList<Watcher>();
 		for(User watcher : watcherList){
-			watchers.add(new Watcher(watcher.getName(), watcher.getFullName()));
+			watchers.add(new Watcher(watcher.getName(), watcher.getDisplayName()));
 		}
 		
+		// Get the watcher fields in use.
 		Collection<CustomField> customFields = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObjects(issue);
 		ArrayList<String> watcherFieldIds = new ArrayList<String>();
 		for(CustomField field : customFields){
@@ -98,6 +108,6 @@ public class WatcherResource {
         return permissionManager.hasPermission(
                 Permissions.VIEW_VOTERS_AND_WATCHERS, 
                 issue.getProjectObject(),
-                authenticationContext.getUser());
+                authenticationContext.getLoggedInUser());
     }
 }

@@ -51,7 +51,7 @@ import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.webresource.WebResourceManager;
-import com.opensymphony.user.User;
+import com.atlassian.crowd.embedded.api.User;
 
 /**
  * This class is a custom field type that allows users with
@@ -159,7 +159,7 @@ public class WatcherFieldType extends MultiUserCFType {
         return _PermissionManager.hasPermission(
                 Permissions.MANAGE_WATCHER_LIST, 
                 issue.getProjectObject(),
-                _AuthenticationContext.getUser());
+                _AuthenticationContext.getLoggedInUser());
     }
 
     /**
@@ -168,7 +168,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return The full names of watching users in a comma separated list.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getChangelogValue(CustomField, Object)
      */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public String getChangelogValue(CustomField field, Object value) {
    		List<User> watcherList = (List<User>)value;
 
@@ -178,7 +178,7 @@ public class WatcherFieldType extends MultiUserCFType {
         String output = "";
         for(Iterator<User> i = watcherList.iterator(); i.hasNext();){
             User user = (User)i.next();
-            output += user.getFullName() + (i.hasNext()? ", " : "");
+            output += user.getDisplayName() + (i.hasNext()? ", " : "");
         }
 
         return output;
@@ -219,7 +219,7 @@ public class WatcherFieldType extends MultiUserCFType {
                 params.put("hasPermission", new Boolean(true));
             }
         }catch(Exception e){
-            if(isJiraAdmin(_AuthenticationContext.getUser())){
+            if(isJiraAdmin(_AuthenticationContext.getLoggedInUser())){
                 params.put("hasPermission", new Boolean(true));
             }
         }
@@ -233,9 +233,8 @@ public class WatcherFieldType extends MultiUserCFType {
      * @param issue The issue to get watchers from.
      * @return A List of User objects that are watchers on the passed issue.
      */
-    @SuppressWarnings("unchecked")
 	protected List<User> getWatchers(Issue issue){
-   		List<User> currWatchers = (List<User>)_WatcherManager.getCurrentWatchList(_AuthenticationContext.getLocale(), issue.getGenericValue());
+   		List<User> currWatchers = (List<User>)_WatcherManager.getCurrentWatchList(issue, _AuthenticationContext.getLocale());
         Collections.sort(currWatchers, (Comparator<? super User>)(new UserComparator()));
 
         return currWatchers;

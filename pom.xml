@@ -29,9 +29,9 @@
     <properties>
         <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
 
-        <atlassian.product.version>4.2</atlassian.product.version>
-        <atlassian.product.data.version>4.2</atlassian.product.data.version>
-        <atlassian.product.test-lib.version>4.2</atlassian.product.test-lib.version>
+        <atlassian.product.version>4.3</atlassian.product.version>
+        <atlassian.product.data.version>4.3</atlassian.product.data.version>
+        <atlassian.product.test-lib.version>4.3</atlassian.product.test-lib.version>
     </properties>
 
 	<developers>

@@ -35,6 +35,7 @@ import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.index.IndexException;
 import com.atlassian.jira.issue.index.IssueIndexManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
+import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.web.action.issue.ManageWatchers;
 import com.atlassian.velocity.VelocityManager;
 import com.opensymphony.user.EntityNotFoundException;
@@ -62,14 +63,14 @@ public class ManageWatchersReindex extends ManageWatchers {
      * @param searchService
      * @override
      */
-    public ManageWatchersReindex(
-    		WatcherManager watcherManager,
+	public ManageWatchersReindex(WatcherManager watcherManager,
 			VelocityManager velocityManager,
 			UserPickerSearchService searchService,
-			WatcherService watcherService) {
-		super(watcherManager, velocityManager, searchService, watcherService);
+			WatcherService watcherService, PermissionManager permissionManager) {
+		super(watcherManager, velocityManager, searchService, watcherService, permissionManager);
 		issueIndexManager = ComponentManager.getInstance().getIndexManager();
 	}
+
 
     /**
      * Reindexes the current issue
