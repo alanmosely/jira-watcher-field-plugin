@@ -103,9 +103,16 @@ public class WatcherFieldType extends MultiUserCFType {
     protected void addWatchers(Issue issue, List<?> userList){
         if(userList != null && isIssueEditable(issue)){
             for(Iterator<?> i = userList.iterator(); i.hasNext();){
-                User user = (User)i.next();
+            	Object next = i.next();
+            	User user = null;
 
-                if(!_WatcherManager.isWatching(user, issue.getGenericValue())){
+            	if(next instanceof User){
+            		user = (User)next;
+            	}else if(next instanceof String){
+            		user = ComponentManager.getInstance().getUserUtil().getUserObject((String)next);
+            	}
+
+                if(user != null && !_WatcherManager.isWatching(user, issue.getGenericValue())){
                     _WatcherManager.startWatching(user, issue.getGenericValue());
                 }
             }
@@ -246,12 +253,19 @@ public class WatcherFieldType extends MultiUserCFType {
      * @param issue The issue to add watchers to.
      * @param userList A list of User objects to remove from being watchers.
      */
-    protected void removeWatchers(Issue issue, List<User> userList){
+    protected void removeWatchers(Issue issue, List<?> userList){
         if(userList != null && isIssueEditable(issue)){
-            for(Iterator<User> i = userList.iterator(); i.hasNext();){
-                User user = (User)i.next();
+            for(Iterator<?> i = userList.iterator(); i.hasNext();){
+            	Object next = i.next();
+            	User user = null;
 
-                if(_WatcherManager.isWatching(user, issue.getGenericValue())){
+            	if(next instanceof User){
+            		user = (User)next;
+            	}else if(next instanceof String){
+            		user = ComponentManager.getInstance().getUserUtil().getUserObject((String)next);
+            	}
+
+                if(user != null && _WatcherManager.isWatching(user, issue.getGenericValue())){
                     _WatcherManager.stopWatching(user, issue.getGenericValue());
                 }
             }
