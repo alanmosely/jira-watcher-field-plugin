@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
@@ -49,6 +48,7 @@ import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
+import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.webresource.WebResourceManager;
 import com.atlassian.crowd.embedded.api.User;
@@ -65,6 +65,8 @@ public class WatcherFieldType extends MultiUserCFType {
     private final JiraAuthenticationContext _AuthenticationContext;
     private final PermissionManager _PermissionManager;
     private final WatcherManager _WatcherManager;
+    private final UserUtil _UserUtil;
+    private final WebResourceManager _WebResourceManager;
 
     /**
      * Overridden, calls super constructor.
@@ -85,13 +87,19 @@ public class WatcherFieldType extends MultiUserCFType {
             ApplicationProperties applicationProperties,
             JiraAuthenticationContext authenticationContext,
             UserPickerSearchService searchService,
-            FieldVisibilityManager fieldVisibilityManager) {
+            FieldVisibilityManager fieldVisibilityManager,
+            PermissionManager permissionManager,
+            WatcherManager watcherManager,
+            UserUtil userUtil,
+            WebResourceManager webResourceManager) {
         super(customFieldValuePersister, stringConverter, genericConfigManager,
                 multiUserConverter, applicationProperties,
                 authenticationContext, searchService, fieldVisibilityManager);
         _AuthenticationContext = authenticationContext;
-        _PermissionManager = ComponentManager.getInstance().getPermissionManager();
-        _WatcherManager = ComponentManager.getInstance().getWatcherManager();
+        _PermissionManager = permissionManager;
+        _WatcherManager = watcherManager;
+        _UserUtil = userUtil;
+        _WebResourceManager = webResourceManager;
     }
 
     /**
@@ -109,7 +117,7 @@ public class WatcherFieldType extends MultiUserCFType {
             	if(next instanceof User){
             		user = (User)next;
             	}else if(next instanceof String){
-            		user = ComponentManager.getInstance().getUserUtil().getUserObject((String)next);
+            		user = _UserUtil.getUserObject((String)next);
             	}
 
                 if(user != null && !_WatcherManager.isWatching(user, issue.getGenericValue())){
@@ -215,8 +223,7 @@ public class WatcherFieldType extends MultiUserCFType {
     public Map<String, Object> getVelocityParameters(Issue issue, CustomField field,
             FieldLayoutItem fieldLayoutItem) {
 
-    	WebResourceManager webResourceManager = ComponentManager.getInstance().getWebResourceManager();
-    	webResourceManager.requireResource("com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldjs");
+    	_WebResourceManager.requireResource("com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldjs");
 
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
         params.put("hasPermission", new Boolean(false));
@@ -262,7 +269,7 @@ public class WatcherFieldType extends MultiUserCFType {
             	if(next instanceof User){
             		user = (User)next;
             	}else if(next instanceof String){
-            		user = ComponentManager.getInstance().getUserUtil().getUserObject((String)next);
+            		user = _UserUtil.getUserObject((String)next);
             	}
 
                 if(user != null && _WatcherManager.isWatching(user, issue.getGenericValue())){
