@@ -1,14 +1,36 @@
 package it.com.burningcode.jira.issue.customfields.impl;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-import org.apache.oro.text.regex.MalformedPatternException;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
-import com.atlassian.jira.webtests.JIRAWebTest;
-import com.burningcode.jira.rest.Watcher;
-import com.burningcode.jira.rest.Watchers;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import com.atlassian.jira.functest.framework.FuncTestCase;
+import com.atlassian.jira.functest.framework.admin.ViewServices;
+import com.atlassian.jira.functest.framework.admin.ViewServices.Service;
+import com.atlassian.jira.functest.framework.admin.ViewServices.UnableToAddServiceException;
+import com.atlassian.jira.functest.framework.navigator.ContainsIssueKeysCondition;
+import com.atlassian.jira.functest.framework.navigator.GenericQueryCondition;
+import com.atlassian.jira.functest.framework.navigator.NavigatorSearch;
+import com.atlassian.jira.functest.framework.navigator.SearchResultsCondition;
+import com.atlassian.jira.webtests.EmailFuncTestCase;
+import com.atlassian.jira.webtests.JIRAServerSetup;
+import com.atlassian.jira.webtests.ztests.email.TestIssueEmailSubject;
+import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryItem;
+import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryRecord;
+
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.GreenMailUtil;
+import com.meterware.httpunit.WebForm;
+
+import static it.com.burningcode.jira.IntegrationTestHelper.*;
 
 /**
  * Class used for integration testing for the JIRA Watcher Field Plugin.
@@ -18,229 +40,283 @@ import com.sun.jersey.api.client.WebResource;
  * TODO Write test to check for issue JWFP-9
  * @author Ray Barham
  */
-public class IntegrationTestWatcherFieldType extends JIRAWebTest {
-    private static String FIELD_TYPE_KEY = "com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldtype";
-	//private static String FIELD_TYPE_SEARCH_KEY = "com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldsearcher";
-    private static String FIELD_ID = "10000";
+public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     
-    /**
-     * {@inheritDoc}
-     */
-    public IntegrationTestWatcherFieldType(String name) {
-        super(name);
+    protected void assertWatchersNotPresent(String issueKey, String[] watchers){
+    	String currentPage = navigation.getCurrentPage();
+    	navigation.issue().gotoIssue(issueKey);
+    	
+    	tester.clickLink("view-watcher-list");
+    	for(String watcher : watchers){
+    		tester.assertLinkNotPresent("watcher_link_" + watcher);
+    		log.log("Successfully found user " + watcher + " is not a watcher on issue " + issueKey);
+    	}
+    	navigation.gotoPage(currentPage);
+    }
+    
+    protected void assertWatchersPresent(String issueKey, String[] watchers){
+    	String currentPage = navigation.getCurrentPage();
+    	navigation.issue().gotoIssue(issueKey);
+    	
+    	tester.clickLink("view-watcher-list");
+    	for(String watcher : watchers){
+    		tester.assertLinkPresent("watcher_link_" + watcher);
+    		log.log("Successfully found user " + watcher + " is a watcher on issue " + issueKey);
+    	}
+    	navigation.gotoPage(currentPage);
+    }
+    
+    protected HashMap<String, String[]> getUsernameFieldMap(String[] usernames) {
+    	HashMap<String, String[]> params = new HashMap<String, String[]>();
+    	params.put(FIELD_ID, usernames);
+    	return params;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setUp() {
-        super.setUp();
-        restoreData("JWF_FieldCreated.xml");
+    @Before
+    public void setUpTest() {
+        administration.restoreData("JWF_FieldCreated.xml");
+    }
+
+    protected WebForm setWatcherFieldForm(WebForm[] forms, String fieldId, String values){
+    	return setWatcherFieldForm(forms, fieldId, values, null);
+    }
+    
+    protected WebForm setWatcherFieldForm(WebForm[] forms, String fieldId, String values, String expectedExistingValues){
+    	// Loop through the forms till you one w/ the watcher field is found 
+    	for(WebForm form : forms){	
+    		if(form.hasParameterNamed(fieldId)){
+    			if(expectedExistingValues != null){
+    				tester.assertFormElementEquals(fieldId, expectedExistingValues);
+    			}
+    			form.setParameter(fieldId, values);
+    			return form;
+    		}
+    	}
+    	fail("No form found with watcher field ID "+ fieldId);
+
+    	return null;
     }
     
     /**
      * Test adding a watcher field to JIRA.
      */
-    public void testAddWatcherField() {
-        restoreData("JWF_NoFieldCreated.xml");
-        
-        gotoPage("CreateCustomField!default.jspa");
-        selectMultiOptionByValue("fieldType", FIELD_TYPE_KEY);
-        clickButton("nextButton");
-        setFormElement("fieldName", "Watchers");
-        clickButton("nextButton");
-        clickButton("update_submit");
-        assertEquals(true, customFieldExists(FIELD_ID));
+    @Test
+    public void testCreateWatcherField() {
+    	log.log("### Test creating watcher field ###");
+    	
+    	administration.restoreData("JWF_NoFieldCreated.xml");
+    	
+    	navigation.gotoCustomFields();
+
+    	tester.assertTextNotPresent(FIELD_NAME);
+        tester.assertTextNotPresent(FIELD_TYPE);
+        administration.customFields().addCustomField(FIELD_TYPE_KEY, FIELD_NAME);
+        tester.assertTextPresent(FIELD_NAME);
+        tester.assertTextPresent(FIELD_TYPE);
     }
     
     /**
      * Test deleting a watcher field from JIRA.
      */
     public void testDeleteWatcherField() {
-    	assertEquals(true, customFieldExists("My Watchers"));
-        deleteCustomField(FIELD_ID);
-        assertEquals(false, customFieldExists("My Watchers")); 
+    	log.log("### Test delete watcher field ###");
+    	
+    	navigation.gotoCustomFields();
+    	
+    	tester.assertTextPresent(FIELD_NAME);
+    	tester.assertTextPresent(FIELD_TYPE);
+    	administration.customFields().removeCustomField(FIELD_ID);
+    	tester.assertLinkNotPresent(FIELD_NAME);
+    	tester.assertTextNotPresent(FIELD_TYPE);
     }
     
     /**
      * Test adding watchers via the watcher field on issue create.
      */
     public void testAddWatcherOnIssueCreate() {
-        // Create a new issue with the new watchers
-        createIssueStep1("Test", "Bug");
-        setFormElement("summary", "Test Issue");
-        setFormElement("customfield_"+FIELD_ID, "admin");
-        submit();
-
-        // Check that the watchers field is shown on view
-        assertTextPresent("My Watchers:");
-
-        // Check that the users were actually added as watchers
-        clickLink("view_watchers");
-        assertFormElementPresent("stopwatch_admin");
+    	log.log("### Test adding watcher on issue create ###");
+    	
+    	HashMap<String, String[]> params = getUsernameFieldMap(new String[]{BOB_USERNAME});
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue create", params);
+    	navigation.issue().gotoIssue(issueKey);
+    	tester.assertTextPresent(FIELD_NAME);
+    	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME});
     }
     
     /**
      * Test adding watchers via the watcher field on issue edit.
+     * @throws SAXException 
+     * @throws IOException 
      */
-    public void testAddWatcherOnIssueEdit() {
-        // Add new watchers via edit.
-        gotoIssue("TST-1");
-        clickLink("editIssue");
-        setFormElement("customfield_"+FIELD_ID, "admin, bob");
-        clickButton("update_submit");
-        
-        // Check that the users were actually added as watchers
-        clickLink("view_watchers");
-        assertFormElementPresent("stopwatch_admin");
-        assertFormElementPresent("stopwatch_bob");
+    public void testAddWatcherOnIssueEdit() throws IOException, SAXException {
+    	log.log("### Test adding watcher on issue edit ###");
+    	
+    	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
+
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue edit.");
+    	assertWatchersNotPresent(issueKey, usernames);
+
+    	
+    	navigation.issue().gotoEditIssue(issueKey);
+    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, ADMIN_USERNAME + ", " + BOB_USERNAME).submit();
+
+    	assertWatchersPresent(issueKey, usernames);
     }
     
     /**
      * Test modifying watchers via the watcher field.
+     * @throws SAXException 
+     * @throws IOException 
      */
-    public void testModifyingWatcherOnIssueEdit() {
-        gotoIssue("TST-2");
-        
-        // Check that the watchers are present for the issue
-        clickLink("view_watchers");
-        assertFormElementPresent("stopwatch_bob");
-        assertFormElementNotPresent("stopwatch_admin");
-        
-        // Modify the watchers
-        gotoPage("EditIssue!default.jspa?id=10010");
-        assertTextInElement("customfield_"+FIELD_ID, "bob");
-        setFormElement("customfield_"+FIELD_ID, "admin");
-        clickButton("update_submit");
-        
-        // Check for the updated watchers
-        clickLink("view_watchers");
-        assertFormElementPresent("stopwatch_admin");
-        assertFormElementNotPresent("stopwatch_bob");
+    public void testModifyingWatcherOnIssueEdit() throws IOException, SAXException {
+    	log.log("### Test modify watcher on issue edit ###");
+    	
+    	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
+
+    	HashMap<String, String[]> params = getUsernameFieldMap(usernames);
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test modify watchers on issue edit", params);
+    	
+    	assertWatchersPresent(issueKey, usernames);
+    	
+    	navigation.issue().gotoEditIssue(issueKey);
+    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, usernames[0], usernames[0] + ", " + usernames[1]).submit();
+    	
+    	assertWatchersPresent(issueKey, new String[]{usernames[0]});
+    	assertWatchersNotPresent(issueKey, new String[]{usernames[1]});
     }
     
     /**
      * Test configuring the watcher field.
      */
     public void testConfigureWatcherField() {
-        gotoPage("ConfigureCustomField!default.jspa?customFieldId="+FIELD_ID);
-        
-        // Check adding a default watcher
-        configureDefaultCustomFieldValue(FIELD_ID, "bob");
-        assertLinkWithTextExists("Bob");
-        
-        // Create a new issue with the default watchers
-        createIssueStep1("Test", "Bug");
-        setFormElement("summary", "Test Issue");
-        submit();
+    	log.log("### Test configure watcher field ###");
+    	
+    	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
 
-        // Check that the users were actually added as watchers
-        clickLink("view_watchers");
-        assertFormElementPresent("stopwatch_bob");
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test default watchers without configuration.");
+    	assertWatchersNotPresent(issueKey, usernames);
+    	
+    	// Set the default value for the watcher field
+    	administration.customFields().setDefaultValue(NUMERIC_FIELD_ID, usernames[1]);
+    	
+    	issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test default watchers with configuration.");
+    	assertWatchersNotPresent(issueKey, new String[]{usernames[0]});
+    	assertWatchersPresent(issueKey, new String[]{usernames[1]});
     }
     
     /**
-     * Checks filters/searching using the watcher field.  Also checks that issues are being re-indexed on adding watchers (otherwise, searches would not work).
+     * Checks simple filter/searching using the watcher field.  Also checks that issues are being re-indexed on adding watchers (otherwise, searches would not work).
      */
-    public void testFiltersByWatcher() {
-        // Check that existing filters are correct
-        gotoFilter("Watchers - Admin");
-        assertTextPresent("No matching issues found.");
-        gotoFilter("Watchers - Bob");
-        assertTextPresent("TST-2");
-        
-        // Edit watchers via watcher field.
-        testModifyingWatcherOnIssueEdit();
-        
-        // Check filters for change in watchers
-        gotoFilter("Watchers - Admin");
-        assertTextPresent("TST-2");
-        gotoFilter("Watchers - Bob");
-        assertTextPresent("No matching issues found.");
+    public void testSimpleFilterByWatcher() {
+    	log.log("### Test simple filter by watcher ###");
+    	
+    	String[] usernames = new String[]{BOB_USERNAME};
+
+    	HashMap<String, String[]> params = getUsernameFieldMap(usernames);
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test simple filter by watcher", params);
+    	assertWatchersPresent(issueKey, usernames);
+    	
+    	GenericQueryCondition watcherCondition = new GenericQueryCondition(FIELD_ID);
+    	watcherCondition.setQuery(usernames[0]);
+    	NavigatorSearch search = new NavigatorSearch(watcherCondition);
+    	
+    	navigation.issueNavigator().createSearch(search);
+    	tester.submit();
+    	
+    	ArrayList<SearchResultsCondition> searchResultsConditions = new ArrayList<SearchResultsCondition>();
+    	searchResultsConditions.add(new ContainsIssueKeysCondition(text, issueKey));
+    	assertions.getIssueNavigatorAssertions().assertSearchResults(searchResultsConditions);
+    }
+    
+    /**
+     * Checks sql filter/searching using the watcher field
+     */
+    public void testJqlFilterByWatcher() {
+    	log.log("### Test jql filter by watcher ###");
+    	
+    	String[] usernames = new String[]{BOB_USERNAME};
+    	
+    	HashMap<String, String[]> params = getUsernameFieldMap(usernames);
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test jql filter by watcher", params);
+    	assertWatchersPresent(issueKey, usernames);
+    	
+    	navigation.issueNavigator().createSearch("\"My Watchers\" = " + usernames[0]);
+    	tester.submit();
+    	
+    	assertions.getIssueNavigatorAssertions().assertNoJqlErrors();
+
+    	ArrayList<SearchResultsCondition> searchResultsConditions = new ArrayList<SearchResultsCondition>();
+    	searchResultsConditions.add(new ContainsIssueKeysCondition(text, issueKey));
+    	assertions.getIssueNavigatorAssertions().assertSearchResults(searchResultsConditions);
     }
     
     /**
      * Checks that change history is effected properly.  See issue JWF-5.
+     * @throws SAXException 
+     * @throws IOException 
      */
-    @SuppressWarnings("deprecation")
-	public void testChangeHistory() {
-        // Check change history when editing watchers
-        testAddWatcherOnIssueEdit();
-        assertLastChangeHistoryIs("TST-1", "Watchers", "None", "Admin, Bob");
-        
-        // Check change history doesn't change when not editing watchers
-        gotoPage("EditIssue!default.jspa?id=10000");
-        setFormElement("description", "HAZZAH!");
-        clickButton("update_submit");
-        assertTextPresent("HAZZAH!");
-        assertLastChangeNotMadeToField("TST-1", "Watchers");
+	public void testChangeHistory() throws IOException, SAXException {
+    	log.log("### Test change history ###");
+    	
+		String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test change history without watchers specified.");
+		navigation.issue().gotoIssueChangeHistory(issueKey);
+		
+		// Verify no change history for the watcher field is added on issue create.
+		tester.assertTextPresent("No changes have yet been made on this issue.");
+		
+		navigation.issue().gotoEditIssue(issueKey);
+    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, BOB_USERNAME + ", " + ADMIN_USERNAME).submit();
+
+    	log.log(ADMIN_USERNAME);
+    	log.log(ADMIN_FULLNAME);
+    	log.log(ADMIN_PASSWORD);
+    	log.log(ADMIN_USERNAME);
+    	
+		ArrayList<ExpectedChangeHistoryItem> expectedChangeItems = new ArrayList<ExpectedChangeHistoryItem>();
+		expectedChangeItems.add(new ExpectedChangeHistoryItem(FIELD_NAME, "None", ADMIN_FULLNAME + ", " + BOB_FULLNAME));
+		ExpectedChangeHistoryRecord changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
+		
+		// Verify change history when adding watchers
+		assertions.assertLastChangeHistoryRecords(issueKey, changeHistoryRecord);
+		
+		navigation.issue().gotoEditIssue(issueKey);
+    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, ADMIN_USERNAME).submit();
+    	
+    	// Verify change history when changing watchers
+    	expectedChangeItems.set(0, new ExpectedChangeHistoryItem(FIELD_NAME, ADMIN_FULLNAME + ", " + BOB_FULLNAME, ADMIN_FULLNAME));
+    	changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
+    	assertions.assertLastChangeHistoryRecords(issueKey, changeHistoryRecord);
+    	
+		navigation.issue().gotoEditIssue(issueKey);
+    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, "").submit();
+    	
+    	// Verify change history when clearing watchers
+    	expectedChangeItems.set(0, new ExpectedChangeHistoryItem(FIELD_NAME, ADMIN_FULLNAME, "None"));
+    	changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
+    	assertions.assertLastChangeHistoryRecords(issueKey, changeHistoryRecord);
     }
     
     /**
      * Checks that watchers are edited properly on issue transition.  See issue JWF-4.
+     * @throws SAXException 
+     * @throws IOException 
      */
-    public void testEditWatcherOnIssueTransition() {
-        gotoIssue("TST-1");
-        
-        // Execute the transition.
-        clickLinkWithText("Start Progress");
-        setFormElement("customfield_"+FIELD_ID, "admin, bob");
-        clickButtonWithValue("Start Progress");
-        
-        // Check that the users were actually added as watchers
-        clickLink("view_watchers");
-        assertFormElementPresent("stopwatch_admin");
-        assertFormElementPresent("stopwatch_bob");
-        
-        // Return back to the issue
-        gotoIssue("TST-1");
-        clickLinkWithText("Stop Progress");
-        
-        // Execute the transition.
-        clickLinkWithText("Start Progress");
-        setFormElement("customfield_"+FIELD_ID, "");
-        clickButtonWithValue("Start Progress");
-        
-        // Check that the users were actually added as watchers
-        clickLink("view_watchers");
-        assertFormElementNotPresent("stopwatch_admin");
-        assertFormElementNotPresent("stopwatch_bob");
-
-    }
-    
-    public void testRestGetWatchers() throws MalformedPatternException{
-    	gotoIssue("TST-1");
-    	clickLink("view_watchers");
-    	clickLinkWithText("Watch this issue");
-    	assertFormElementPresent("stopwatch_admin");
+    public void testEditWatcherOnIssueTransition() throws IOException, SAXException {
+    	log.log("### Test edit watcher on issue transition ###");
     	
-    	String issueId = getIssueIdWithIssueKey("TST-1");
-    	String atlToken = page.getXsrfToken();
+    	// Add the watcher field to the resolve workflow screen
+    	administration.viewFieldScreens().goTo();
+    	administration.viewFieldScreens().configureScreen("Workflow Screen");
+    	tester.selectOption("fieldId", FIELD_NAME);
+    	tester.submit("Add");
     	
-    	log("Issue ID: " + issueId);
-    	log("Atl Token: " + atlToken);
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test edit watchers on issue transition.");
+    	navigation.issue().closeIssue(issueKey, "Fixed", null);
+    	tester.clickLinkWithText("Reopen Issue");
+    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, BOB_USERNAME + ", " + ADMIN_USERNAME).submit();
     	
-    	Client client = Client.create();
-    	String url = environmentData.getBaseUrl().toExternalForm() + "/rest/watcherfield/latest/watchers?atl_token=" + atlToken + "&issueId=" + issueId;
-    	
-    	log("Url Used: " + url);
-    	
-    	WebResource resource = client.resource(url);
-    	Watchers watchers = resource.get(Watchers.class);
-    	List<Watcher> watcherList = watchers.getWatchers();
-    	
-    	// Check that the watcherList returned contains watchers.
-    	assert watcherList.size() > 0;
-
-    	boolean isWatcherFound = false;
-    	for(Watcher watcher : watcherList){
-    		log("Found Watcher: " + watcher.getUsername());
-    		if(watcher.getUsername().compareToIgnoreCase("admin") == 0){
-    			isWatcherFound = true;
-    			break;
-    		}
-    	}
-    	assertTrue(isWatcherFound);
+    	// Check that the watchers were successfully added
+    	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME, ADMIN_USERNAME});
     }
     
     /**
@@ -248,43 +324,80 @@ public class IntegrationTestWatcherFieldType extends JIRAWebTest {
      * 
      * @throws InterruptedException
      * @throws MessagingException
+     * @throws UnableToAddServiceException 
      */
-    /* TODO Create test to test resolve issue JWFP-13
-	public void testCreateIssueViaEmail() throws InterruptedException, MessagingException {
-        log("Starting greenmail server");
-        GreenMail greenMail = new GreenMail();
-        greenMail.start();
-        
-        log("Checking that the SMTP server started.");
-        assertTrue(greenMail.getSmtp().isAlive());
-        
+	public void testCreateIssueViaEmail() throws InterruptedException, MessagingException, UnableToAddServiceException {
+    	log.log("### Test add watchers on create issue via email ###");
+    	
+    	// Set the default user for the watcher field
+    	administration.customFields().setDefaultValue(NUMERIC_FIELD_ID, BOB_USERNAME);
+    	
+		assertSendingMailIsEnabled();
+
+		JIRAServerSetup.POP3.setPort(110);
+		GreenMail greenMail = configureAndStartGreenMail(JIRAServerSetup.ALL);
+		greenMail.setUser(ADMIN_EMAIL, ADMIN_USERNAME, ADMIN_PASSWORD);
+		
+		assertTrue(greenMail.getPop3().isAlive());
+		assertTrue(greenMail.getSmtp().isAlive());
+		assertTrue(greenMail.getImap().isAlive());
+		
+		// Setup the mail server in JIRA
+		setupJiraImapPopServer();
+		setupJiraMailServer(ADMIN_EMAIL, DEFAULT_SUBJECT_PREFIX, String.valueOf(greenMail.getSmtp().getPort()));
+
+		// Add service to create issues from POP server
+		setupPopService("project=" + PROJECT_KEY + ", issuetype=" + ISSUE_BUG);
+
         String subject = "This is created by email";
-        String message = 
-        	"project=TST\n" +  
-        	"issuetype=1\n" +
-        	"This is the subject.  It is a test subject.";
-
-        GreenMailUtil.sendTextEmail("jira-reply@localhost.com", ADMIN_EMAIL, subject, message, greenMail.getSmtp().getServerSetup());
-
-        boolean isFound = false;
-        if(greenMail.waitForIncomingEmail(120000, 1)) {
-            for(MimeMessage mimeMessage : greenMail.getReceivedMessages()){
-            	if(mimeMessage.getSubject().compareToIgnoreCase(subject) == 0){
-            		isFound = true;
-            		break;
-            	}
-            }
-        }else{
-            log("No messages found");
-        }
+        String message = "This is the subject.  It is a test subject.";
         
-        assertTrue(isFound);
+        // Send the message
+        GreenMailUtil.sendTextEmail(ADMIN_EMAIL, ADMIN_EMAIL, subject, message, greenMail.getSmtp().getServerSetup());
+		
+        // Keep the mail server up long enough for the JIRA POP service to connect to
+        greenMail.waitForIncomingEmail(60000, 10);
+
+        if(!greenMail.waitForIncomingEmail(1))
+    	  fail("No email messages found");
         
-        String key = getIssueKeyWithSummary(subject, "TST");
-        log(key);
-      
-        greenMail.stop();
-    }*/
+        // Browse to the newly created issue.
+//        navigation.issue().gotoIssue("TST-1");
+//    
+//        popGreenMail.waitForIncomingEmail(70000, 10);
+    
+//        GreenMail smtpGreenMail = configureAndStartGreenMail(new JIRAServerSetup[]{JIRAServerSetup.SMTP});
+//        assertTrue(smtpGreenMail.getSmtp().isAlive());
+
+//        log.log(getGreenMail());
+//        log.log(getGreenMail().getSmtp());
+//        log.log(getGreenMail().getSmtp().getServerSetup());
+        
+        
+//        GreenMailUtil.sendTextEmail("jira-reply@localhost.com", ADMIN_EMAIL, subject, message, smtpGreenMail.getSmtp().getServerSetup());
+//        if(!smtpGreenMail.waitForIncomingEmail(1))
+//        	fail("No email messages found");
+//        
+
+//        popGreenMail.waitForIncomingEmail(70000, 2);
+//        Thread.sleep(10000);
+//        assertTrue(getGreenMail().waitForIncomingEmail(600, 1));
+
+//        boolean isFound = false;
+//        for(MimeMessage mimeMessage : getGreenMail().getReceivedMessages()){
+//        	if(mimeMessage.getSubject().compareToIgnoreCase(subject) == 0){
+//        		isFound = true;
+//        		break;
+//        	}
+//        }
+//        
+//        assertTrue(isFound);
+//        
+//        String key = getIssueKeyWithSummary(subject, "TST");
+//        log(key);
+//      
+//        greenMail.stop();
+    }
     
     /*
     public void testBulkEditWatchers() {
