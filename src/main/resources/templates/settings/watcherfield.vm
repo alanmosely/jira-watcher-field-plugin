@@ -1,0 +1,22 @@
+<table class="tableBorder maxWidth" border="0" cellpadding="3" cellspacing="1" width="100%">
+    <tr>
+        <td bgcolor="#f0f0f0" colspan="2">
+        	<h3 class="formtitle">$i18n.getText("watcherfield.settings.name")</h3>
+    	</td>
+    </tr>
+	<tr>
+	    <td class="rowAlternate" width="40%">
+	    	<b>$i18n.getText("watcherfield.settings.item.addOnEmailCreate.name")</b>
+	    	<div class="description" style="padding: 0 0 0 15px">$i18n.getText("watcherfield.settings.item.addOnEmailCreate.desc")</div>
+    	</td>
+	    
+	    #if($!{isAddOnEmailCreate}) 
+	    <td class="rowNormal" style="color: #bb0000;">
+	    	$i18n.getText("admin.common.words.off")
+	    #else
+	    <td class="rowNormal">
+	    	$i18n.getText("admin.common.words.on")
+	    #end
+	    </td>
+	</tr>
+</table>

@@ -4,17 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import com.atlassian.jira.functest.framework.FuncTestCase;
-import com.atlassian.jira.functest.framework.admin.ViewServices;
-import com.atlassian.jira.functest.framework.admin.ViewServices.Service;
 import com.atlassian.jira.functest.framework.admin.ViewServices.UnableToAddServiceException;
 import com.atlassian.jira.functest.framework.navigator.ContainsIssueKeysCondition;
 import com.atlassian.jira.functest.framework.navigator.GenericQueryCondition;
@@ -22,7 +17,6 @@ import com.atlassian.jira.functest.framework.navigator.NavigatorSearch;
 import com.atlassian.jira.functest.framework.navigator.SearchResultsCondition;
 import com.atlassian.jira.webtests.EmailFuncTestCase;
 import com.atlassian.jira.webtests.JIRAServerSetup;
-import com.atlassian.jira.webtests.ztests.email.TestIssueEmailSubject;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryItem;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryRecord;
 
@@ -108,11 +102,11 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	
     	navigation.gotoCustomFields();
 
-    	tester.assertTextNotPresent(FIELD_NAME);
-        tester.assertTextNotPresent(FIELD_TYPE);
+    	tester.assertTextNotInTable("custom-fields", FIELD_NAME);
+    	tester.assertTextNotInTable("custom-fields", FIELD_TYPE);
         administration.customFields().addCustomField(FIELD_TYPE_KEY, FIELD_NAME);
-        tester.assertTextPresent(FIELD_NAME);
-        tester.assertTextPresent(FIELD_TYPE);
+        tester.assertTextInTable("custom-fields", FIELD_NAME);
+        tester.assertTextInTable("custom-fields", FIELD_TYPE);
     }
     
     /**
@@ -123,11 +117,11 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	
     	navigation.gotoCustomFields();
     	
-    	tester.assertTextPresent(FIELD_NAME);
-    	tester.assertTextPresent(FIELD_TYPE);
+    	tester.assertTextInTable("custom-fields", FIELD_NAME);
+    	tester.assertTextInTable("custom-fields", FIELD_TYPE);
     	administration.customFields().removeCustomField(FIELD_ID);
-    	tester.assertLinkNotPresent(FIELD_NAME);
-    	tester.assertTextNotPresent(FIELD_TYPE);
+    	tester.assertTextNotInTable("custom-fields", FIELD_NAME);
+    	tester.assertTextNotInTable("custom-fields", FIELD_TYPE);
     }
     
     /**
@@ -356,47 +350,11 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
         GreenMailUtil.sendTextEmail(ADMIN_EMAIL, ADMIN_EMAIL, subject, message, greenMail.getSmtp().getServerSetup());
 		
         // Keep the mail server up long enough for the JIRA POP service to connect to
-        greenMail.waitForIncomingEmail(60000, 10);
+        greenMail.waitForIncomingEmail(65000, 10);
 
-        if(!greenMail.waitForIncomingEmail(1))
-    	  fail("No email messages found");
-        
-        // Browse to the newly created issue.
-//        navigation.issue().gotoIssue("TST-1");
-//    
-//        popGreenMail.waitForIncomingEmail(70000, 10);
-    
-//        GreenMail smtpGreenMail = configureAndStartGreenMail(new JIRAServerSetup[]{JIRAServerSetup.SMTP});
-//        assertTrue(smtpGreenMail.getSmtp().isAlive());
-
-//        log.log(getGreenMail());
-//        log.log(getGreenMail().getSmtp());
-//        log.log(getGreenMail().getSmtp().getServerSetup());
-        
-        
-//        GreenMailUtil.sendTextEmail("jira-reply@localhost.com", ADMIN_EMAIL, subject, message, smtpGreenMail.getSmtp().getServerSetup());
-//        if(!smtpGreenMail.waitForIncomingEmail(1))
-//        	fail("No email messages found");
-//        
-
-//        popGreenMail.waitForIncomingEmail(70000, 2);
-//        Thread.sleep(10000);
-//        assertTrue(getGreenMail().waitForIncomingEmail(600, 1));
-
-//        boolean isFound = false;
-//        for(MimeMessage mimeMessage : getGreenMail().getReceivedMessages()){
-//        	if(mimeMessage.getSubject().compareToIgnoreCase(subject) == 0){
-//        		isFound = true;
-//        		break;
-//        	}
-//        }
-//        
-//        assertTrue(isFound);
-//        
-//        String key = getIssueKeyWithSummary(subject, "TST");
-//        log(key);
-//      
-//        greenMail.stop();
+        navigation.issue().gotoIssue(PROJECT_KEY + "-1");
+//        if(!greenMail.waitForIncomingEmail(1))
+//    	  fail("No email messages found");
     }
     
     /*

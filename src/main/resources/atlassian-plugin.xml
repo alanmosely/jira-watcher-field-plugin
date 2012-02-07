@@ -75,5 +75,32 @@
 	<rest key="watcherfieldRest" path="/watcherfield" version="1.0">
 		<description key="watcherfield.rest.desc" />
 	</rest>
+	
+	<web-item key="watcherfieldSettingsLink"
+			i18n-name-key="watcherfield.settings.link.name"
+			section="system.admin/issuefields"
+			weight="90">
+        <description key="watcherfield.settings.link.desc" />
+        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+		    <param name="permission">admin</param>
+		</condition>
+        <label key="watcherfield.settings.link.label" />
+        <link linkId="watcher_field_settings_link">/secure/project/WatcherFieldSettings.jspa</link>
+    </web-item>
+	<webwork1 key="watcherfieldSettings"
+			class="java.lang.Object"
+			i18n-name-key="watcherfield.settings.name" >
+		<description key="watcherfield.settings.desc" />
+        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+		    <param name="permission">admin</param>
+		</condition>
+        <actions>
+            <action name="com.burningcode.jira.plugin.WatcherFieldSettings"
+            		alias="WatcherFieldSettings" >
+                <view name="success">/templates/settings/watcherfield.vm</view>
+               	<view name="securitybreach">/secure/views/securitybreach.jsp</view>
+            </action>
+        </actions>
+    </webwork1>
 
 </atlassian-plugin>

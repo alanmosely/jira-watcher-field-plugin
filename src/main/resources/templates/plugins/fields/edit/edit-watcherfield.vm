@@ -33,15 +33,15 @@
 -->
 
 #if($hasPermission)
-#parse("templates/plugins/fields/edit/edit-multiuser.vm")
+    #parse("templates/plugins/fields/edit/edit-multiuser.vm")
 #else
-#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
-<strong>$i18n.getText("watcherfield.nopermission.body")</strong>
-#if ($value)
-<br/>
-	#foreach ($singleValue in $value)
-		<span class="tinylink">$userformat.formatUser($singleValue, 'profileLink', "multiuser_cf")</span>#comma ($value)
-	#end
-#end
-#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)
+    #controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+    <strong>$i18n.getText("watcherfield.nopermission.body")</strong>
+    #if ($value)
+        <br/>
+	    #foreach ($singleValue in $value)
+		    <span class="tinylink">$userformat.formatUser($singleValue, 'profileLink', "multiuser_cf")</span>#comma ($value)
+	    #end
+    #end
+    #controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)
 #end
