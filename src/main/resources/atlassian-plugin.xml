@@ -87,6 +87,7 @@
         <label key="watcherfield.settings.link.label" />
         <link linkId="watcher_field_settings_link">/secure/project/WatcherFieldSettings.jspa</link>
     </web-item>
+    
 	<webwork1 key="watcherfieldSettings"
 			class="java.lang.Object"
 			i18n-name-key="watcherfield.settings.name" >
@@ -95,10 +96,13 @@
 		    <param name="permission">admin</param>
 		</condition>
         <actions>
-            <action name="com.burningcode.jira.plugin.WatcherFieldSettings"
-            		alias="WatcherFieldSettings" >
+            <action name="com.burningcode.jira.plugin.WatcherFieldSettings" alias="WatcherFieldSettings" >
                 <view name="success">/templates/settings/watcherfield.vm</view>
-               	<view name="securitybreach">/secure/views/securitybreach.jsp</view>
+               	<view name="permissionviolation">/secure/views/securitybreach.jsp</view>
+            </action>
+            <action name="com.burningcode.jira.plugin.WatcherFieldSettings" alias="EditWatcherFieldSettings" >
+                <view name="input">/templates/settings/edit-watcherfield.vm</view>
+               	<view name="permissionviolation">/secure/views/securitybreach.jsp</view>
             </action>
         </actions>
     </webwork1>

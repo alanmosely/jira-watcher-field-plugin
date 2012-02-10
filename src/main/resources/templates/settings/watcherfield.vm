@@ -1,4 +1,6 @@
-<table class="tableBorder maxWidth" border="0" cellpadding="3" cellspacing="1" width="100%">
+#parse("templates/settings/set-settings.vm")
+
+<table class="tableBorder maxWidth" cellpadding="3" cellspacing="1">
     <tr>
         <td bgcolor="#f0f0f0" colspan="2">
         	<h3 class="formtitle">$i18n.getText("watcherfield.settings.name")</h3>
@@ -6,17 +8,26 @@
     </tr>
 	<tr>
 	    <td class="rowAlternate" width="40%">
-	    	<b>$i18n.getText("watcherfield.settings.item.addOnEmailCreate.name")</b>
-	    	<div class="description" style="padding: 0 0 0 15px">$i18n.getText("watcherfield.settings.item.addOnEmailCreate.desc")</div>
+	    	<b>$i18n.getText("watcherfield.settings.item.ignorePermissions.name")</b>
+	    	<div class="description" style="padding: 0 0 0 15px">$i18n.getText("watcherfield.settings.item.ignorePermissions.desc")</div>
     	</td>
 	    
-	    #if($!{isAddOnEmailCreate}) 
-	    <td class="rowNormal" style="color: #bb0000;">
-	    	$i18n.getText("admin.common.words.off")
+	    <td class="rowNormal"
+	    #if(${ignorePermissions.equals(true)})
+	    	style="color: #00bb00;">$i18n.getText("admin.common.words.on")
 	    #else
-	    <td class="rowNormal">
-	    	$i18n.getText("admin.common.words.on")
+	        style="color: #bb0000;">$i18n.getText("admin.common.words.off")
 	    #end
 	    </td>
 	</tr>
+</table>
+<br/>
+<table class="tableBorder maxWidth" cellspacing="1" cellpadding="3">
+	<tbody>
+		<tr bgcolor="#f0f0f0">
+			<td align="center" colspan="2" class="colHeaderLink">
+				<a href="$baseurl/secure/project/EditWatcherFieldSettings!default.jspa" id=""><b>Edit Configuration</b></a>
+			</td>
+		</tr>
+	</tbody>
 </table>

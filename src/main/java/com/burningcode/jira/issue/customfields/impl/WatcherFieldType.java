@@ -54,6 +54,8 @@ import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.webresource.WebResourceManager;
 import com.atlassian.crowd.embedded.api.User;
+import com.burningcode.jira.plugin.WatcherFieldSettings;
+import com.opensymphony.module.propertyset.PropertySet;
 
 /**
  * This class is a custom field type that allows users with
@@ -173,10 +175,17 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return True if has permissions, false otherwise.
      */
     public boolean isUserPermitted(Issue issue){
+    	PropertySet propertySet = WatcherFieldSettings.getPropertySet();
+    	User user = _AuthenticationContext.getLoggedInUser();
+
+    	// Allow JIRA service to set the watcher field, if enabled to do so.
+    	if(propertySet.equals("ignorePermissions") && propertySet.getBoolean("ignorePermissions") && user == null)
+    		return true;
+
         return _PermissionManager.hasPermission(
                 Permissions.MANAGE_WATCHER_LIST, 
                 issue.getProjectObject(),
-                _AuthenticationContext.getLoggedInUser());
+                user);
     }
 
     /**
@@ -195,7 +204,13 @@ public class WatcherFieldType extends MultiUserCFType {
         String output = "";
         for(Iterator<User> i = watcherList.iterator(); i.hasNext();){
             User user = (User)i.next();
-            output += user.getDisplayName() + (i.hasNext()? ", " : "");
+            String displayName = user.getDisplayName();
+
+            // Add fix for issue JWFP-25
+            if(displayName == null)
+            	displayName = user.getName();
+
+            output += displayName + (i.hasNext()? ", " : "");
         }
 
         return output;
@@ -230,13 +245,13 @@ public class WatcherFieldType extends MultiUserCFType {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
         params.put("hasPermission", new Boolean(false));
 
-        // TODO: rbarham - Change this try/catch statement to just check if "issue" == null.  I believe that is all it's doing when catching the exception.
-        try{
+        
+        if(issue == null || issue.getKey() == null) {
+        	if(isJiraAdmin(_AuthenticationContext.getLoggedInUser())){
+        		params.put("hasPermission", new Boolean(true));
+        	}
+        }else{
             if(isUserPermitted(issue)){
-                params.put("hasPermission", new Boolean(true));
-            }
-        }catch(Exception e){
-            if(isJiraAdmin(_AuthenticationContext.getLoggedInUser())){
                 params.put("hasPermission", new Boolean(true));
             }
         }
