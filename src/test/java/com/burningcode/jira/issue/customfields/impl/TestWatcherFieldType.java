@@ -3,11 +3,17 @@ package com.burningcode.jira.issue.customfields.impl;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.ofbiz.core.entity.GenericValue;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
@@ -25,8 +31,15 @@ import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.webresource.WebResourceManager;
+import com.burningcode.jira.plugin.WatcherFieldSettings;
+import com.opensymphony.module.propertyset.PropertySet;
+import com.opensymphony.module.propertyset.PropertySetManager;
+import com.opensymphony.module.propertyset.map.MapPropertySet;
 
 import junit.framework.TestCase;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(PropertySetManager.class)
 
 public class TestWatcherFieldType extends TestCase {
 	private Project project;
@@ -68,6 +81,13 @@ public class TestWatcherFieldType extends TestCase {
 		Project project = mock(Project.class);
 		
 		return project;
+	}
+	
+	private void setupPropertySetManager(){
+		PowerMockito.mockStatic(PropertySetManager.class);
+		MapPropertySet propertySet = new MapPropertySet();
+		propertySet.setMap(new HashMap<String, Object>());
+		when(PropertySetManager.getInstance(eq("ofbiz"), anyMap())).thenReturn(propertySet);
 	}
 	
 	/**
@@ -164,6 +184,8 @@ public class TestWatcherFieldType extends TestCase {
 		watcherManager = getWatcherManager();
 		userUtil = getUserUtil();
 		
+		setupPropertySetManager();
+		
 		super.setUp();
 	}
 
@@ -199,7 +221,8 @@ public class TestWatcherFieldType extends TestCase {
 		whenStartWatching(watcherManager, watchedUsers);
 
 		WatcherFieldType fieldType = getWatcherFieldType();
-		fieldType.addWatchers(getIssue(), usernames);
+		Issue issue = getIssue();
+		fieldType.addWatchers(issue, usernames);
 		assertEquals("Incorrect number of users watching issue", 8, watchedUsers.size());
 
 		assertEquals("Expected watched users is different than actual", expectedWatchedUsernames.size(), watchedUsers.size());

@@ -316,6 +316,8 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     /**
      * Verifies that JWFP-13 is resolved
      * 
+     * Run using: atlas-debug --jvmargs "-server -Xms1024m -Xmx1024m -XX:PermSize=256m -Datlassian.mail.senddisabled=false -Datlassian.mail.fetchdisabled=false -Datlassian.mail.popdisabled=false"
+     * 
      * @throws InterruptedException
      * @throws MessagingException
      * @throws UnableToAddServiceException 
