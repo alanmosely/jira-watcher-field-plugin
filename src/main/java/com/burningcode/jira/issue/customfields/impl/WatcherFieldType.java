@@ -179,7 +179,7 @@ public class WatcherFieldType extends MultiUserCFType {
     	User user = _AuthenticationContext.getLoggedInUser();
 
     	// Allow JIRA service to set the watcher field, if enabled to do so.
-    	if(propertySet.equals("ignorePermissions") && propertySet.getBoolean("ignorePermissions") && user == null)
+    	if(propertySet.exists("ignorePermissions") && propertySet.getBoolean("ignorePermissions") && user == null)
     		return true;
 
         return _PermissionManager.hasPermission(

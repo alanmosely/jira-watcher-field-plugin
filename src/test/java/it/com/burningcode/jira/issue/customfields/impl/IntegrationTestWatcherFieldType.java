@@ -198,6 +198,22 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	assertWatchersPresent(issueKey, new String[]{usernames[1]});
     }
     
+    public void testSettings() {
+    	// Browse to the settings page
+    	navigation.gotoResource("WatcherFieldSettings.jspa");
+    	
+    	// Click on the edit buttong
+    	tester.clickLink("edit_watcher_field_settings");
+    	
+    	// 
+        tester.assertRadioOptionSelected("ignorePermissions", "false");
+        tester.setFormElement("ignorePermissions", "true");
+        tester.assertRadioOptionSelected("ignorePermissions", "true");
+        tester.submit("Update");
+        navigation.gotoResource("EditWatcherFieldSettings!default.jspa");
+        tester.assertRadioOptionSelected("ignorePermissions", "true");
+    }
+    
     /**
      * Checks simple filter/searching using the watcher field.  Also checks that issues are being re-indexed on adding watchers (otherwise, searches would not work).
      */
@@ -345,7 +361,7 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
 		// Add service to create issues from POP server
 		setupPopService("project=" + PROJECT_KEY + ", issuetype=" + ISSUE_BUG);
 
-        String subject = "This is created by email";
+        String subject = "This is created by email without watchers";
         String message = "This is the subject.  It is a test subject.";
         
         // Send the message
@@ -354,9 +370,27 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
         // Keep the mail server up long enough for the JIRA POP service to connect to
         greenMail.waitForIncomingEmail(65000, 10);
 
-        navigation.issue().gotoIssue(PROJECT_KEY + "-1");
-//        if(!greenMail.waitForIncomingEmail(1))
-//    	  fail("No email messages found");
+        // Check that a default watcher was not added with the ignorePermissions set to false
+        assertWatchersNotPresent(PROJECT_KEY + "-1", new String[]{BOB_USERNAME});
+
+        // Set the ignorePermissions to true
+        navigation.gotoResource("EditWatcherFieldSettings!default.jspa");
+        tester.setFormElement("ignorePermissions", "true");
+        tester.assertRadioOptionSelected("ignorePermissions", "true");
+        tester.submit("Update");
+        navigation.gotoResource("EditWatcherFieldSettings!default.jspa");
+        tester.assertRadioOptionSelected("ignorePermissions", "true");
+        
+        subject = "This is created by email with watchers";
+        message = "This is the subject.  It is a test subject.";
+        
+        GreenMailUtil.sendTextEmail(ADMIN_EMAIL, ADMIN_EMAIL, subject, message, greenMail.getSmtp().getServerSetup());
+		
+        // Keep the mail server up long enough for the JIRA POP service to connect to
+        greenMail.waitForIncomingEmail(75000, 10);
+
+        // Check that a default watcher was added with the ignorePermissions set to true
+        assertWatchersPresent(PROJECT_KEY + "-2", new String[]{BOB_USERNAME});
     }
     
     /*
