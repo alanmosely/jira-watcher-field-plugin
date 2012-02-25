@@ -43,8 +43,6 @@ import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
-import com.atlassian.jira.issue.fields.config.FieldConfig;
-import com.atlassian.jira.issue.fields.config.FieldConfigItemType;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;

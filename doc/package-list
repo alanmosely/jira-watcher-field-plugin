@@ -1,5 +1,8 @@
 com.burningcode.jira.issue.customfields.impl
 com.burningcode.jira.issue.customfields.searchers
+com.burningcode.jira.plugin
 com.burningcode.jira.rest
 com.burningcode.jira.web.action.issue
+it.com.burningcode.jira
 it.com.burningcode.jira.issue.customfields.impl
+it.com.burningcode.jira.rest

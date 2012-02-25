@@ -109,8 +109,8 @@
     <properties>
         <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
 
-        <jira.version>4.3</jira.version>
-        <jira.data.version>4.3</jira.data.version>
+        <jira.version>4.4</jira.version>
+        <jira.data.version>4.4</jira.data.version>
         <atlassian.rest.version>2.6.2</atlassian.rest.version>
         <amps.version>3.7.2</amps.version>
         

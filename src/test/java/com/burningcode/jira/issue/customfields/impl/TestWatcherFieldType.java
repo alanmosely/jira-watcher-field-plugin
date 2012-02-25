@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -31,8 +30,6 @@ import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.webresource.WebResourceManager;
-import com.burningcode.jira.plugin.WatcherFieldSettings;
-import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.module.propertyset.PropertySetManager;
 import com.opensymphony.module.propertyset.map.MapPropertySet;
 

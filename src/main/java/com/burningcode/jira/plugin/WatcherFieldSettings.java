@@ -13,6 +13,11 @@ import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 
+/**
+ * Used to handle settings for the JIRA Watcher Field.
+ * @author Ray
+ *
+ */
 public class WatcherFieldSettings extends JiraWebActionSupport {
 	private static PropertySet propertySet;
 	private static final long serialVersionUID = -8378909066515942570L;
@@ -20,11 +25,19 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	private PermissionManager permissionManager;
 	private JiraAuthenticationContext authenticationContext;
 
+	/**
+	 * Default Constructor
+	 * @param permissionManager
+	 * @param authenticationContext
+	 */
 	public WatcherFieldSettings(PermissionManager permissionManager, JiraAuthenticationContext authenticationContext) {
 		this.permissionManager = permissionManager;
 		this.authenticationContext = authenticationContext;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String doDefault() throws Exception {
 		if(!hasAdminPermission())
@@ -33,6 +46,9 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		return super.doDefault();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected String doExecute() throws Exception {
 		if(!hasAdminPermission())
@@ -41,6 +57,9 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		return super.doExecute();
 	}
 
+	/**
+	 * Called when editing the settings
+	 */
 	public String doEdit() throws Exception {
 		if(!hasAdminPermission())
 			return PERMISSION_VIOLATION_RESULT;
@@ -57,12 +76,19 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		return getRedirect("WatcherFieldSettings.jspa");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setErrorMessages(Collection arg0) {
+	public void setErrorMessages(@SuppressWarnings("rawtypes") Collection arg0) {
 		super.setErrorMessages(arg0);
 
 	}
 
+	/**
+	 * Static method that returns the PropertySet used to get/store settings in the database
+	 * @return The PropertySet to reference the data
+	 */
 	public static PropertySet getPropertySet() {
 		if(propertySet == null) {
 			HashMap<String, Object> args = new HashMap<String, Object>();
@@ -80,10 +106,17 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		return propertySet;
 	}
 	
+	/**
+	 * Method used to reference the {@link WatcherFieldSettings#getPropertySet()}
+	 */
 	public PropertySet getProperties() {
 		return WatcherFieldSettings.getPropertySet();
 	}
 	
+	/**
+	 * Does the current logged in user has admin permissions
+	 * @return True if has permissions, false otherwise.
+	 */
     protected boolean hasAdminPermission() {
     	return permissionManager.hasPermission(
     			Permissions.ADMINISTER,
