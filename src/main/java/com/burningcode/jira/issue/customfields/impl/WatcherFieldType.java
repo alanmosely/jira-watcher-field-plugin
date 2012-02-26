@@ -27,6 +27,7 @@
 package com.burningcode.jira.issue.customfields.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -38,12 +39,12 @@ import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.comparator.UserComparator;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverter;
-import com.atlassian.jira.issue.customfields.converters.StringConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
@@ -82,27 +83,28 @@ public class WatcherFieldType extends MultiUserCFType {
      * 
      * @see com.atlassian.jira.issue.customfields.impl.MultiUserCFType#MultiUserCFType
      */
-    public WatcherFieldType(CustomFieldValuePersister customFieldValuePersister,
-            StringConverter stringConverter,
-            GenericConfigManager genericConfigManager,
-            MultiUserConverter multiUserConverter,
-            ApplicationProperties applicationProperties,
-            JiraAuthenticationContext authenticationContext,
-            UserPickerSearchService searchService,
-            FieldVisibilityManager fieldVisibilityManager,
+    public WatcherFieldType(
+			CustomFieldValuePersister customFieldValuePersister,
+			GenericConfigManager genericConfigManager,
+			MultiUserConverter multiUserConverter,
+			ApplicationProperties applicationProperties,
+			JiraAuthenticationContext authenticationContext,
+			UserPickerSearchService searchService,
+			FieldVisibilityManager fieldVisibilityManager,
+			JiraBaseUrls jiraBaseUrls,
             PermissionManager permissionManager,
             WatcherManager watcherManager,
             UserUtil userUtil,
             WebResourceManager webResourceManager) {
-        super(customFieldValuePersister, stringConverter, genericConfigManager,
-                multiUserConverter, applicationProperties,
-                authenticationContext, searchService, fieldVisibilityManager);
+		super(customFieldValuePersister, genericConfigManager, multiUserConverter,
+				applicationProperties, authenticationContext, searchService,
+				fieldVisibilityManager, jiraBaseUrls);
         _AuthenticationContext = authenticationContext;
         _PermissionManager = permissionManager;
         _WatcherManager = watcherManager;
         _UserUtil = userUtil;
         _WebResourceManager = webResourceManager;
-    }
+	}
 
     /**
      * Add a list of users as watchers on an issue.
@@ -110,7 +112,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @param issue The issue to add watchers to.
      * @param userList A list of User objects to add as watchers.
      */
-    protected void addWatchers(Issue issue, List<?> userList){
+    protected void addWatchers(Issue issue, Collection<?> userList){
         if(userList != null && isIssueEditable(issue)){
             for(Iterator<?> i = userList.iterator(); i.hasNext();){
             	Object next = i.next();
@@ -122,8 +124,8 @@ public class WatcherFieldType extends MultiUserCFType {
             		user = _UserUtil.getUserObject((String)next);
             	}
 
-                if(user != null && !_WatcherManager.isWatching(user, issue.getGenericValue())){
-                    _WatcherManager.startWatching(user, issue.getGenericValue());
+                if(user != null && !_WatcherManager.isWatching(user, issue)){
+                    _WatcherManager.startWatching(user, issue);
                 }
             }
         }
@@ -137,8 +139,9 @@ public class WatcherFieldType extends MultiUserCFType {
      * @param value List of User objects to add as watchers.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#createValue(CustomField, Issue, Object)
      */
-    public void createValue(CustomField customField, Issue issue, Object value) {
-   		addWatchers(issue, (List<?>)value);
+    @Override
+    public void createValue(CustomField customField, Issue issue, Collection<User> value) {
+    	addWatchers(issue, value);
     }
 
     /**
@@ -192,8 +195,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return The full names of watching users in a comma separated list.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getChangelogValue(CustomField, Object)
      */
-	@SuppressWarnings("unchecked")
-	public String getChangelogValue(CustomField field, Object value) {
+	public String getChangelogValue(CustomField field, Collection<User> value) {
    		List<User> watcherList = (List<User>)value;
 
         if(watcherList == null || watcherList.isEmpty())
@@ -221,7 +223,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return List of User objects that are watchers on the passed issue.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getValueFromIssue(CustomField, Issue)
      */
-    public Object getValueFromIssue(CustomField field, Issue issue) {
+    public Collection<User> getValueFromIssue(CustomField field, Issue issue) {
         if(!issue.isCreated()){
             return super.getValueFromIssue(field, issue);
         }
@@ -288,8 +290,8 @@ public class WatcherFieldType extends MultiUserCFType {
             		user = _UserUtil.getUserObject((String)next);
             	}
 
-                if(user != null && _WatcherManager.isWatching(user, issue.getGenericValue())){
-                    _WatcherManager.stopWatching(user, issue.getGenericValue());
+                if(user != null && _WatcherManager.isWatching(user, issue)){
+                    _WatcherManager.stopWatching(user, issue);
                 }
             }
         }
@@ -304,8 +306,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * a watcher will be removed.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#updateValue(CustomField, Issue, Object)
      */
-    @SuppressWarnings("unchecked")
-	public void updateValue(CustomField customField, Issue issue, Object value) {
+	public void updateValue(CustomField customField, Issue issue, Collection<User> value) {
         List<User> newWatchers = (List<User>)value;
         List<User> currWatchers = getWatchers(issue);
 
@@ -324,10 +325,10 @@ public class WatcherFieldType extends MultiUserCFType {
      * 
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#valuesEqual(Object, Object)
      */
-    @SuppressWarnings("unchecked")
-	public boolean valuesEqual(Object v1, Object v2) {
-    	List<User> watcherList1 = (v1 != null? (List<User>)v1 : new ArrayList<User>());
-    	List<User> watcherList2 = (v2 != null? (List<User>)v2 : new ArrayList<User>());
+    @Override
+    public boolean valuesEqual(Collection<User> v1, Collection<User> v2) {
+    	ArrayList<User> watcherList1 = (v1 != null? (ArrayList<User>)v1 : new ArrayList<User>());
+    	ArrayList<User> watcherList2 = (v2 != null? (ArrayList<User>)v2 : new ArrayList<User>());
     	Collections.sort(watcherList1, (Comparator<? super User>)(new UserComparator()));
     	Collections.sort(watcherList2, (Comparator<? super User>)(new UserComparator()));
    		

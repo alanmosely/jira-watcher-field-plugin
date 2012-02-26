@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.ofbiz.core.entity.GenericValue;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -19,10 +18,10 @@ import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverter;
-import com.atlassian.jira.issue.customfields.converters.StringConverter;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
 import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -112,9 +111,9 @@ public class TestWatcherFieldType extends TestCase {
 			
 			// Make the first and last User objects watching the issue
 			if(i == 0 || i == (count - 1)){
-				when(watcherManager.isWatching(eq(user), (GenericValue)anyObject())).thenReturn(true);
+				when(watcherManager.isWatching(eq(user), (Issue)anyObject())).thenReturn(true);
 			}else{
-				when(watcherManager.isWatching(eq(user), (GenericValue)anyObject())).thenReturn(false);
+				when(watcherManager.isWatching(eq(user), (Issue)anyObject())).thenReturn(false);
 			}
 			users.add(user);
 		}
@@ -151,14 +150,14 @@ public class TestWatcherFieldType extends TestCase {
 			UserUtil userUtil){
 
 		WatcherFieldType watcherFieldType = new WatcherFieldType(
-			mock(CustomFieldValuePersister.class), 
-			mock(StringConverter.class), 
-			mock(GenericConfigManager.class), 
-			mock(MultiUserConverter.class), 
-			mock(ApplicationProperties.class), 
-			authenticationContext,
-			mock(UserPickerSearchService.class), 
+			mock(CustomFieldValuePersister.class),
+			mock(GenericConfigManager.class),
+			mock(MultiUserConverter.class),
+			mock(ApplicationProperties.class),
+			mock(JiraAuthenticationContext.class),
+			mock(UserPickerSearchService.class),
 			mock(FieldVisibilityManager.class),
+			mock(JiraBaseUrls.class),
 			permissionManager,
 			watcherManager,
 			userUtil,
@@ -193,7 +192,7 @@ public class TestWatcherFieldType extends TestCase {
 		ArrayList<String> usernames = new ArrayList<String>();
 		final ArrayList<String> expectedWatchedUsernames = new ArrayList<String>();
 
-		when(watcherManager.isWatching((User)anyObject(), (GenericValue)anyObject())).thenAnswer(new Answer<Object>() {
+		when(watcherManager.isWatching((User)anyObject(), (Issue)anyObject())).thenAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
 				User user = (User)args[0];
@@ -265,7 +264,7 @@ public class TestWatcherFieldType extends TestCase {
 		whenStartWatching(watcherManager, watchedUsers);
 
 		WatcherFieldType fieldType = getWatcherFieldType();
-		fieldType.createValue(mock(CustomField.class), getIssue(), (Object)users);
+		fieldType.createValue(mock(CustomField.class), getIssue(), users);
 		
 		assertEquals("Incorrect number of users watching issue", 8, watchedUsers.size());
 	}
@@ -307,6 +306,6 @@ public class TestWatcherFieldType extends TestCase {
 				watchedUsers.add((User)args[0]);
 				return null;
 			}
-		}).when(watcherManager).startWatching((User)anyObject(), (GenericValue)anyObject());
+		}).when(watcherManager).startWatching((User)anyObject(), (Issue)anyObject());
 	}
 }

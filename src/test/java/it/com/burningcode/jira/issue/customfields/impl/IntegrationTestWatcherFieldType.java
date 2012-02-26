@@ -73,6 +73,10 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
         administration.restoreData("JWF_FieldCreated.xml");
         jiraVersion = (new BuildUtilsInfoImpl()).getVersion();
     }
+    
+    @Override
+    public void tearDownTest() {
+    }
 
     protected WebForm setWatcherFieldForm(WebForm[] forms, String fieldId, String values){
     	return setWatcherFieldForm(forms, fieldId, values, null);
@@ -105,12 +109,11 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	
     	navigation.gotoCustomFields();
 
-    	// JIRA 4.4.x
-    	if(jiraVersion == "4.4"){
-    		tester.assertTableNotPresent("custom-fields");
+    	if(jiraVersion == "4.3"){
+			tester.assertTextNotInTable("custom-fields", FIELD_NAME);
+			tester.assertTextNotInTable("custom-fields", FIELD_TYPE);
     	}else{
-    	 tester.assertTextNotInTable("custom-fields", FIELD_NAME);
-    	 tester.assertTextNotInTable("custom-fields", FIELD_TYPE);
+    		tester.assertTableNotPresent("custom-fields");
     	}
 
         administration.customFields().addCustomField(FIELD_TYPE_KEY, FIELD_NAME);
@@ -129,13 +132,13 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	tester.assertTextInTable("custom-fields", FIELD_TYPE);
     	administration.customFields().removeCustomField(FIELD_ID);
     	
-    	// JIRA 4.4.x
-    	if(jiraVersion == "4.4"){
-    		tester.assertTableNotPresent("custom-fields");
+    	if(jiraVersion == "4.3"){
+			tester.assertTextNotInTable("custom-fields", FIELD_NAME);
+			tester.assertTextNotInTable("custom-fields", FIELD_TYPE);
     	}else{
-    	 tester.assertTextNotInTable("custom-fields", FIELD_NAME);
-    	 tester.assertTextNotInTable("custom-fields", FIELD_TYPE);
+    		tester.assertTableNotPresent("custom-fields");
     	}
+
     }
     
     /**

@@ -29,16 +29,15 @@ package com.burningcode.jira.web.action.issue;
 import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
 
+import com.atlassian.crowd.embedded.api.CrowdService;
 import com.atlassian.jira.bc.issue.watcher.WatcherService;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
-import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.index.IndexException;
 import com.atlassian.jira.issue.index.IssueIndexManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.web.action.issue.ManageWatchers;
 import com.atlassian.velocity.VelocityManager;
-import com.opensymphony.user.EntityNotFoundException;
 
 /**
  * This class is used to reindex an issue when watchers are added via the "Manage Watch List" control.
@@ -61,16 +60,18 @@ public class ManageWatchersReindex extends ManageWatchers {
      * @param watcherManager
      * @param velocityManager
      * @param searchService
-     * @override
      */
 	public ManageWatchersReindex(WatcherManager watcherManager,
 			VelocityManager velocityManager,
 			UserPickerSearchService searchService,
-			WatcherService watcherService, PermissionManager permissionManager) {
-		super(watcherManager, velocityManager, searchService, watcherService, permissionManager);
-		issueIndexManager = ComponentManager.getInstance().getIndexManager();
+			WatcherService watcherService, PermissionManager permissionManager,
+			CrowdService crowdService,
+			IssueIndexManager issueIndexManager) {
+		super(watcherManager, velocityManager, searchService, watcherService,
+				permissionManager, crowdService);
+//		issueIndexManager = ComponentManager.getInstance().getIndexManager();
+		this.issueIndexManager = issueIndexManager;
 	}
-
 
     /**
      * Reindexes the current issue
@@ -89,8 +90,7 @@ public class ManageWatchersReindex extends ManageWatchers {
      * 
      * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
      */
-    public String doStartWatchers() throws EntityNotFoundException,
-    GenericEntityException {
+    public String doStartWatchers() throws GenericEntityException {
         String result = super.doStartWatchers();
         reindexIssue();
 
@@ -114,8 +114,7 @@ public class ManageWatchersReindex extends ManageWatchers {
      * 
      * @throws com.opensymphony.user.EntityNotFoundException, org.ofbiz.core.entity.GenericEntityException
      */
-    public String doStopWatchers() throws EntityNotFoundException,
-    GenericEntityException {
+    public String doStopWatchers() throws GenericEntityException {
         String result = super.doStopWatchers();
         reindexIssue();
 
