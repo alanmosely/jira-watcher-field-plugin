@@ -245,15 +245,12 @@ public class WatcherFieldType extends MultiUserCFType {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
         params.put("hasPermission", new Boolean(false));
 
-        
-        if(issue == null || issue.getKey() == null) {
+        if(issue == null || issue.getProjectObject() == null){
         	if(isJiraAdmin(_AuthenticationContext.getLoggedInUser())){
         		params.put("hasPermission", new Boolean(true));
         	}
-        }else{
-            if(isUserPermitted(issue)){
-                params.put("hasPermission", new Boolean(true));
-            }
+        }else if(isUserPermitted(issue)){
+        	params.put("hasPermission", new Boolean(true));
         }
 
         return params; 

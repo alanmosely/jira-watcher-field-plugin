@@ -69,7 +69,6 @@ public class ManageWatchersReindex extends ManageWatchers {
 			IssueIndexManager issueIndexManager) {
 		super(watcherManager, velocityManager, searchService, watcherService,
 				permissionManager, crowdService);
-//		issueIndexManager = ComponentManager.getInstance().getIndexManager();
 		this.issueIndexManager = issueIndexManager;
 	}
 

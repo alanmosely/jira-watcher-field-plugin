@@ -4,8 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 import webwork.action.ActionContext;
 
+import com.opensymphony.module.propertyset.InvalidPropertyTypeException;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.module.propertyset.PropertySetManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -21,6 +25,7 @@ import com.atlassian.jira.web.action.JiraWebActionSupport;
 public class WatcherFieldSettings extends JiraWebActionSupport {
 	private static PropertySet propertySet;
 	private static final long serialVersionUID = -8378909066515942570L;
+	private static final Logger log = LoggerFactory.getLogger(WatcherFieldSettings.class);
 	
 	private PermissionManager permissionManager;
 	private JiraAuthenticationContext authenticationContext;
@@ -97,12 +102,24 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	        args.put("entityId", new Long(1));
 
 	        propertySet = PropertySetManager.getInstance("ofbiz", args);
-	        
-	        // Set default settings
-			if(!propertySet.exists("ignorePermissions") || !(propertySet.getObject("ignorePermissions") instanceof Boolean)) {
+
+	        try{
+		        // Set default settings
+				if(!propertySet.exists("ignorePermissions")) {
+					propertySet.setBoolean("ignorePermissions", false);
+				}else{
+		        	// Will throw an exception if of invalid type
+		        	propertySet.getBoolean("ignorePermissions");
+				}
+		    }catch (InvalidPropertyTypeException e) {
+		    	log.debug("Property ignorePermissions set to an invalid type.  Setting to default value, false.");
+		    	propertySet.setBoolean("ignorePermissions", false);
+			}catch (Exception e) {
+				log.debug("Error with ignorePermissions: "+e.getMessage());
 				propertySet.setBoolean("ignorePermissions", false);
 			}
 		}
+
 		return propertySet;
 	}
 	

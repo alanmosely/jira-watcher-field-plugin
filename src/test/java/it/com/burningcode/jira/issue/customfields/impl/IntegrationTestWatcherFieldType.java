@@ -12,6 +12,7 @@ import com.atlassian.jira.functest.framework.navigator.ContainsIssueKeysConditio
 import com.atlassian.jira.functest.framework.navigator.GenericQueryCondition;
 import com.atlassian.jira.functest.framework.navigator.NavigatorSearch;
 import com.atlassian.jira.functest.framework.navigator.SearchResultsCondition;
+import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.util.BuildUtilsInfoImpl;
 import com.atlassian.jira.webtests.EmailFuncTestCase;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryItem;
@@ -480,4 +481,35 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
         assertFormElementPresent("stopwatch_bob");
     }
     */
+    
+    public void testNonAdminUserManageWatchersWithoutPermission() {
+    	administration.restoreData("JWF_FieldCreated.xml");
+    	administration.usersAndGroups().addUser(FRED_USERNAME, FRED_PASSWORD, FRED_FULLNAME, FRED_EMAIL, false);
+    	administration.usersAndGroups().addUserToGroup(FRED_USERNAME, JIRA_DEV_GROUP);
+    	
+    	navigation.login(FRED_USERNAME, FRED_PASSWORD);
+    	
+    	navigation.issue().goToCreateIssueForm("Test", ISSUE_TYPE_BUG);
+    	assertions.getTextAssertions().assertTextPresent("You do not have permission to manage the watcher list.");
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue create");
+    	assertIssueExists(issueKey);
+    }
+    
+    public void testNonAdminUserManageWatchersWithPermission() {
+    	administration.restoreData("JWF_FieldCreated.xml");
+    	administration.usersAndGroups().addUser(FRED_USERNAME, FRED_PASSWORD, FRED_FULLNAME, FRED_EMAIL, false);
+    	administration.usersAndGroups().addUserToGroup(FRED_USERNAME, JIRA_DEV_GROUP);
+    	
+    	administration.permissionSchemes().scheme(DEFAULT_PERM_SCHEME).grantPermissionToGroup(Permissions.MANAGE_WATCHER_LIST, JIRA_DEV_GROUP);
+    	
+    	navigation.login(FRED_USERNAME, FRED_PASSWORD);
+    	
+    	navigation.issue().goToCreateIssueForm("Test", ISSUE_TYPE_BUG);
+    	assertions.getTextAssertions().assertTextNotPresent("You do not have permission to manage the watcher list.");
+    	HashMap<String, String[]> params = getUsernameFieldMap(new String[]{BOB_USERNAME});
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue create", params);
+    	assertIssueExists(issueKey);
+    	tester.assertTextPresent(FIELD_NAME);
+    	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME});
+    }
 }
