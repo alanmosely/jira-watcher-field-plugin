@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.atlassian.jira.functest.framework.util.url.URLUtil;
+import com.atlassian.jira.util.BuildUtilsInfoImpl;
 import com.atlassian.jira.util.json.JSONException;
 import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.jira.webtests.ztests.bundledplugins2.rest.RestFuncTest;
@@ -19,7 +20,8 @@ import static it.com.burningcode.jira.IntegrationTestHelper.*;
 public class IntegrationTestWatcherResource extends RestFuncTest {
     @Override
     public void setUpTest() {
-        administration.restoreData("JWF_FieldCreated.xml");
+    	String jiraVersion = (new BuildUtilsInfoImpl()).getVersion();
+        administration.restoreData(EXPORT_WITH_FIELD(jiraVersion));
         super.setUpTest();
     }
 

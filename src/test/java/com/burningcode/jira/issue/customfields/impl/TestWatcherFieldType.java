@@ -169,9 +169,10 @@ public class TestWatcherFieldType extends TestCase {
 	
 	private WatcherManager getWatcherManager(){
 		WatcherManager manager = mock(WatcherManager.class);
+		when(manager.isWatchingEnabled()).thenReturn(true);
 		return manager;
 	}
-	
+
 	@Override
 	protected void setUp() throws Exception {
 		project = getProject();
@@ -200,7 +201,7 @@ public class TestWatcherFieldType extends TestCase {
 				return isWatching;
 			}
 		});
-
+		
 		for(int i = 0; i < 10; i++){
 			String username = String.valueOf(i);
 			
@@ -267,6 +268,32 @@ public class TestWatcherFieldType extends TestCase {
 		fieldType.createValue(mock(CustomField.class), getIssue(), users);
 		
 		assertEquals("Incorrect number of users watching issue", 8, watchedUsers.size());
+	}
+	
+	/**
+	 * Tests that {@link WatcherFieldType#getChangelogValue(CustomField, java.util.Collection)} works correctly.
+	 * 
+	 * Added test for JWFP-28 fix
+	 */
+	public void testGetChangelogValue() {
+		User watcher01 = mock(User.class);
+		when(watcher01.getDisplayName()).thenReturn("User Watcher 01");
+		User watcher02 = mock(User.class);
+		when(watcher02.getDisplayName()).thenReturn(null);
+		when(watcher02.getName()).thenReturn("Watcher02");
+		User watcher03 = mock(User.class);
+		when(watcher03.getDisplayName()).thenReturn("User Watcher 03");
+
+		ArrayList<User> watchers = new ArrayList<User>();
+		watchers.add(watcher01);
+		watchers.add(watcher02);
+		watchers.add(null);
+		watchers.add(watcher03);
+
+		WatcherFieldType fieldType = getWatcherFieldType();
+		String expected = "User Watcher 01, Watcher02, User Watcher 03";
+		String actual = fieldType.getChangelogValue(mock(CustomField.class), watchers);
+		assertEquals(expected, actual);
 	}
 	
 	public void testIsIssueEditable(){

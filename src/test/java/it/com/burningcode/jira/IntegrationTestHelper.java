@@ -8,5 +8,27 @@ public class IntegrationTestHelper {
     public static String FIELD_NAME = "My Watchers";
     public static String FIELD_TYPE = "Watcher Field";
     
-    public static String PROJECT_KEY = "TST"; 
+    public static String PROJECT_KEY = "TST";
+    
+    public static void EXPORT_WITH_FIELD() {
+    	EXPORT_WITH_FIELD(null);
+    }
+    
+    public static String EXPORT_WITH_FIELD(String version) {
+    	if(version == null || version == "5.0")
+        	return "JWF_FieldCreated.xml";
+
+    	return "JWF_FieldCreated_"+version+".zip";
+    }
+    
+    public static void EXPORT_WITHOUT_FIELD() {
+    	EXPORT_WITHOUT_FIELD(null);
+    }
+    
+    public static String EXPORT_WITHOUT_FIELD(String version) {
+    	if(version == null || version == "5.0")
+    		return "JWF_NoFieldCreated.xml";
+
+		return "JWF_NoFieldCreated_"+version+".zip";
+    }
 }

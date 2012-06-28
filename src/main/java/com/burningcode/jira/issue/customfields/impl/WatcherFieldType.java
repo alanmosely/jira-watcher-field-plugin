@@ -116,16 +116,17 @@ public class WatcherFieldType extends MultiUserCFType {
         if(userList != null && isIssueEditable(issue)){
             for(Iterator<?> i = userList.iterator(); i.hasNext();){
             	Object next = i.next();
-            	User user = null;
+            	User watcher = null;
 
             	if(next instanceof User){
-            		user = (User)next;
+            		watcher = (User)next;
             	}else if(next instanceof String){
-            		user = _UserUtil.getUserObject((String)next);
+            		watcher = _UserUtil.getUserObject((String)next);
             	}
 
-                if(user != null && !_WatcherManager.isWatching(user, issue)){
-                    _WatcherManager.startWatching(user, issue);
+            	// JWFP-22: Added check for watcher's permission to browse project
+                if(watcher != null && _PermissionManager.hasPermission(Permissions.BROWSE, issue.getProjectObject(), watcher) && !_WatcherManager.isWatching(watcher, issue)){
+                    _WatcherManager.startWatching(watcher, issue);
                 }
             }
         }
@@ -152,7 +153,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return True if able to edit, false otherwise.
      */
     protected boolean isIssueEditable(Issue issue){
-        if(issue.isCreated() && issue.isEditable() && isUserPermitted(issue)){
+        if(issue.isCreated() && issue.isEditable() && _WatcherManager.isWatchingEnabled() && isUserPermitted(issue)){
             return true;
         }
 
@@ -204,6 +205,11 @@ public class WatcherFieldType extends MultiUserCFType {
         String output = "";
         for(Iterator<User> i = watcherList.iterator(); i.hasNext();){
             User user = (User)i.next();
+
+        	// Fix for JWFP-28
+        	if(user == null)
+        		continue;
+
             String displayName = user.getDisplayName();
 
             // Add fix for issue JWFP-25

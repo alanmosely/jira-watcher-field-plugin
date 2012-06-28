@@ -1,3 +1,4 @@
+
 package it.com.burningcode.jira.issue.customfields.impl;
 
 import java.io.IOException;
@@ -31,8 +32,8 @@ import static it.com.burningcode.jira.IntegrationTestHelper.*;
  * @author Ray Barham
  */
 public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
-	private String jiraVersion;
-	
+	protected String jiraVersion;
+
 	protected void assertIssueExists(String issueKey){
 		String issueId = navigation.issue().getId(issueKey).trim();
 		assertFalse("Issue doesn't exist.", issueId.isEmpty());
@@ -68,11 +69,23 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	params.put(FIELD_ID, usernames);
     	return params;
     }
+    
+    protected WebForm getFormByName(WebForm[] forms, String formName) {
+    	// Loop through the forms till you one w/ the form name 
+    	for(WebForm form : forms){
+    		if(form.getName().equals(formName)){
+    			return form;
+    		}
+    	}
+    	fail("No form found with name "+ formName);
+
+    	return null;    	
+    }
 
     @Before
     public void setUpTest() {
-        administration.restoreData("JWF_FieldCreated.xml");
         jiraVersion = (new BuildUtilsInfoImpl()).getVersion();
+        administration.restoreData(EXPORT_WITH_FIELD(jiraVersion));
     }
     
     @Override
@@ -106,7 +119,7 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     public void testCreateWatcherField() {
     	log.log("### Test creating watcher field ###");
     	
-    	administration.restoreData("JWF_NoFieldCreated.xml");
+    	administration.restoreData(EXPORT_WITHOUT_FIELD(jiraVersion));
     	
     	navigation.gotoCustomFields();
 
@@ -139,7 +152,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	}else{
     		tester.assertTableNotPresent("custom-fields");
     	}
-
     }
     
     /**
@@ -154,7 +166,7 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	tester.assertTextPresent(FIELD_NAME);
     	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME});
     }
-    
+
     /**
      * Test adding watchers via the watcher field on issue edit.
      * @throws SAXException 
@@ -168,7 +180,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue edit.");
     	assertWatchersNotPresent(issueKey, usernames);
 
-    	
     	navigation.issue().gotoEditIssue(issueKey);
     	setWatcherFieldForm(this.form.getForms(), FIELD_ID, ADMIN_USERNAME + ", " + BOB_USERNAME).submit();
 
@@ -184,7 +195,7 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	log.log("### Test modify watcher on issue edit ###");
     	
     	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
-
+    	
     	HashMap<String, String[]> params = getUsernameFieldMap(usernames);
     	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test modify watchers on issue edit", params);
     	
@@ -195,6 +206,28 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	
     	assertWatchersPresent(issueKey, new String[]{usernames[0]});
     	assertWatchersNotPresent(issueKey, new String[]{usernames[1]});
+    }
+    
+    public void testMovingIssueWithWatchers() throws IOException, SAXException {
+    	log.log("### Test moving issues with watchers ###");
+    	
+    	administration.project().addProject("Test Move", "TESTMOVE", ADMIN_USERNAME);
+    	
+    	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
+
+    	HashMap<String, String[]> params = getUsernameFieldMap(usernames);
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test move issue with watchers", params);
+    	
+    	administration.usersAndGroups().removeUserFromGroup(BOB_USERNAME, JIRA_USERS_GROUP);    	
+
+    	navigation.issue().gotoIssue(issueKey);
+    	tester.clickLink("move-issue");
+    	tester.selectOption("pid", "Test Move");
+    	tester.assertButtonPresent("next_submit");
+    	tester.submit("Next >>");
+    	tester.submit("Next >>");
+    	tester.submit("Move");
+    	assertions.getTextAssertions().assertTextPresent("TESTMOVE-1");
     }
     
     /**
@@ -295,11 +328,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
 		navigation.issue().gotoEditIssue(issueKey);
     	setWatcherFieldForm(this.form.getForms(), FIELD_ID, BOB_USERNAME + ", " + ADMIN_USERNAME).submit();
 
-    	log.log(ADMIN_USERNAME);
-    	log.log(ADMIN_FULLNAME);
-    	log.log(ADMIN_PASSWORD);
-    	log.log(ADMIN_USERNAME);
-    	
 		ArrayList<ExpectedChangeHistoryItem> expectedChangeItems = new ArrayList<ExpectedChangeHistoryItem>();
 		expectedChangeItems.add(new ExpectedChangeHistoryItem(FIELD_NAME, "None", ADMIN_FULLNAME + ", " + BOB_FULLNAME));
 		ExpectedChangeHistoryRecord changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
@@ -483,7 +511,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     */
     
     public void testNonAdminUserManageWatchersWithoutPermission() {
-    	administration.restoreData("JWF_FieldCreated.xml");
     	administration.usersAndGroups().addUser(FRED_USERNAME, FRED_PASSWORD, FRED_FULLNAME, FRED_EMAIL, false);
     	administration.usersAndGroups().addUserToGroup(FRED_USERNAME, JIRA_DEV_GROUP);
     	
@@ -496,7 +523,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     }
     
     public void testNonAdminUserManageWatchersWithPermission() {
-    	administration.restoreData("JWF_FieldCreated.xml");
     	administration.usersAndGroups().addUser(FRED_USERNAME, FRED_PASSWORD, FRED_FULLNAME, FRED_EMAIL, false);
     	administration.usersAndGroups().addUserToGroup(FRED_USERNAME, JIRA_DEV_GROUP);
     	
@@ -511,5 +537,20 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	assertIssueExists(issueKey);
     	tester.assertTextPresent(FIELD_NAME);
     	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME});
+    }
+    
+    /**
+     * Checks that JWFP-22 is resolved
+     */
+    public void testWatcherFieldPermissions() {
+    	log.log("### Test watcher field permissions ###");
+    	
+    	administration.usersAndGroups().removeUserFromGroup(BOB_USERNAME, JIRA_USERS_GROUP);
+    	
+    	HashMap<String, String[]> params = getUsernameFieldMap(new String[]{ADMIN_USERNAME, BOB_USERNAME});
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers without permissions", params);
+    	navigation.issue().gotoIssue(issueKey);
+    	tester.assertTextPresent(FIELD_NAME);
+    	assertWatchersNotPresent(issueKey, new String[]{BOB_USERNAME});
     }
 }
