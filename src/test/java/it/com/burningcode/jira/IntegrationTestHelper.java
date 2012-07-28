@@ -15,10 +15,7 @@ public class IntegrationTestHelper {
     }
     
     public static String EXPORT_WITH_FIELD(String version) {
-    	if(version == null || version == "5.0")
-        	return "JWF_FieldCreated.xml";
-
-    	return "JWF_FieldCreated_"+version+".zip";
+       	return "JWF_FieldCreated.zip";
     }
     
     public static void EXPORT_WITHOUT_FIELD() {
@@ -26,9 +23,6 @@ public class IntegrationTestHelper {
     }
     
     public static String EXPORT_WITHOUT_FIELD(String version) {
-    	if(version == null || version == "5.0")
-    		return "JWF_NoFieldCreated.xml";
-
-		return "JWF_NoFieldCreated_"+version+".zip";
+   		return "JWF_NoFieldCreated.zip";
     }
 }

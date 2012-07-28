@@ -34,22 +34,34 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import webwork.action.ActionContext;
+
+import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.comparator.UserComparator;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
+import com.atlassian.jira.issue.customfields.view.CustomFieldParams;
 import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.issue.watchers.WatcherManager;
+import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.user.util.UserUtil;
+import com.atlassian.jira.util.ErrorCollection;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.webresource.WebResourceManager;
 import com.atlassian.crowd.embedded.api.User;
@@ -65,11 +77,12 @@ import com.opensymphony.module.propertyset.PropertySet;
  */
 public class WatcherFieldType extends MultiUserCFType {
 
+	private static final Logger log = Logger.getLogger(WatcherFieldType.class);
+
     private final JiraAuthenticationContext _AuthenticationContext;
     private final PermissionManager _PermissionManager;
     private final WatcherManager _WatcherManager;
     private final UserUtil _UserUtil;
-    private final WebResourceManager _WebResourceManager;
 
     /**
      * Overridden, calls super constructor.
@@ -103,7 +116,6 @@ public class WatcherFieldType extends MultiUserCFType {
         _PermissionManager = permissionManager;
         _WatcherManager = watcherManager;
         _UserUtil = userUtil;
-        _WebResourceManager = webResourceManager;
 	}
 
     /**
@@ -198,7 +210,7 @@ public class WatcherFieldType extends MultiUserCFType {
      */
 	public String getChangelogValue(CustomField field, Collection<User> value) {
    		List<User> watcherList = (List<User>)value;
-
+   		
         if(watcherList == null || watcherList.isEmpty())
             return "None";
 
@@ -243,11 +255,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * 
      * @see com.atlassian.jira.issue.customfields.impl.AbstractCustomFieldType#getVelocityParameters(Issue, CustomField, FieldLayoutItem) 
      */
-    public Map<String, Object> getVelocityParameters(Issue issue, CustomField field,
-            FieldLayoutItem fieldLayoutItem) {
-
-    	_WebResourceManager.requireResource("com.burningcode.jira.issue.customfields.impl.jira-watcher-field:watcherfieldjs");
-
+    public Map<String, Object> getVelocityParameters(Issue issue, CustomField field, FieldLayoutItem fieldLayoutItem) {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
         params.put("hasPermission", new Boolean(false));
 
@@ -322,6 +330,35 @@ public class WatcherFieldType extends MultiUserCFType {
 
         addWatchers(issue, newWatchers);
     }
+	
+	@Override
+	public void validateFromParams(CustomFieldParams relevantParams, ErrorCollection errorCollectionToAddTo, FieldConfig config) {
+		String[] pid = (String[]) ActionContext.getParameters().get("pid");
+		String[] id = (String[]) ActionContext.getParameters().get("id");
+		
+		Project project = null;
+		if(pid != null)
+			project = ComponentManager.getComponentInstanceOfType(ProjectManager.class).getProjectObj(Long.valueOf(pid[0]));
+
+		Issue issue = null;
+		if(id != null)
+			issue = ComponentManager.getComponentInstanceOfType(IssueManager.class).getIssueObject(Long.valueOf(id[0]));
+
+		ArrayList<String> invalidUsers = new ArrayList<String>();
+		Collection<User> watchers = getValueFromCustomFieldParams(relevantParams);
+		if(watchers != null && watchers.size() > 0){
+			for(User user : watchers){
+				if((project != null && !_PermissionManager.hasPermission(Permissions.BROWSE, project, user)) || (issue != null && !_PermissionManager.hasPermission(Permissions.BROWSE, issue, user))){
+					invalidUsers.add(user.getName());
+				}
+			}
+		}
+
+		if(invalidUsers.size() > 0)
+			errorCollectionToAddTo.addError(config.getFieldId(), "Users do not have permission to browse issue: "+StringUtils.join(invalidUsers, ", "), ErrorCollection.Reason.FORBIDDEN);
+		
+		super.validateFromParams(relevantParams, errorCollectionToAddTo, config);
+	}
 
     /**
      * Overridden, returns true if the current watcher list is equal to the new ones provided.

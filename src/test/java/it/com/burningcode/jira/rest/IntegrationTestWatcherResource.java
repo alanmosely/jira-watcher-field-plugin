@@ -1,6 +1,7 @@
 package it.com.burningcode.jira.rest;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.ws.rs.core.Response;
 
@@ -29,12 +30,9 @@ public class IntegrationTestWatcherResource extends RestFuncTest {
     public void testRestGetWatchers() throws MalformedPatternException, IOException, SAXException, JSONException{
     	log.log("### Test get watchers rest call ###");
     	
-    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test get watchers REST call.");
-
-    	// Check that the REST call sets the watcher field when toggling watcher.
-    	tester.assertTextNotInElement(FIELD_ID + "-val", ADMIN_FULLNAME);
-    	tester.clickLink("watching-toggle");
-    	tester.assertTextInElement(FIELD_ID + "-val", ADMIN_FULLNAME);
+    	HashMap<String, String[]> params = new HashMap<String, String[]>();
+    	params.put(FIELD_ID, new String[]{BOB_USERNAME});
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test get watchers REST call.", params);
 
     	String issueId = navigation.issue().getId(issueKey);
     	String url = URLUtil.addXsrfToken(page.getFreshXsrfToken(), "/rest/watcherfield/latest/watchers");
@@ -62,7 +60,7 @@ public class IntegrationTestWatcherResource extends RestFuncTest {
     	// Verify the response contains the watchers.
     	assertTrue(jsonResponse.has("watchers"));
     	JSONObject actualWatchers = (JSONObject)jsonResponse.getJSONArray("watchers").get(0);
-    	assertEquals(ADMIN_USERNAME, actualWatchers.get("username"));
-    	assertEquals(ADMIN_FULLNAME, actualWatchers.get("displayName"));
+    	assertEquals(BOB_USERNAME, actualWatchers.get("username"));
+    	assertEquals(BOB_FULLNAME, actualWatchers.get("displayName"));
     }
 }

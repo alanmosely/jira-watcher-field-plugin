@@ -14,6 +14,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
@@ -34,9 +35,10 @@ import com.opensymphony.module.propertyset.map.MapPropertySet;
 
 import junit.framework.TestCase;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PropertySetManager.class)
+import webwork.action.ActionContext;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({PropertySetManager.class, ActionContext.class, ComponentManager.class})
 public class TestWatcherFieldType extends TestCase {
 	private Project project;
 	private PermissionManager permissionManager;
@@ -65,6 +67,7 @@ public class TestWatcherFieldType extends TestCase {
 	private PermissionManager getPermissionManager(){
 		return getPermissionManager(true);
 	}
+
 	private PermissionManager getPermissionManager(boolean hasPermission){
 		PermissionManager permissionManager = mock(PermissionManager.class);
 		when(permissionManager.hasPermission(anyInt(), (User)anyObject())).thenReturn(hasPermission);
@@ -318,6 +321,61 @@ public class TestWatcherFieldType extends TestCase {
 		// Verify returns false when the user doesn't have permission to edit issue.
 		assertFalse("Issue is editable when it shouldn't be.", fieldType.isIssueEditable(getIssue()));
 	}
+
+	/**
+	 * TODO: Make unit test work
+	 */
+//	public void testValidateFromParams(){
+//		User watcher01 = mock(User.class);
+//		when(watcher01.getName()).thenReturn("user01");
+//		when(watcher01.toString()).thenReturn("user01");
+//		User watcher02 = mock(User.class);
+//		when(watcher02.getName()).thenReturn("user02");
+//		when(watcher02.toString()).thenReturn("user02");
+//		
+//		final ArrayList<User> watchers = new ArrayList<User>();
+//		watchers.add(watcher01);
+//		watchers.add(watcher02);
+//
+//		WatcherFieldType fieldType = getWatcherFieldType();
+//		
+//		CustomFieldParams relevantParams = mock(CustomFieldParams.class);
+//		when(fieldType.getValueFromCustomFieldParams(relevantParams)).thenReturn(watchers);
+//		
+//		final ArrayList<HashMap> errors = new ArrayList<HashMap>();
+//		ErrorCollection errorCollectionToAddTo = mock(ErrorCollection.class);
+//
+//		doAnswer(new DoesNothing() {
+//			public Object answer(InvocationOnMock invocation) {
+//	            Object[] args = invocation.getArguments();
+//	            HashMap<String, Object> error = new HashMap<String, Object>();
+//	            error.put("field", (String)args[0]);
+//	            error.put("error", (String)args[1]);
+//	            error.put("reason", (ErrorCollection.Reason)args[2]);
+//	            errors.add(error);
+//	            return null;
+//	        }
+//		}).when(errorCollectionToAddTo).addError(anyString(), anyString(), any(ErrorCollection.Reason.class));
+//		
+//		FieldConfig config = mock(FieldConfig.class);
+//		when(config.getFieldId()).thenReturn("customField_10000");
+//		
+//		PowerMockito.mockStatic(ActionContext.class);
+//		HashMap<String, String[]> params = new HashMap<String, String[]>();
+//		params.put("pid", new String[]{"10000"});
+//		params.put("id", null);
+//		when(ActionContext.getParameters()).thenReturn(params);
+//		
+//		PowerMockito.mockStatic(ComponentManager.class);
+//		ProjectManager projectManager = getProjectManager();
+//		when(ComponentManager.getComponentInstanceOfType(ProjectManager.class)).thenReturn(projectManager);
+//		when(projectManager.getProjectObj(Long.valueOf(params.get("pid")[0]))).thenReturn(getProject());
+//		
+//		fieldType.validateFromParams(relevantParams, errorCollectionToAddTo, config);
+//		
+//		
+//		//validateFromParams(CustomFieldParams relevantParams, ErrorCollection errorCollectionToAddTo, FieldConfig config)
+//	}
 	
 	/**
 	 * Sets {@code WatcherManager#startWatching(User, GenericValue)} to add users to the

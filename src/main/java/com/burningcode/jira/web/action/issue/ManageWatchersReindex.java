@@ -36,8 +36,8 @@ import com.atlassian.jira.issue.index.IndexException;
 import com.atlassian.jira.issue.index.IssueIndexManager;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.security.PermissionManager;
+import com.atlassian.jira.template.VelocityTemplatingEngine;
 import com.atlassian.jira.web.action.issue.ManageWatchers;
-import com.atlassian.velocity.VelocityManager;
 
 /**
  * This class is used to reindex an issue when watchers are added via the "Manage Watch List" control.
@@ -62,12 +62,12 @@ public class ManageWatchersReindex extends ManageWatchers {
      * @param searchService
      */
 	public ManageWatchersReindex(WatcherManager watcherManager,
-			VelocityManager velocityManager,
+			VelocityTemplatingEngine templatingEngine,
 			UserPickerSearchService searchService,
 			WatcherService watcherService, PermissionManager permissionManager,
 			CrowdService crowdService,
 			IssueIndexManager issueIndexManager) {
-		super(watcherManager, velocityManager, searchService, watcherService,
+		super(watcherManager, templatingEngine, searchService, watcherService,
 				permissionManager, crowdService);
 		this.issueIndexManager = issueIndexManager;
 	}

@@ -163,7 +163,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	HashMap<String, String[]> params = getUsernameFieldMap(new String[]{BOB_USERNAME});
     	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue create", params);
     	navigation.issue().gotoIssue(issueKey);
-    	tester.assertTextPresent(FIELD_NAME);
     	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME});
     }
 
@@ -176,13 +175,10 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	log.log("### Test adding watcher on issue edit ###");
     	
     	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
-
     	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue edit.");
     	assertWatchersNotPresent(issueKey, usernames);
-
     	navigation.issue().gotoEditIssue(issueKey);
     	setWatcherFieldForm(this.form.getForms(), FIELD_ID, ADMIN_USERNAME + ", " + BOB_USERNAME).submit();
-
     	assertWatchersPresent(issueKey, usernames);
     }
     
@@ -350,6 +346,53 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	expectedChangeItems.set(0, new ExpectedChangeHistoryItem(FIELD_NAME, ADMIN_FULLNAME, "None"));
     	changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
     	assertions.assertLastChangeHistoryRecords(issueKey, changeHistoryRecord);
+    }
+	
+	/**
+     * Checks that change history is correct with invalid user.
+     * @throws SAXException 
+     * @throws IOException 
+     */
+	public void testChangeHistoryWithInvalidUsers() throws IOException, SAXException {
+//    	log.log("### Test change history ###");    	log.log("### Test change history ###");
+//    	
+//    	administration.usersAndGroups().removeUserFromGroup(BOB_USERNAME, JIRA_USERS_GROUP);
+//    	
+//    	navigation.issue().goToCreateIssueForm("Test", ISSUE_TYPE_BUG);
+//    	
+//    	tester.setFormElement("summary", "Test change history with invalid watchers.");
+
+//    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test change history with invalid watchers.");
+//		navigation.issue().gotoEditIssue(issueKey);
+//    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, BOB_USERNAME + ", " + ADMIN_USERNAME).submit();
+
+//		ArrayList<ExpectedChangeHistoryItem> expectedChangeItems = new ArrayList<ExpectedChangeHistoryItem>();
+//		expectedChangeItems.add(new ExpectedChangeHistoryItem(FIELD_NAME, "None", ADMIN_FULLNAME));
+//		ExpectedChangeHistoryRecord expectedChangeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
+		
+//    	ExpectedChangeHistoryRecord expectedChangeHistoryRecord = new ExpectedChangeHistoryRecord(new ExpectedChangeHistoryItem(FIELD_NAME, "None", ADMIN_FULLNAME));
+    	
+		// Verify change history when adding watchers
+//		assertions.assertLastChangeHistoryRecords(issueKey, expectedChangeHistoryRecord);
+    	
+//		navigation.issue().gotoIssueChangeHistory(issueKey);
+//		assertions.getTextAssertions().assertTextNotPresent("Administrator, Bob The Builder");
+		
+//		navigation.issue().gotoEditIssue(issueKey);
+//    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, ADMIN_USERNAME).submit();
+//    	
+//    	// Verify change history when changing watchers
+//    	expectedChangeItems.set(0, new ExpectedChangeHistoryItem(FIELD_NAME, ADMIN_FULLNAME + ", " + BOB_FULLNAME, ADMIN_FULLNAME));
+//    	changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
+//    	assertions.assertLastChangeHistoryRecords(issueKey, changeHistoryRecord);
+//    	
+//		navigation.issue().gotoEditIssue(issueKey);
+//    	setWatcherFieldForm(this.form.getForms(), FIELD_ID, "").submit();
+//    	
+//    	// Verify change history when clearing watchers
+//    	expectedChangeItems.set(0, new ExpectedChangeHistoryItem(FIELD_NAME, ADMIN_FULLNAME, "None"));
+//    	changeHistoryRecord = new ExpectedChangeHistoryRecord(expectedChangeItems);
+//    	assertions.assertLastChangeHistoryRecords(issueKey, changeHistoryRecord);
     }
     
     /**
@@ -535,7 +578,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	HashMap<String, String[]> params = getUsernameFieldMap(new String[]{BOB_USERNAME});
     	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers on issue create", params);
     	assertIssueExists(issueKey);
-    	tester.assertTextPresent(FIELD_NAME);
     	assertWatchersPresent(issueKey, new String[]{BOB_USERNAME});
     }
     
@@ -547,10 +589,25 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	
     	administration.usersAndGroups().removeUserFromGroup(BOB_USERNAME, JIRA_USERS_GROUP);
     	
-    	HashMap<String, String[]> params = getUsernameFieldMap(new String[]{ADMIN_USERNAME, BOB_USERNAME});
-    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test add watchers without permissions", params);
-    	navigation.issue().gotoIssue(issueKey);
-    	tester.assertTextPresent(FIELD_NAME);
-    	assertWatchersNotPresent(issueKey, new String[]{BOB_USERNAME});
+    	// Check that a user does not get added as a watcher that does not have permission
+    	navigation.issue().goToCreateIssueForm("Test", ISSUE_TYPE_BUG);
+    	tester.setFormElement("summary", "Test add watchers without permissions");
+    	tester.setFormElement(FIELD_ID, BOB_USERNAME + ", " + ADMIN_USERNAME);
+    	tester.submit();
+    	assertions.forms().assertFormErrMsg("Users do not have permission to browse issue: " + BOB_USERNAME);
+    	tester.setFormElement(FIELD_ID, ADMIN_USERNAME);
+    	tester.submit();
+    	assertions.forms().assertNoErrorsPresent();
+    	assertWatchersPresent("TST-1", new String[]{ADMIN_USERNAME});
+    	assertWatchersNotPresent("TST-1", new String[]{BOB_USERNAME});
+    	
+    	// Check that a user, when giving permission again, can be added as a watcher.
+    	administration.usersAndGroups().addUserToGroup(BOB_USERNAME, JIRA_USERS_GROUP);
+    	navigation.issue().goToCreateIssueForm("Test", ISSUE_TYPE_BUG);
+    	tester.setFormElement("summary", "Test add watchers with permissions");
+    	tester.setFormElement(FIELD_ID, BOB_USERNAME + ", " + ADMIN_USERNAME);
+    	tester.submit();
+    	assertions.forms().assertNoErrorsPresent();
+    	assertWatchersPresent("TST-2", new String[]{BOB_USERNAME, ADMIN_USERNAME});
     }
 }
