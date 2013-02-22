@@ -39,11 +39,10 @@ import org.apache.log4j.Logger;
 
 import webwork.action.ActionContext;
 
-import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.comparator.UserComparator;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
@@ -56,7 +55,6 @@ import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.project.Project;
-import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
@@ -338,11 +336,11 @@ public class WatcherFieldType extends MultiUserCFType {
 		
 		Project project = null;
 		if(pid != null)
-			project = ComponentManager.getComponentInstanceOfType(ProjectManager.class).getProjectObj(Long.valueOf(pid[0]));
+			project = ComponentAccessor.getProjectManager().getProjectObj(Long.valueOf(pid[0]));
 
 		Issue issue = null;
 		if(id != null)
-			issue = ComponentManager.getComponentInstanceOfType(IssueManager.class).getIssueObject(Long.valueOf(id[0]));
+			issue = ComponentAccessor.getIssueManager().getIssueObject(Long.valueOf(id[0]));
 
 		ArrayList<String> invalidUsers = new ArrayList<String>();
 		Collection<User> watchers = getValueFromCustomFieldParams(relevantParams);

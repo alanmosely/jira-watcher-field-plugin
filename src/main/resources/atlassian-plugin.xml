@@ -8,23 +8,6 @@
 		name="i18n"
 		location="WatcherFieldType"	/>
 
-    <webwork1
-    		key="managewatchersreindex"
-    		i18n-name-key="watcherfield.manager.name"
-    	>
-    	<description key="watcherfield.manager.desc" />
-		<actions>
-			<!-- Copied and modified from actions.xml -->
-		    <action name="com.burningcode.jira.web.action.issue.ManageWatchersReindex" alias="ManageWatchers">
-		        <view name="success">/secure/views/issue/managewatchers.jsp</view>
-		        <view name="input">/secure/views/issue/managewatchers.jsp</view>
-		        <view name="error">/secure/views/issue/managewatchers.jsp</view>
-		        <view name="watchingnotenabled">/secure/views/issue/managewatchers.jsp</view>
-		        <view name="securitybreach">/secure/views/securitybreach.jsp</view>
-		    </action>
-	    </actions>
-    </webwork1>
-
 	<customfield-type
 			key="watcherfieldtype"
 			i18n-name-key="watcherfield.type.name"
@@ -72,10 +55,6 @@
         <label key="watcherfield.settings.link.label" />
         <link linkId="watcher_field_settings_link">/secure/project/WatcherFieldSettings.jspa</link>
     </web-item>
-    
-	<rest key="watcherfieldRest" path="/watcherfield" version="1.0">
-		<description key="watcherfield.rest.desc" />
-	</rest>
     
 	<webwork1 key="watcherfieldSettings"
 			class="java.lang.Object"

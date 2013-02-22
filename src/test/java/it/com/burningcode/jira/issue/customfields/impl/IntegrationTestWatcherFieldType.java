@@ -14,7 +14,6 @@ import com.atlassian.jira.functest.framework.navigator.GenericQueryCondition;
 import com.atlassian.jira.functest.framework.navigator.NavigatorSearch;
 import com.atlassian.jira.functest.framework.navigator.SearchResultsCondition;
 import com.atlassian.jira.security.Permissions;
-import com.atlassian.jira.util.BuildUtilsInfoImpl;
 import com.atlassian.jira.webtests.EmailFuncTestCase;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryItem;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryRecord;
@@ -84,7 +83,7 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
 
     @Before
     public void setUpTest() {
-        jiraVersion = (new BuildUtilsInfoImpl()).getVersion();
+        jiraVersion = administration.getEdition();//(new BuildUtilsInfoImpl()).getVersion();
         administration.restoreData(EXPORT_WITH_FIELD(jiraVersion));
     }
     

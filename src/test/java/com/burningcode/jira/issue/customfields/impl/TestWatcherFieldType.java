@@ -14,8 +14,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.atlassian.crowd.embedded.api.User;
-import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.bc.user.search.UserPickerSearchService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.converters.MultiUserConverter;
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 import webwork.action.ActionContext;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({PropertySetManager.class, ActionContext.class, ComponentManager.class})
+@PrepareForTest({PropertySetManager.class, ActionContext.class, ComponentAccessor.class})
 public class TestWatcherFieldType extends TestCase {
 	private Project project;
 	private PermissionManager permissionManager;
