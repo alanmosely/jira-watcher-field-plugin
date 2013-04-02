@@ -331,30 +331,6 @@ public class WatcherFieldType extends MultiUserCFType {
 	
 	@Override
 	public void validateFromParams(CustomFieldParams relevantParams, ErrorCollection errorCollectionToAddTo, FieldConfig config) {
-		String[] pid = (String[]) ActionContext.getParameters().get("pid");
-		String[] id = (String[]) ActionContext.getParameters().get("id");
-		
-		Project project = null;
-		if(pid != null)
-			project = ComponentAccessor.getProjectManager().getProjectObj(Long.valueOf(pid[0]));
-
-		Issue issue = null;
-		if(id != null)
-			issue = ComponentAccessor.getIssueManager().getIssueObject(Long.valueOf(id[0]));
-
-		ArrayList<String> invalidUsers = new ArrayList<String>();
-		Collection<User> watchers = getValueFromCustomFieldParams(relevantParams);
-		if(watchers != null && watchers.size() > 0){
-			for(User user : watchers){
-				if((project != null && !_PermissionManager.hasPermission(Permissions.BROWSE, project, user)) || (issue != null && !_PermissionManager.hasPermission(Permissions.BROWSE, issue, user))){
-					invalidUsers.add(user.getName());
-				}
-			}
-		}
-
-		if(invalidUsers.size() > 0)
-			errorCollectionToAddTo.addError(config.getFieldId(), "Users do not have permission to browse issue: "+StringUtils.join(invalidUsers, ", "), ErrorCollection.Reason.FORBIDDEN);
-		
 		super.validateFromParams(relevantParams, errorCollectionToAddTo, config);
 	}
 
