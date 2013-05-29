@@ -19,6 +19,10 @@
 			location="templates/plugins/fields/view/column-view-multiuser.vm"/>
 		<resource
 			type="velocity"
+			name="view"
+			location="templates/plugins/fields/view/view-multiuser.vm"/>
+		<resource
+			type="velocity"
 			name="edit"
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
