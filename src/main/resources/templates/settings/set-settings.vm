@@ -1,1 +1,2 @@
 #set ($ignorePermissions = ${properties.getBoolean("ignorePermissions")})
+#set ($ignoreWatcherPermissions = ${properties.getBoolean("ignoreWatcherPermissions")})

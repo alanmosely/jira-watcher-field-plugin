@@ -27,6 +27,9 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	private static final long serialVersionUID = -8378909066515942570L;
 	private static final Logger log = LoggerFactory.getLogger(WatcherFieldSettings.class);
 	
+	public static final String ignoreUserPermissions = "ignorePermissions";
+	public static final String ignoreWatcherPermissions = "ignoreWatcherPermissions";
+
 	private PermissionManager permissionManager;
 	private JiraAuthenticationContext authenticationContext;
 
@@ -39,6 +42,11 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		this.permissionManager = permissionManager;
 		this.authenticationContext = authenticationContext;
 	}
+
+    public static boolean ignoreBrowseIssuePermissions(){
+    	PropertySet propertySet = WatcherFieldSettings.getPropertySet();
+    	return propertySet.exists(ignoreWatcherPermissions) && propertySet.getBoolean(ignoreWatcherPermissions);
+    }
 	
 	/**
 	 * {@inheritDoc}
@@ -72,10 +80,18 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		PropertySet propertySet = getProperties();
 
 		Map<?, ?> params = ActionContext.getParameters();
-		if(params.containsKey("ignorePermissions") && propertySet.isSettable("ignorePermissions")) {
-			Object value = params.get("ignorePermissions");
+		
+		if(params.containsKey(ignoreUserPermissions) && propertySet.isSettable(ignoreUserPermissions)) {
+			Object value = params.get(ignoreUserPermissions);
 			if(value instanceof String[] && ((String[])value).length == 1) {
-				propertySet.setBoolean("ignorePermissions", Boolean.parseBoolean(((String[])value)[0]));
+				propertySet.setBoolean(ignoreUserPermissions, Boolean.parseBoolean(((String[])value)[0]));
+			}
+		}
+		
+		if(params.containsKey(ignoreWatcherPermissions) && propertySet.isSettable(ignoreWatcherPermissions)) {
+			Object value = params.get(ignoreWatcherPermissions);
+			if(value instanceof String[] && ((String[])value).length == 1) {
+				propertySet.setBoolean(ignoreWatcherPermissions, Boolean.parseBoolean(((String[])value)[0]));
 			}
 		}
 		return getRedirect("WatcherFieldSettings.jspa");
@@ -105,18 +121,34 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 
 	        try{
 		        // Set default settings
-				if(!propertySet.exists("ignorePermissions")) {
-					propertySet.setBoolean("ignorePermissions", false);
+				if(!propertySet.exists(ignoreUserPermissions)) {
+					propertySet.setBoolean(ignoreUserPermissions, false);
 				}else{
 		        	// Will throw an exception if of invalid type
-		        	propertySet.getBoolean("ignorePermissions");
+		        	propertySet.getBoolean(ignoreUserPermissions);
 				}
 		    }catch (InvalidPropertyTypeException e) {
 		    	log.debug("Property ignorePermissions set to an invalid type.  Setting to default value, false.");
-		    	propertySet.setBoolean("ignorePermissions", false);
+		    	propertySet.setBoolean(ignoreUserPermissions, false);
 			}catch (Exception e) {
 				log.debug("Error with ignorePermissions: "+e.getMessage());
-				propertySet.setBoolean("ignorePermissions", false);
+				propertySet.setBoolean(ignoreUserPermissions, false);
+			}
+	        
+	        try{
+		        // Set default settings
+				if(!propertySet.exists(ignoreWatcherPermissions)) {
+					propertySet.setBoolean(ignoreWatcherPermissions, false);
+				}else{
+		        	// Will throw an exception if of invalid type
+		        	propertySet.getBoolean(ignoreWatcherPermissions);
+				}
+		    }catch (InvalidPropertyTypeException e) {
+		    	log.debug("Property ignoreWatcherPermissions set to an invalid type.  Setting to default value, false.");
+		    	propertySet.setBoolean(ignoreWatcherPermissions, false);
+			}catch (Exception e) {
+				log.debug("Error with ignoreWatcherPermissions: "+e.getMessage());
+				propertySet.setBoolean(ignoreWatcherPermissions, false);
 			}
 		}
 

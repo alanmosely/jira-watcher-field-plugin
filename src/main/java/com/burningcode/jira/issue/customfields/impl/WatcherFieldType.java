@@ -199,6 +199,28 @@ public class WatcherFieldType extends MultiUserCFType {
                 issue.getProjectObject(),
                 user);
     }
+    
+    /**
+     * Check if a user has permission to be added as a watcher for the project 
+     * 
+     * @param user The user the check
+     * @param project The project to check permissions for
+     * @return True if has permissions, false otherwise.
+     */
+    public boolean isUserPermittedAsWatcher(User user, Project project) {
+    	return project != null && _PermissionManager.hasPermission(Permissions.BROWSE, project, user);
+    }
+    
+    /**
+     * Check if a user has permission to be added as a watcher for the isse 
+     * 
+     * @param user The user the check
+     * @param issue The issue to check permissions for
+     * @return True if has permissions, false otherwise.
+     */
+    public boolean isUserPermittedAsWatcher(User user, Issue issue) {
+    	return issue != null && _PermissionManager.hasPermission(Permissions.BROWSE, issue, user);
+    }
 
     /**
      * Overridden, returns the value reported in the changelog
@@ -346,7 +368,7 @@ public class WatcherFieldType extends MultiUserCFType {
 		Collection<User> watchers = getValueFromCustomFieldParams(relevantParams);
 		if(watchers != null && watchers.size() > 0){
 			for(User user : watchers){
-				if((project != null && !_PermissionManager.hasPermission(Permissions.BROWSE, project, user)) || (issue != null && !_PermissionManager.hasPermission(Permissions.BROWSE, issue, user))){
+				if(!WatcherFieldSettings.ignoreBrowseIssuePermissions() && (!isUserPermittedAsWatcher(user, project) || !isUserPermittedAsWatcher(user, issue))){
 					invalidUsers.add(user.getName());
 				}
 			}

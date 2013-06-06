@@ -30,6 +30,20 @@
 	        	</td>
 			</tr>
 			<tr>
+				<td class="fieldLabelArea jwf-field-label">
+			    	$i18n.getText("watcherfield.settings.item.ignoreWatcherPermissions.name")
+				</td>
+				<td class="fieldValueArea" bgcolor="#ffffff">
+	            	<input type="radio" #if(${ignoreWatcherPermissions} == true) checked="" #end name="ignoreWatcherPermissions" value="true" onClick="alert('Warning: This setting circumvents JIRA "Browse Issue" requirement for watchers.\nOnly set this if you absolutely need to.');"> ON
+	            	&nbsp;
+	            	<input type="radio" #if(${ignoreWatcherPermissions} == false) checked="" #end name="ignoreWatcherPermissions" value="false"> OFF
+	            	<br>
+	            	<span class="subText">
+	                	$i18n.getText("watcherfield.settings.item.ignoreWatcherPermissions.desc")
+	            	</span>
+	        	</td>
+			</tr>
+			<tr>
 	        	<td class="jiraformfooter jwf-field-label">&nbsp;</td>
 				<td colspan="1">
 					<input type="submit" class="spaced " title="Press Ctrl+s to submit form" accesskey="s" id="edit_property" value="Update" name="Update">

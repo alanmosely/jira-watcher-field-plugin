@@ -14,6 +14,9 @@ import com.atlassian.jira.functest.framework.navigator.GenericQueryCondition;
 import com.atlassian.jira.functest.framework.navigator.NavigatorSearch;
 import com.atlassian.jira.functest.framework.navigator.SearchResultsCondition;
 import com.atlassian.jira.security.Permissions;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
+import com.atlassian.jira.testkit.client.util.TimeBombLicence;
 import com.atlassian.jira.webtests.EmailFuncTestCase;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryItem;
 import com.atlassian.jira.webtests.ztests.workflow.ExpectedChangeHistoryRecord;
@@ -81,8 +84,11 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	return null;    	
     }
 
-    @Before
+    @Override
     public void setUpTest() {
+    	super.setUpTest();
+    	//Backdoor testKit = new Backdoor(new TestKitLocalEnvironmentData());
+    	//testKit.restoreBlankInstance(TimeBombLicence.LICENCE_FOR_TESTING);
         jiraVersion = administration.getEdition();//(new BuildUtilsInfoImpl()).getVersion();
         administration.restoreData(EXPORT_WITH_FIELD(jiraVersion));
     }
@@ -275,7 +281,6 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	GenericQueryCondition watcherCondition = new GenericQueryCondition(FIELD_ID);
     	watcherCondition.setQuery(usernames[0]);
     	NavigatorSearch search = new NavigatorSearch(watcherCondition);
-    	
     	navigation.issueNavigator().createSearch(search);
     	tester.submit();
     	
@@ -405,7 +410,9 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	// Add the watcher field to the resolve workflow screen
     	administration.viewFieldScreens().goTo();
     	administration.viewFieldScreens().configureScreen("Workflow Screen");
-    	tester.selectOption("fieldId", FIELD_NAME);
+    	//tester.selectOption("fieldId", FIELD_NAME);
+    	
+    	tester.selectOption("field-picker", FIELD_NAME);
     	tester.submit("Add");
     	
     	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test edit watchers on issue transition.");
@@ -608,5 +615,18 @@ public class IntegrationTestWatcherFieldType extends EmailFuncTestCase {
     	tester.submit();
     	assertions.forms().assertNoErrorsPresent();
     	assertWatchersPresent("TST-2", new String[]{BOB_USERNAME, ADMIN_USERNAME});
+    }
+    
+    /**
+     * To test for issue #7, https://bitbucket.org/rbarham/jira-watcher-field-plugin/issue/7/null-pointer-exception-when-moving-issue
+     */
+    public void testWorkflowTransition() {
+    	log.log("### Test worlflow transition ###");
+    	
+    	String[] usernames = new String[]{ADMIN_USERNAME, BOB_USERNAME};
+
+    	String issueKey = navigation.issue().createIssue("Test", ISSUE_TYPE_BUG, "Test workflow transition.");
+    	assertWatchersNotPresent(issueKey, usernames);
+
     }
 }

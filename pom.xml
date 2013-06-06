@@ -43,14 +43,12 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- 
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-func-tests</artifactId>
-			<version>5.2.6</version>
+			<version>${jira.version}</version>
 			<scope>test</scope>
 		</dependency>
-		-->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -69,8 +67,14 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
-		<!-- Other Dependencies -->
+		<dependency>
+		    <groupId>com.atlassian.jira.tests</groupId>
+		    <artifactId>jira-testkit-client</artifactId>
+		    <version>${testkit.version}</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<!-- WIRED TEST RUNNER DEPENDENCIES -->
         <dependency>
             <groupId>com.atlassian.plugins</groupId>
             <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
@@ -100,6 +104,13 @@
 				<configuration>
 					<productVersion>${jira.version}</productVersion>
 					<productDataVersion>${jira.data.version}</productDataVersion>
+			        <pluginArtifacts>
+			            <pluginArtifact>
+			                <groupId>com.atlassian.jira.tests</groupId>
+			                <artifactId>jira-testkit-plugin</artifactId>
+			                <version>${testkit.version}</version>
+			            </pluginArtifact>
+			        </pluginArtifacts>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -115,11 +126,13 @@
     <properties>
         <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
         <jira.version>5.2.6</jira.version>
-        <amps.version>4.1.4</amps.version>
-        <plugin.testrunner.version>1.1</plugin.testrunner.version>
+        <amps.version>4.2.0</amps.version>
+        <plugin.testrunner.version>1.1.1</plugin.testrunner.version>
 
         <junit.version>4.6</junit.version>
         <powermock.version>1.4.11</powermock.version>
         <mockito.version>1.9.0</mockito.version>
+        
+        <testkit.version>6.0.27</testkit.version>
     </properties>
 </project>

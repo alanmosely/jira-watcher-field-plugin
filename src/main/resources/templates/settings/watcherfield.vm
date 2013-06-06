@@ -20,6 +20,20 @@
 	    #end
 	    </td>
 	</tr>
+	<tr>
+	    <td class="rowAlternate" width="40%">
+	    	<b>$i18n.getText("watcherfield.settings.item.ignoreWatcherPermissions.name")</b>
+	    	<div class="description" style="padding: 0 0 0 15px">$i18n.getText("watcherfield.settings.item.ignoreWatcherPermissions.desc")</div>
+    	</td>
+	    
+	    <td class="rowNormal"
+	    #if(${ignoreWatcherPermissions.equals(true)})
+	    	style="color: #00bb00;">$i18n.getText("admin.common.words.on")
+	    #else
+	        style="color: #bb0000;">$i18n.getText("admin.common.words.off")
+	    #end
+	    </td>
+	</tr>
 </table>
 <br/>
 <table class="tableBorder maxWidth" cellspacing="1" cellpadding="3">
