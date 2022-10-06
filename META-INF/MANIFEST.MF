@@ -64,7 +64,7 @@ Import-Package: org.springframework.osgi.context;resolution:=optional,
  ore.io;resolution:=optional,org.springframework.stereotype;resolution
  :=optional,org.springframework.util;resolution:=optional,org.w3c.dom;
  resolution:=optional,webwork.action;resolution:=optional,com.atlassia
- n.plugin.osgi.bridge.external
+ n.plugin.osgi.bridge.external,com.atlassian.jira.config;resolution:=optional
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Atlassian-Plugin-Key: com.burningcode.jira.issue.customfields.impl.jir
  a-watcher-field
