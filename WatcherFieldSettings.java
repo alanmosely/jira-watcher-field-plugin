@@ -16,9 +16,13 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webwork.action.ActionContext;
+import com.atlassian.jira.security.request.RequestMethod;
+import com.atlassian.jira.security.request.SupportedMethods;
 
 @Scanned
+@SupportedMethods({RequestMethod.GET, RequestMethod.POST})
 public class WatcherFieldSettings extends JiraWebActionSupport {
+
   private static PropertySet propertySet;
   
   private static final long serialVersionUID = -8378909066515942570L;
@@ -49,7 +53,7 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
       return "permissionviolation"; 
     return super.doDefault();
   }
-  
+
   protected String doExecute() throws Exception {
     if (!hasAdminPermission())
       return "permissionviolation"; 
