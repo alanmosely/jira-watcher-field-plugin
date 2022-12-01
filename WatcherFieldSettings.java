@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import webwork.action.ActionContext;
 import com.atlassian.jira.security.request.RequestMethod;
 import com.atlassian.jira.security.request.SupportedMethods;
+import com.atlassian.jira.security.xsrf.DoesNotRequireXsrfCheck;
 
 @Scanned
 @SupportedMethods({RequestMethod.GET, RequestMethod.POST})
@@ -60,6 +61,7 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
     return super.doExecute();
   }
   
+  @DoesNotRequireXsrfCheck
   public String doEdit() {
     if (!hasAdminPermission())
       return "permissionviolation"; 
