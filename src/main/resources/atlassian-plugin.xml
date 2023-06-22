@@ -44,14 +44,15 @@
 	    	/>
 	</customfield-searcher>
 
+	<web-section key="watchers-section" location="admin_plugins_menu">
+		<label>Watchers Custom Field</label>
+	</web-section>
+
 	<web-item key="watcherfieldSettingsLink"
 			i18n-name-key="watcherfield.settings.link.name"
-			section="system.admin/issuefields"
+			section="admin_plugins_menu/watchers-sections"
 			weight="90">
         <description key="watcherfield.settings.link.desc" />
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-		    <param name="permission">admin</param>
-		</condition>
         <label key="watcherfield.settings.link.label" />
         <link linkId="watcher_field_settings_link">/secure/project/WatcherFieldSettings.jspa</link>
     </web-item>

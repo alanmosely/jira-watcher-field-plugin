@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.atlassian.jira.permission.GlobalPermissionKey;
+import com.atlassian.jira.security.GlobalPermissionManager;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -17,27 +20,31 @@ import com.atlassian.jira.security.PermissionManager;
 import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Used to handle settings for the JIRA Watcher Field.
  * @author Ray
  *
  */
+@Named
 public class WatcherFieldSettings extends JiraWebActionSupport {
 	private static PropertySet propertySet;
 	private static final long serialVersionUID = -8378909066515942570L;
 	private static final Logger log = LoggerFactory.getLogger(WatcherFieldSettings.class);
-	
-	private PermissionManager permissionManager;
-	private JiraAuthenticationContext authenticationContext;
+	@ComponentImport
+	private final JiraAuthenticationContext authenticationContext;
+	@ComponentImport
+	private final GlobalPermissionManager globalPermissionManager;
 
 	/**
 	 * Default Constructor
-	 * @param permissionManager
-	 * @param authenticationContext
 	 */
-	public WatcherFieldSettings(PermissionManager permissionManager, JiraAuthenticationContext authenticationContext) {
-		this.permissionManager = permissionManager;
+	@Inject
+	public WatcherFieldSettings(JiraAuthenticationContext authenticationContext, GlobalPermissionManager globalPermissionManager) {
 		this.authenticationContext = authenticationContext;
+		this.globalPermissionManager = globalPermissionManager;
 	}
 	
 	/**
@@ -79,15 +86,6 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 			}
 		}
 		return getRedirect("WatcherFieldSettings.jspa");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setErrorMessages(@SuppressWarnings("rawtypes") Collection arg0) {
-		super.setErrorMessages(arg0);
-
 	}
 
 	/**
@@ -135,8 +133,8 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	 * @return True if has permissions, false otherwise.
 	 */
     protected boolean hasAdminPermission() {
-    	return permissionManager.hasPermission(
-    			Permissions.ADMINISTER,
+    	return globalPermissionManager.hasPermission(
+    			GlobalPermissionKey.ADMINISTER,
     			authenticationContext.getLoggedInUser());
     }
 }
