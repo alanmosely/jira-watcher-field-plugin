@@ -43,7 +43,7 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.UserFilterManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import webwork.action.ActionContext;
