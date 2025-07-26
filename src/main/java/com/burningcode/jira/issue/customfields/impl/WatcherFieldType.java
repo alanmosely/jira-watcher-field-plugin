@@ -153,7 +153,7 @@ public class WatcherFieldType extends MultiUserCFType {
     }
 
     /**
-     * Checks to see if the issue can be edited.  It checks to see if the issue has been create, if it is
+     * Checks to see if the issue can be edited.  It checks to see if the issue has been created, if it is
      * editable, and if the authenticated user has permissions.
      *
      * @param issue The issue being edited.
