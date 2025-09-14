@@ -131,8 +131,7 @@ public class WatcherFieldType extends MultiUserCFType {
                 }
 
                 // JWFP-22: Added check for watcher's permission to browse project
-                // if (watcher != null && _PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue.getProjectObject(), watcher) && !_WatcherManager.isWatching(watcher, issue)) {
-                if (watcher != null && !_WatcherManager.isWatching(watcher, issue)) {
+                if (watcher != null && _PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue.getProjectObject(), watcher) && !_WatcherManager.isWatching(watcher, issue)) {
                     _WatcherManager.startWatching(watcher, issue);
                 }
             }
@@ -192,8 +191,7 @@ public class WatcherFieldType extends MultiUserCFType {
         if (propertySet.exists("ignorePermissions") && propertySet.getBoolean("ignorePermissions") && user == null)
             return true;
 
-        // return _PermissionManager.hasPermission(ProjectPermissions.MANAGE_WATCHERS, issue.getProjectObject(), user);
-        return true;
+        return _PermissionManager.hasPermission(ProjectPermissions.MANAGE_WATCHERS, issue.getProjectObject(), user);
     }
 
     /**
@@ -249,17 +247,16 @@ public class WatcherFieldType extends MultiUserCFType {
     @Nonnull
     public Map<String, Object> getVelocityParameters(Issue issue, CustomField field, FieldLayoutItem fieldLayoutItem) {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
-        // params.put("hasPermission", new Boolean(false));
+        params.put("hasPermission", new Boolean(false));
 
-        // if (issue == null || issue.getProjectObject() == null) {
-        //     if (isJiraAdmin(_AuthenticationContext.getLoggedInUser())) {
-        //         params.put("hasPermission", new Boolean(true));
-        //     }
-        // } else if (isUserPermitted(issue)) {
-        //     params.put("hasPermission", new Boolean(true));
-        // }
-        
-        params.put("hasPermission", new Boolean(true));
+        if (issue == null || issue.getProjectObject() == null) {
+            if (isJiraAdmin(_AuthenticationContext.getLoggedInUser())) {
+                params.put("hasPermission", new Boolean(true));
+            }
+        } else if (isUserPermitted(issue)) {
+            params.put("hasPermission", new Boolean(true));
+        }
+
         return params;
     }
 
@@ -340,7 +337,7 @@ public class WatcherFieldType extends MultiUserCFType {
         if (watchers != null && watchers.size() > 0) {
             for (ApplicationUser user : watchers) {
                 if ((project != null && !_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, project, user)) || (issue != null && !_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue, user))) {
-                    // invalidUsers.add(user.getName());
+                    invalidUsers.add(user.getName());
                 }
             }
         }
