@@ -58,7 +58,7 @@
 			weight="90">
         <description key="watcherfield.settings.link.desc" />
         <label key="watcherfield.settings.link.label" />
-        <link linkId="watcher_field_settings_link">/secure/project/WatcherFieldSettings.jspa</link>
+        <link linkId="watcher_field_settings_link">/secure/WatcherFieldSettings.jspa</link>
     </web-item>
     
 	<webwork1 key="watcherfieldSettings"
