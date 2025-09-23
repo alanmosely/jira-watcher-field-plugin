@@ -178,7 +178,7 @@ public class WatcherFieldType extends MultiUserCFType {
     }
 
     /**
-     * Checks if a user the authenticated user has the "Manage Watcher List" permission.
+     * Checks if the authenticated user has the "Manage Watcher List" permission.
      *
      * @param issue The issue the user is trying to add watchers to.
      * @return True if has permissions, false otherwise.
