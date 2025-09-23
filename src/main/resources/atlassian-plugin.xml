@@ -19,6 +19,10 @@
 			location="templates/plugins/fields/view/column-view-multiuser.vm"/>
 		<resource
 			type="velocity"
+			name="view"
+			location="templates/plugins/fields/view/view-multiuser.vm"/>
+		<resource
+			type="velocity"
 			name="edit"
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
@@ -50,11 +54,11 @@
 
 	<web-item key="watcherfieldSettingsLink"
 			i18n-name-key="watcherfield.settings.link.name"
-			section="admin_plugins_menu/watchers-sections"
+			section="admin_plugins_menu/watchers-section"
 			weight="90">
         <description key="watcherfield.settings.link.desc" />
         <label key="watcherfield.settings.link.label" />
-        <link linkId="watcher_field_settings_link">/secure/project/WatcherFieldSettings.jspa</link>
+        <link linkId="watcher_field_settings_link">/secure/WatcherFieldSettings.jspa</link>
     </web-item>
     
 	<webwork1 key="watcherfieldSettings"

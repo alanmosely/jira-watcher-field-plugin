@@ -342,8 +342,10 @@ public class WatcherFieldType extends MultiUserCFType {
             }
         }
 
-        if (invalidUsers.size() > 0)
-            errorCollectionToAddTo.addError(config.getFieldId(), "Users do not have permission to browse issue: " + StringUtils.join(invalidUsers, ", "), ErrorCollection.Reason.FORBIDDEN);
+        // Validation only runs on Edit screen, not on View screen, so this check is inconsistent
+        
+        // if (invalidUsers.size() > 0)
+        //     errorCollectionToAddTo.addError(config.getFieldId(), "Users do not have permission to browse issue: " + StringUtils.join(invalidUsers, ", "), ErrorCollection.Reason.FORBIDDEN);
 
         super.validateFromParams(relevantParams, errorCollectionToAddTo, config);
     }
