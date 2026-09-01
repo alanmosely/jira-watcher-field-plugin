@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.burningcode.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>3.0.0-rc1</version>
+    <version>3.0.0-rc2</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>

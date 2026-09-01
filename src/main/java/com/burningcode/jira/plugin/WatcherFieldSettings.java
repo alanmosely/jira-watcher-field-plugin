@@ -3,9 +3,14 @@ package com.burningcode.jira.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.atlassian.annotations.security.AdminOnly;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
+import com.atlassian.jira.security.request.RequestMethod;
+import com.atlassian.jira.security.request.SupportedMethods;
+import com.atlassian.jira.security.xsrf.RequiresXsrfCheck;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.websudo.WebSudoRequired;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -26,6 +31,9 @@ import jakarta.inject.Named;
  *
  */
 @Named
+@AdminOnly
+@WebSudoRequired
+@SupportedMethods({RequestMethod.GET})
 public class WatcherFieldSettings extends JiraWebActionSupport {
 	private static PropertySet propertySet;
 	private static final long serialVersionUID = -8378909066515942570L;
@@ -69,6 +77,8 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	/**
 	 * Called when editing the settings
 	 */
+	@RequiresXsrfCheck
+	@SupportedMethods({RequestMethod.POST})
 	public String doEdit() throws Exception {
 		if(!hasAdminPermission())
 			return PERMISSION_VIOLATION_RESULT;

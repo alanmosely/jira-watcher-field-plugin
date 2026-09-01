@@ -7,6 +7,7 @@
 </style>
 
 <form onsubmit="if (this.submitted) return false; this.submitted = true; return true" name="jiraform" method="post" action="WatcherFieldSettings!edit.jspa">
+	<input type="hidden" name="atl_token" value="$xsrfToken">
 	<table class="jiraform maxWidth">
 		<tbody>
 			<tr class="titlerow">
