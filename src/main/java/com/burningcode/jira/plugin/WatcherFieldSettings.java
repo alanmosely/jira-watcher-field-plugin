@@ -1,6 +1,5 @@
 package com.burningcode.jira.plugin;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,12 +15,10 @@ import com.opensymphony.module.propertyset.InvalidPropertyTypeException;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.module.propertyset.PropertySetManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.security.PermissionManager;
-import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Used to handle settings for the JIRA Watcher Field.
@@ -92,12 +89,12 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	 * Static method that returns the PropertySet used to get/store settings in the database
 	 * @return The PropertySet to reference the data
 	 */
-	public static PropertySet getPropertySet() {
+	public static synchronized PropertySet getPropertySet() {
 		if(propertySet == null) {
 			HashMap<String, Object> args = new HashMap<String, Object>();
 	        args.put("delegator.name", "default");
 	        args.put("entityName", "WatcherFieldSettings");
-	        args.put("entityId", new Long(1));
+	        args.put("entityId", 1L);
 
 	        propertySet = PropertySetManager.getInstance("ofbiz", args);
 

@@ -6,8 +6,8 @@ import com.atlassian.jira.jql.operand.JqlOperandResolver;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @Named
 public class WatcherSearcher extends ExactTextSearcher{

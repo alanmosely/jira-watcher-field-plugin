@@ -43,12 +43,9 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.UserFilterManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import webwork.action.ActionContext;
-
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.comparator.UserComparator;
@@ -56,23 +53,18 @@ import com.atlassian.jira.issue.customfields.converters.MultiUserConverter;
 import com.atlassian.jira.issue.customfields.impl.MultiUserCFType;
 import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
-import com.atlassian.jira.issue.customfields.view.CustomFieldParams;
 import com.atlassian.jira.issue.fields.CustomField;
-import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import com.atlassian.jira.issue.watchers.WatcherManager;
-import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.PermissionManager;
-import com.atlassian.jira.util.ErrorCollection;
 import com.atlassian.jira.web.FieldVisibilityManager;
 import com.burningcode.jira.plugin.WatcherFieldSettings;
 import com.opensymphony.module.propertyset.PropertySet;
 
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * This class is a custom field type that allows users with
@@ -84,7 +76,7 @@ import javax.inject.Named;
 @Named
 public class WatcherFieldType extends MultiUserCFType {
 
-    private static final Logger log = Logger.getLogger(WatcherFieldType.class);
+    private static final Logger log = LoggerFactory.getLogger(WatcherFieldType.class);
 
     @ComponentImport
     private final JiraAuthenticationContext _AuthenticationContext;
@@ -131,7 +123,11 @@ public class WatcherFieldType extends MultiUserCFType {
                 }
 
                 // JWFP-22: Added check for watcher's permission to browse project
-                if (watcher != null && _PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue.getProjectObject(), watcher) && !_WatcherManager.isWatching(watcher, issue)) {
+                if (watcher == null) continue;
+
+                if (!_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue.getProjectObject(), watcher)) {
+                    log.debug("Not adding watcher {} to {}: no browse permission on the project", watcher.getName(), issue.getKey());
+                } else if (!_WatcherManager.isWatching(watcher, issue)) {
                     _WatcherManager.startWatching(watcher, issue);
                 }
             }
@@ -148,7 +144,7 @@ public class WatcherFieldType extends MultiUserCFType {
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#createValue(CustomField, Issue, Collection)
      */
     @Override
-    public void createValue(CustomField customField, Issue issue, @Nonnull Collection<ApplicationUser> value) {
+    public void createValue(CustomField customField, Issue issue, Collection<ApplicationUser> value) {
         addWatchers(issue, value);
     }
 
@@ -200,15 +196,12 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return The full names of watching users in a comma separated list.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getChangelogValue(CustomField, Collection)
      */
+    @Override
     public String getChangelogValue(CustomField field, Collection<ApplicationUser> value) {
-        List<ApplicationUser> watcherList = (List<ApplicationUser>) value;
+        if (value == null || value.isEmpty()) return "None";
 
-        if (watcherList == null || watcherList.isEmpty()) return "None";
-
-        String output = "";
-        for (Iterator<ApplicationUser> i = watcherList.iterator(); i.hasNext(); ) {
-            ApplicationUser user = (ApplicationUser) i.next();
-
+        StringJoiner output = new StringJoiner(", ");
+        for (ApplicationUser user : value) {
             // Fix for JWFP-28
             if (user == null) continue;
 
@@ -217,10 +210,10 @@ public class WatcherFieldType extends MultiUserCFType {
             // Add fix for issue JWFP-25
             if (displayName == null) displayName = user.getName();
 
-            output += displayName + (i.hasNext() ? ", " : "");
+            output.add(displayName);
         }
 
-        return output;
+        return output.toString();
     }
 
     /**
@@ -230,7 +223,8 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return List of User objects that are watchers on the passed issue.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#getValueFromIssue(CustomField, Issue)
      */
-    public Collection<ApplicationUser> getValueFromIssue(@Nonnull CustomField field, Issue issue) {
+    @Override
+    public Collection<ApplicationUser> getValueFromIssue(CustomField field, Issue issue) {
         if (!issue.isCreated()) {
             return super.getValueFromIssue(field, issue);
         }
@@ -244,17 +238,17 @@ public class WatcherFieldType extends MultiUserCFType {
      *
      * @see com.atlassian.jira.issue.customfields.impl.AbstractCustomFieldType#getVelocityParameters(Issue, CustomField, FieldLayoutItem)
      */
-    @Nonnull
+    @Override
     public Map<String, Object> getVelocityParameters(Issue issue, CustomField field, FieldLayoutItem fieldLayoutItem) {
         Map<String, Object> params = super.getVelocityParameters(issue, field, fieldLayoutItem);
-        params.put("hasPermission", new Boolean(false));
+        params.put("hasPermission", Boolean.FALSE);
 
         if (issue == null || issue.getProjectObject() == null) {
             if (isJiraAdmin(_AuthenticationContext.getLoggedInUser())) {
-                params.put("hasPermission", new Boolean(true));
+                params.put("hasPermission", Boolean.TRUE);
             }
         } else if (isUserPermitted(issue)) {
-            params.put("hasPermission", new Boolean(true));
+            params.put("hasPermission", Boolean.TRUE);
         }
 
         return params;
@@ -307,47 +301,18 @@ public class WatcherFieldType extends MultiUserCFType {
      *                    a watcher will be removed.
      * @see com.atlassian.jira.issue.customfields.impl.AbstractMultiCFType#updateValue(CustomField, Issue, Collection)
      */
+    @Override
     public void updateValue(CustomField customField, Issue issue, Collection<ApplicationUser> value) {
-        List<ApplicationUser> newWatchers = (List<ApplicationUser>) value;
         List<ApplicationUser> currWatchers = getWatchers(issue);
 
         if (!currWatchers.isEmpty()) {
-            if (newWatchers != null) {
-                currWatchers.removeAll(newWatchers);
+            if (value != null) {
+                currWatchers.removeAll(value);
             }
             removeWatchers(issue, currWatchers);
         }
 
-        addWatchers(issue, newWatchers);
-    }
-
-    @Override
-    public void validateFromParams(CustomFieldParams relevantParams, ErrorCollection errorCollectionToAddTo, FieldConfig config) {
-        String[] pid = (String[]) ActionContext.getParameters().get("pid");
-        String[] id = (String[]) ActionContext.getParameters().get("id");
-
-        Project project = null;
-        if (pid != null) project = ComponentAccessor.getProjectManager().getProjectObj(Long.valueOf(pid[0]));
-
-        Issue issue = null;
-        if (id != null) issue = ComponentAccessor.getIssueManager().getIssueObject(Long.valueOf(id[0]));
-
-        ArrayList<String> invalidUsers = new ArrayList<String>();
-        Collection<ApplicationUser> watchers = getValueFromCustomFieldParams(relevantParams);
-        if (watchers != null && watchers.size() > 0) {
-            for (ApplicationUser user : watchers) {
-                if ((project != null && !_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, project, user)) || (issue != null && !_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue, user))) {
-                    invalidUsers.add(user.getName());
-                }
-            }
-        }
-
-        // Validation only runs on Edit screen, not on View screen, so this check is inconsistent
-        
-        // if (invalidUsers.size() > 0)
-        //     errorCollectionToAddTo.addError(config.getFieldId(), "Users do not have permission to browse issue: " + StringUtils.join(invalidUsers, ", "), ErrorCollection.Reason.FORBIDDEN);
-
-        super.validateFromParams(relevantParams, errorCollectionToAddTo, config);
+        addWatchers(issue, value);
     }
 
     /**
@@ -357,15 +322,13 @@ public class WatcherFieldType extends MultiUserCFType {
      */
     @Override
     public boolean valuesEqual(Collection<ApplicationUser> v1, Collection<ApplicationUser> v2) {
-        ArrayList<ApplicationUser> watcherList1 = (v1 != null ? (ArrayList<ApplicationUser>) v1 : new ArrayList<>());
-        ArrayList<ApplicationUser> watcherList2 = (v2 != null ? (ArrayList<ApplicationUser>) v2 : new ArrayList<>());
-        Collections.sort(watcherList1, new UserComparator());
-        Collections.sort(watcherList2, new UserComparator());
+        // Compare order-insensitively on defensive copies; the passed-in collections
+        // may be unmodifiable and must not be mutated by sorting.
+        List<ApplicationUser> watcherList1 = (v1 != null ? new ArrayList<>(v1) : new ArrayList<>());
+        List<ApplicationUser> watcherList2 = (v2 != null ? new ArrayList<>(v2) : new ArrayList<>());
+        watcherList1.sort(new UserComparator());
+        watcherList2.sort(new UserComparator());
 
-        if (watcherList1.equals(watcherList2)) {
-            return true;
-        }
-
-        return false;
+        return watcherList1.equals(watcherList2);
     }
 }

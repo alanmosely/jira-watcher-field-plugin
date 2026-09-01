@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.burningcode.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>2.10.0</version>
+    <version>3.0.0-rc1</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>
@@ -19,6 +19,34 @@
             <url>www.burningcode.com</url>
         </developer>
     </developers>
+
+    <!-- Some Jira transitives reference timestamped javax-era builds that only existed on the
+         now-defunct java.net repositories. Pin them to equivalent versions that exist on Maven
+         Central; they are provided-scope transitives and are never packaged into the plugin. -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.istack</groupId>
+                <artifactId>istack-commons-runtime</artifactId>
+                <version>3.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.fastinfoset</groupId>
+                <artifactId>FastInfoset</artifactId>
+                <version>1.2.15</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -33,6 +61,14 @@
             <artifactId>jira-core</artifactId>
             <version>${jira.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- OpenSAML 5 is only published on the Shibboleth repository, not Maven
+                     Central, and this plugin does not touch SSO/SAML code. -->
+                <exclusion>
+                    <groupId>org.opensaml</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -42,9 +78,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -52,21 +88,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.14.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <!-- WIRED TEST RUNNER DEPENDENCIES -->
-        <dependency>
-            <groupId>com.atlassian.plugins</groupId>
-            <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
-            <version>${plugin.testrunner.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -86,13 +107,12 @@
                     <instructions>
                         <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
 
-                        <!-- Add package to export here -->
-                        <Export-Package>
-                            com.burningcode.jira.issue.customfields.impl.api,
-                        </Export-Package>
+                        <!-- Nothing is exported; this plugin has no public API packages -->
+                        <Export-Package/>
 
                         <!-- Add package import here -->
-                        <Import-Package>  org.apache.commons.lang3.*;resolution:="optional" org.springframework.osgi.*;resolution:="optional", org.eclipse.gemini.blueprint.*;resolution:="optional",
+                        <Import-Package>
+                            org.apache.commons.lang3.*;resolution:="optional",
                             *
                         </Import-Package>
 
@@ -121,17 +141,14 @@
     </build>
 
     <properties>
-        <atlassian.plugin.key>${pom.groupId}.${pom.artifactId}</atlassian.plugin.key>
-        <jira.version>10.3.0</jira.version>
-        <amps.version>9.1.1</amps.version>
-        <plugin.testrunner.version>2.0.9</plugin.testrunner.version>
-        <atlassian.spring.scanner.version>2.2.4</atlassian.spring.scanner.version>
+        <!-- Jira 11.3 is the current LTS line; it requires JDK 21, Spring 6 and Jakarta EE 10 -->
+        <jira.version>11.3.10</jira.version>
+        <amps.version>9.13.0</amps.version>
+        <!-- Must match the spring-scanner runtime bundled with the target Jira version -->
+        <atlassian.spring.scanner.version>6.0.2</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
-        <!-- TestKit version 6.x for JIRA 6.x -->
-        <testkit.version>6.3.11</testkit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 </project>
