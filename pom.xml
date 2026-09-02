@@ -83,13 +83,6 @@
             <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.14.0</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -110,11 +103,7 @@
                         <!-- Nothing is exported; this plugin has no public API packages -->
                         <Export-Package/>
 
-                        <!-- Add package import here -->
-                        <Import-Package>
-                            org.apache.commons.lang3.*;resolution:="optional",
-                            *
-                        </Import-Package>
+                        <Import-Package>*</Import-Package>
 
                         <Spring-Context>*</Spring-Context>
                     </instructions>

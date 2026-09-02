@@ -51,7 +51,7 @@
 	</customfield-searcher>
 
 	<web-section key="watchers-section" location="admin_plugins_menu">
-		<label>Watchers Custom Field</label>
+		<label key="watcherfield.section.label" />
 	</web-section>
 
 	<web-item key="watcherfieldSettingsLink"

@@ -111,25 +111,34 @@ public class WatcherFieldType extends MultiUserCFType {
      * @param userList A list of User objects to add as watchers.
      */
     protected void addWatchers(Issue issue, Collection<?> userList) {
-        if (userList != null && isIssueEditable(issue)) {
-            for (Iterator<?> i = userList.iterator(); i.hasNext(); ) {
-                Object next = i.next();
-                ApplicationUser watcher = null;
+        if (userList == null || userList.isEmpty()) {
+            return;
+        }
 
-                if (next instanceof ApplicationUser) {
-                    watcher = (ApplicationUser) next;
-                } else if (next instanceof String) {
-                    watcher = userManager.getUserByNameEvenWhenUnknown((String) next);
-                }
+        // Jira records a changelog entry for the field regardless of whether the
+        // watchers were actually changed, so a skipped update must not be silent.
+        if (!isIssueEditable(issue)) {
+            log.warn("Skipping requested watcher additions on {} by {}: issue is not editable or the user lacks the Manage Watchers permission; the issue history may still record a watcher change", issue.getKey(), actingUserName());
+            return;
+        }
 
-                // JWFP-22: Added check for watcher's permission to browse project
-                if (watcher == null) continue;
+        for (Iterator<?> i = userList.iterator(); i.hasNext(); ) {
+            Object next = i.next();
+            ApplicationUser watcher = null;
 
-                if (!_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue.getProjectObject(), watcher)) {
-                    log.debug("Not adding watcher {} to {}: no browse permission on the project", watcher.getName(), issue.getKey());
-                } else if (!_WatcherManager.isWatching(watcher, issue)) {
-                    _WatcherManager.startWatching(watcher, issue);
-                }
+            if (next instanceof ApplicationUser) {
+                watcher = (ApplicationUser) next;
+            } else if (next instanceof String) {
+                watcher = userManager.getUserByNameEvenWhenUnknown((String) next);
+            }
+
+            // JWFP-22: Added check for watcher's permission to browse project
+            if (watcher == null) continue;
+
+            if (!_PermissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue.getProjectObject(), watcher)) {
+                log.warn("Not adding watcher {} to {}: no browse permission on the project; the issue history may still record the addition", watcher.getName(), issue.getKey());
+            } else if (!_WatcherManager.isWatching(watcher, issue)) {
+                _WatcherManager.startWatching(watcher, issue);
             }
         }
     }
@@ -180,12 +189,16 @@ public class WatcherFieldType extends MultiUserCFType {
      * @return True if has permissions, false otherwise.
      */
     public boolean isUserPermitted(Issue issue) {
-        PropertySet propertySet = WatcherFieldSettings.getPropertySet();
         ApplicationUser user = _AuthenticationContext.getLoggedInUser();
 
         // Allow JIRA service to set the watcher field, if enabled to do so.
-        if (propertySet.exists("ignorePermissions") && propertySet.getBoolean("ignorePermissions") && user == null)
-            return true;
+        // The user == null check comes first: the property reads are uncached
+        // database queries and would otherwise run on every field render.
+        if (user == null) {
+            PropertySet propertySet = WatcherFieldSettings.getPropertySet();
+            if (propertySet.exists("ignorePermissions") && propertySet.getBoolean("ignorePermissions"))
+                return true;
+        }
 
         return _PermissionManager.hasPermission(ProjectPermissions.MANAGE_WATCHERS, issue.getProjectObject(), user);
     }
@@ -274,22 +287,39 @@ public class WatcherFieldType extends MultiUserCFType {
      * @param userList A list of User objects to remove from being watchers.
      */
     protected void removeWatchers(Issue issue, List<?> userList) {
-        if (userList != null && isIssueEditable(issue)) {
-            for (Iterator<?> i = userList.iterator(); i.hasNext(); ) {
-                Object next = i.next();
-                ApplicationUser user = null;
+        if (userList == null || userList.isEmpty()) {
+            return;
+        }
 
-                if (next instanceof ApplicationUser) {
-                    user = (ApplicationUser) next;
-                } else if (next instanceof String) {
-                    user = userManager.getUserByNameEvenWhenUnknown((String) next);
-                }
+        // Jira records a changelog entry for the field regardless of whether the
+        // watchers were actually changed, so a skipped update must not be silent.
+        if (!isIssueEditable(issue)) {
+            log.warn("Skipping requested watcher removals on {} by {}: issue is not editable or the user lacks the Manage Watchers permission; the issue history may still record a watcher change", issue.getKey(), actingUserName());
+            return;
+        }
 
-                if (user != null && _WatcherManager.isWatching(user, issue)) {
-                    _WatcherManager.stopWatching(user, issue);
-                }
+        for (Iterator<?> i = userList.iterator(); i.hasNext(); ) {
+            Object next = i.next();
+            ApplicationUser user = null;
+
+            if (next instanceof ApplicationUser) {
+                user = (ApplicationUser) next;
+            } else if (next instanceof String) {
+                user = userManager.getUserByNameEvenWhenUnknown((String) next);
+            }
+
+            if (user != null && _WatcherManager.isWatching(user, issue)) {
+                _WatcherManager.stopWatching(user, issue);
             }
         }
+    }
+
+    /**
+     * Name of the acting user for log messages.
+     */
+    private String actingUserName() {
+        ApplicationUser user = _AuthenticationContext.getLoggedInUser();
+        return user != null ? user.getName() : "anonymous/service";
     }
 
     /**

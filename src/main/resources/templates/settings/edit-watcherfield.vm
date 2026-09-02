@@ -11,7 +11,7 @@
 	<table class="jiraform maxWidth">
 		<tbody>
 			<tr class="titlerow">
-				<td class="jiraformheader" colspan="2"><h3 class="formtitle">Edit Settings</h3></td>
+				<td class="jiraformheader" colspan="2"><h3 class="formtitle">$i18n.getText("watcherfield.settings.edit.title")</h3></td>
 			</tr>
 	    	
 	    	<tr class="hidden"><td colspan="2"></td></tr>
@@ -21,9 +21,9 @@
 			    	$i18n.getText("watcherfield.settings.item.ignorePermissions.name")
 				</td>
 				<td class="fieldValueArea" bgcolor="#ffffff">
-	            	<input type="radio" #if(${ignorePermissions} == true) checked="" #end name="ignorePermissions" value="true" onClick="alert('Warning: This setting circumvents JIRA \'Manage Watcher\' permission.\nOnly set this if you absolutely need to.');"> ON
+	            	<input type="radio" #if(${ignorePermissions} == true) checked="" #end name="ignorePermissions" value="true" onClick="alert('$i18n.getText('watcherfield.settings.item.ignorePermissions.warning')');"> $i18n.getText("admin.common.words.on")
 	            	&nbsp;
-	            	<input type="radio" #if(${ignorePermissions} == false) checked="" #end name="ignorePermissions" value="false"> OFF
+	            	<input type="radio" #if(${ignorePermissions} == false) checked="" #end name="ignorePermissions" value="false"> $i18n.getText("admin.common.words.off")
 	            	<br>
 	            	<span class="subText">
 	                	$i18n.getText("watcherfield.settings.item.ignorePermissions.desc")
@@ -33,8 +33,8 @@
 			<tr>
 	        	<td class="jiraformfooter jwf-field-label">&nbsp;</td>
 				<td colspan="1">
-					<input type="submit" class="spaced " title="Press Ctrl+s to submit form" accesskey="s" id="edit_property" value="Update" name="Update">
-					<input type="button" onclick="location.href='WatcherFieldSettings.jspa'" value="Cancel" name="WatcherFieldSettings.jspa" title="Cancel (Ctrl + `)" accesskey="`" id="cancelButton">
+					<input type="submit" class="spaced " title="Press Ctrl+s to submit form" accesskey="s" id="edit_property" value="$i18n.getText('common.forms.update')" name="Update">
+					<input type="button" onclick="location.href='WatcherFieldSettings.jspa'" value="$i18n.getText('common.words.cancel')" name="WatcherFieldSettings.jspa" title="Cancel (Ctrl + `)" accesskey="`" id="cancelButton">
 				</td>
 			</tr>
 		</tbody>
