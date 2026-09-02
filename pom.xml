@@ -6,19 +6,50 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.burningcode.jira.issue.customfields.impl</groupId>
     <artifactId>jira-watcher-field</artifactId>
-    <version>3.0.0-rc2</version>
+    <version>3.0.0-rc3</version>
 
     <name>JIRA Watcher Field</name>
     <packaging>atlassian-plugin</packaging>
     <description>Custom field type that allows watchers to be modified on the creation and update of issue.</description>
+    <url>https://github.com/alanmosely/jira-watcher-field-plugin</url>
+
+    <licenses>
+        <license>
+            <name>BSD-3-Clause</name>
+            <url>https://github.com/alanmosely/jira-watcher-field-plugin/blob/master/LICENSE.TXT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
             <name>Ray Barham</name>
             <email>rbarham@burningcode.com</email>
             <url>www.burningcode.com</url>
+            <roles>
+                <role>Original author (2008-2012)</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Alan Mosely</name>
+            <url>https://github.com/alanmosely</url>
+            <roles>
+                <role>Maintainer (Jira 10/11 compatibility)</role>
+            </roles>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/alanmosely/jira-watcher-field-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:alanmosely/jira-watcher-field-plugin.git</developerConnection>
+        <url>https://github.com/alanmosely/jira-watcher-field-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/alanmosely/jira-watcher-field-plugin/issues</url>
+    </issueManagement>
 
     <!-- Some Jira transitives reference timestamped javax-era builds that only existed on the
          now-defunct java.net repositories. Pin them to equivalent versions that exist on Maven
@@ -83,7 +114,36 @@
             <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
+
+    <!-- Every Atlassian artifact (jira-api/jira-core, AMPS, spring-scanner) lives on
+         packages.atlassian.com, not Maven Central. Declaring the repositories here keeps
+         the build working with plain Maven (and CI), not just the SDK's atlas-mvn. -->
+    <repositories>
+        <repository>
+            <id>atlassian-public</id>
+            <url>https://packages.atlassian.com/mvn/maven-external/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>atlassian-public</id>
+            <url>https://packages.atlassian.com/mvn/maven-external/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <plugins>
             <plugin>
@@ -95,6 +155,7 @@
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.version}</productDataVersion>
 
+                    <!-- Only affects atlas-run/atlas-debug dev loops; has no effect on the packaged jar -->
                     <enableQuickReload>true</enableQuickReload>
 
                     <instructions>
