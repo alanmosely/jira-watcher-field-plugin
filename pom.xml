@@ -76,6 +76,20 @@
                 <artifactId>FastInfoset</artifactId>
                 <version>1.2.15</version>
             </dependency>
+            <!-- jira-api/jira-core reference forked builds (3.1-jenkins-3, 2.10.9.4.10)
+                 that only exist on the Jenkins repo and Atlassian's internal repo. Pin the
+                 equivalent Maven Central releases; both are provided-scope transitives the
+                 plugin never touches or packages. -->
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>2.10.9.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -98,6 +112,12 @@
                 <exclusion>
                     <groupId>org.opensaml</groupId>
                     <artifactId>*</artifactId>
+                </exclusion>
+                <!-- The javax-era jndi jar (1.2.1) no longer exists on any public
+                     repository; javax.naming has shipped with the JDK for decades. -->
+                <exclusion>
+                    <groupId>jndi</groupId>
+                    <artifactId>jndi</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
