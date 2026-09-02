@@ -6,6 +6,28 @@ named `jira-watcher-field-<version>`.
 
 ## [3.0.0-rc3] - unreleased
 
+### Security
+- The acting user's *Manage Watchers* permission and the added watcher's *Browse Projects*
+  permission are now checked at issue level, matching Jira's own watcher service. The
+  previous project-level checks ignored issue security levels entirely and passed
+  issue-scoped permission grants (Current Assignee, Reporter, user custom field) for every
+  user in the project.
+
+### Fixed
+- Moving an issue (single, subtask or bulk) to a project or issue type where the field is
+  not configured no longer removes all watchers: Jira's system-initiated field clear is
+  now distinguished from a user deliberately emptying the picker, which still works.
+- Editing an issue as a user without *Manage Watchers* no longer records a false
+  "Watchers → None" change in the issue history (and no longer clears watchers via bulk
+  edit): the read-only field now round-trips the current watcher list on submit. Names
+  already watching an issue are exempt from picker validation, so a deactivated or
+  deleted watcher can no longer block the edit screen.
+- The read-only watcher list shown to users without permission now renders usernames
+  instead of escaped HTML markup.
+- A transient database error while reading the settings no longer silently overwrites the
+  configured `ignorePermissions` value with `false`; bad stored data is only repaired on
+  an explicit admin save, and read errors fail closed with a warning.
+
 ### Added
 - Unit tests for `WatcherFieldType` (value equality, changelog rendering, add-watcher
   permission filtering) with JUnit 5 + Mockito, run by the AMPS build's surefire.
@@ -17,10 +39,12 @@ named `jira-watcher-field-<version>`.
 - This changelog.
 
 ### Changed
+- Settings reads now go through Jira's cluster-aware cached property set instead of
+  issuing uncached database queries on every anonymous/service render of the field.
 - Warnings are now logged when watcher mutations are silently skipped (permission or
   editability gates), since Jira may still record a changelog entry for the field.
-- `isUserPermitted` checks for a logged-in user before reading settings, avoiding uncached
-  database reads on every field render.
+- `isUserPermitted` checks for a logged-in user before reading settings, so the settings
+  lookup no longer runs on every field render.
 - README rewritten: correct description of what the field does, plus install, configuration
   and build documentation.
 

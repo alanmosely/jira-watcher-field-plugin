@@ -2,62 +2,7 @@
 
 Open findings from the post-rc2 code review (2026-09-02). Items marked **verified** were
 confirmed against Jira 11.3.10 bytecode. File references are to the current source.
-
-## Bugs to fix before 3.0.0 final
-
-- [ ] **Check Manage Watchers at issue level, not project level** *(verified)* —
-  `WatcherFieldType.isUserPermitted` (`WatcherFieldType.java:203`) uses
-  `hasPermission(MANAGE_WATCHERS, issue.getProjectObject(), user)`. Jira's own
-  `DefaultWatcherService` uses the `Issue` overload, which also enforces issue security
-  levels and evaluates issue-scoped grants (Current Assignee / Reporter / user-CF security
-  types pass for *everyone* on a project-level check). Fix: `hasPermission(MANAGE_WATCHERS,
-  issue, user)`. Safe on create screens: a null issue id falls back to a project check with
-  create-time semantics.
-
-- [ ] **Check the added watcher's Browse at issue level** *(verified)* —
-  `WatcherFieldType.addWatchers` (`WatcherFieldType.java:138`) checks
-  `BROWSE_PROJECTS` against the project, so users can be added as watchers on
-  security-levelled issues they cannot see — a state core Jira refuses to create
-  (`watcher.error.user.cant.see.issue`). Fix: `hasPermission(BROWSE_PROJECTS, issue, watcher)`;
-  `isIssueEditable` already guarantees `issue.isCreated()` here.
-
-- [ ] **No-permission edit branch submits no value → false changelog + bulk-edit data loss**
-  *(verified)* — the `#else` branch of
-  `templates/plugins/fields/edit/edit-watcherfield.vm` renders no input named
-  `$customField.id`. The full Edit page disables retain-existing-values, so every edit by a
-  user without Manage Watchers writes a false `Watchers: A, B → None` history entry; in bulk
-  edit (form rendered from the first selected issue only) ticking the field genuinely clears
-  watchers on issues where the user *does* have permission. Fix: round-trip the current value
-  as hidden inputs in the `#else` branch. Note `$value` in the edit context is a
-  `Collection<String>` of usernames — use `value="$singleValue"`, not `$singleValue.name`.
-
-- [ ] **Issue move out of the field's context strips the whole watcher list** *(verified)* —
-  single/bulk move to a project/issue-type without the field calls
-  `removeValueFromIssueObject` → `updateValue(field, issue, null)`
-  (`WatcherFieldType.java:335`), which removes every current watcher (or writes a false
-  `→ None` changelog when the gate blocks). Fix: treat `value == null` in `updateValue` as a
-  system-initiated clear and no-op; override `getValueFromCustomFieldParams` to return an
-  empty collection instead of null so a genuinely emptied picker still clears.
-
-- [ ] **No-permission watcher list renders escaped HTML** *(verified)* —
-  `edit-watcherfield.vm:43`: `$userformat.formatUser($singleValue, ...)` output is
-  entity-escaped (template lacks `#disable_html_escaping()`, `UserFormatManager` is not
-  `@HtmlSafe`), so users see literal `<a href=...>` text; the String `formatUser` variant is
-  also the deprecated key-based one being passed usernames. Fix: render plain `$singleValue`,
-  or add the directive and use `formatUsername(...)` (then re-check the whole template, the
-  directive is template-wide).
-
-- [ ] **Replace the raw OFBiz property set with Jira's caching one** *(verified)* —
-  `WatcherFieldSettings.getPropertySet` (`WatcherFieldSettings.java:109`) does 3 uncached SQL
-  queries per anonymous/service permission check (an anonymous navigator page with the
-  watcher column over 50 issues ≈ 150 queries). Fix: inject `JiraPropertySetFactory` and use
-  `buildCachingPropertySet("WatcherFieldSettings", 1L, true)` (cluster-aware), or minimally
-  switch `"ofbiz"` → `"ofbiz-cached"`. While there:
-  - [ ] Remove default-seeding from the read path (first-touch race on a multi-node cluster
-    can create duplicate `OSPropertyEntry` rows; the reader already tolerates absence).
-  - [ ] Narrow `catch (Exception)` (`WatcherFieldSettings.java:122`): a transient DB error
-    currently overwrites a configured `ignorePermissions=true` with `false`. Catch only
-    `InvalidPropertyTypeException` for the repair-write and log at WARN, not DEBUG.
+The six verified bugs originally listed here were fixed in 3.0.0-rc3 - see CHANGELOG.md.
 
 ## Should fix
 
@@ -132,5 +77,12 @@ confirmed against Jira 11.3.10 bytecode. File references are to the current sour
 - [ ] `templates/settings/watcherfield.vm:29`: change the edit link to
   `$baseurl/secure/EditWatcherFieldSettings!default.jspa` (drop the meaningless legacy
   `/secure/project/` segment).
-- [ ] Publish GitHub Releases for the 3.0.0 tags with changelog entries and the built jar;
-  delete the stray `jira-watcher-field-2.6.0-SNAPSHOT` tag.
+- [ ] Bulk edit renders this field from the first selected issue only, so with the
+  round-trip fix a no-permission render that is deliberately ticked in bulk edit submits
+  the first issue's watcher list to every selected issue (the field's replace semantics,
+  but surprising). Consider suppressing the field in bulk edit
+  (`availableForBulkEdit`) or documenting it.
+- [ ] Consider replacing the static `WatcherFieldSettings.getPropertySet()` accessor with
+  a small injected component built on `JiraPropertySetFactory.buildCachingPropertySet`
+  (drops the static state and class-level synchronization; `"ofbiz-cached"` already gives
+  the same caching behavior).
