@@ -4,7 +4,7 @@ Notable changes to the Jira Watcher Field plugin. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions correspond to git tags
 named `jira-watcher-field-<version>`.
 
-## [3.0.0-rc3] - unreleased
+## [3.0.0-rc3] - 2026-09-02
 
 ### Security
 - The acting user's *Manage Watchers* permission and the added watcher's *Browse Projects*
