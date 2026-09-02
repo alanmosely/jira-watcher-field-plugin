@@ -27,6 +27,8 @@
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
  
+	<!-- Same resources as Jira's own userpickergroupsearcher module, which uses the
+	     same searcher class for the system multi-user picker field type. -->
 	<customfield-searcher
 			key="watcherfieldsearcher"
 		    i18n-name-key="watcherfield.searcher.name"
@@ -35,12 +37,12 @@
 	    <resource
 	    	type="velocity"
 	    	name="search"
-	    	location="templates/plugins/fields/edit-searcher/search-userpicker.vm"
+	    	location="templates/plugins/fields/edit-searcher/search-groupdropdown.vm"
 	    	/>
 	    <resource
 	    	type="velocity"
-	    	name="view"
-	    	location="templates/plugins/fields/view-searcher/view-searcher-basictext.vm"
+	    	name="label"
+	    	location="templates/plugins/fields/view-searcher/label-searcher-user.vm"
 	    	/>
 	    <valid-customfield-type
 	    	package="${project.groupId}.${project.artifactId}"
@@ -49,7 +51,7 @@
 	</customfield-searcher>
 
 	<web-section key="watchers-section" location="admin_plugins_menu">
-		<label>Watchers Custom Field</label>
+		<label key="watcherfield.section.label" />
 	</web-section>
 
 	<web-item key="watcherfieldSettingsLink"
@@ -61,19 +63,20 @@
         <link linkId="watcher_field_settings_link">/secure/WatcherFieldSettings.jspa</link>
     </web-item>
     
+	<!-- Access control: roles-required (enforced by Seraph before dispatch), @AdminOnly +
+	     @WebSudoRequired + @SupportedMethods on the action class, and hasAdminPermission()
+	     checks inside each command. A <condition> element is not evaluated on webwork1
+	     modules, so one is deliberately not used here. -->
 	<webwork1 key="watcherfieldSettings"
 			class="java.lang.Object"
 			i18n-name-key="watcherfield.settings.name" >
 		<description key="watcherfield.settings.desc" />
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-		    <param name="permission">admin</param>
-		</condition>
         <actions>
-            <action name="com.burningcode.jira.plugin.WatcherFieldSettings" alias="WatcherFieldSettings" >
+            <action name="com.burningcode.jira.plugin.WatcherFieldSettings" alias="WatcherFieldSettings" roles-required="admin" >
                 <view name="success">/templates/settings/watcherfield.vm</view>
                	<view name="permissionviolation">/secure/views/securitybreach.jsp</view>
             </action>
-            <action name="com.burningcode.jira.plugin.WatcherFieldSettings" alias="EditWatcherFieldSettings" >
+            <action name="com.burningcode.jira.plugin.WatcherFieldSettings" alias="EditWatcherFieldSettings" roles-required="admin" >
                 <view name="input">/templates/settings/edit-watcherfield.vm</view>
                	<view name="permissionviolation">/secure/views/securitybreach.jsp</view>
             </action>

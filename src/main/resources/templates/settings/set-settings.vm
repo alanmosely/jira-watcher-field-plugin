@@ -1,1 +1,3 @@
-#set ($ignorePermissions = ${properties.getBoolean("ignorePermissions")})
+## Read through the action's fail-safe accessor: a raw $properties.getBoolean()
+## would turn a tampered stored type into an error page on both settings screens.
+#set ($ignorePermissions = $action.ignorePermissions)

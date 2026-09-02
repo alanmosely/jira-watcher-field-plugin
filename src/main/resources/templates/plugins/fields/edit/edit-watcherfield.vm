@@ -39,8 +39,17 @@
     <strong>$i18n.getText("watcherfield.nopermission.body")</strong>
     #if ($value)
         <br/>
+	    ## Round-trip the current value as hidden inputs: without them a submit by a
+	    ## user who cannot edit the field turns into "set watchers to none", which
+	    ## writes a false changelog entry (and clears watchers in bulk edit).
+	    ## $value holds username strings in the edit context, so it is rendered as
+	    ## plain text rather than through $userformat (whose HTML would be escaped).
 	    #foreach ($singleValue in $value)
-		    <span class="tinylink">$userformat.formatUser($singleValue, 'profileLink', "multiuser_cf")</span>#comma ($value)
+		    ## Commas are the multi-user separator, so a comma in a username must be
+		    ## escaped for extractUserStringsFromString to reassemble it on submit.
+		    #set ($jwfSubmitValue = $singleValue.replace(',', '\,'))
+		    <input type="hidden" name="$customField.id" value="$jwfSubmitValue">
+		    <span class="tinylink">$singleValue</span>#comma ($value)
 	    #end
     #end
     #controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)

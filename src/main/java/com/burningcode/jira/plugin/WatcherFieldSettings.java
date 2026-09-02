@@ -1,27 +1,29 @@
 package com.burningcode.jira.plugin;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.atlassian.annotations.security.AdminOnly;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
+import com.atlassian.jira.security.request.RequestMethod;
+import com.atlassian.jira.security.request.SupportedMethods;
+import com.atlassian.jira.security.xsrf.RequiresXsrfCheck;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.websudo.WebSudoRequired;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import webwork.action.ActionContext;
 
-import com.opensymphony.module.propertyset.InvalidPropertyTypeException;
+import com.opensymphony.module.propertyset.PropertyException;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.module.propertyset.PropertySetManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.security.PermissionManager;
-import com.atlassian.jira.security.Permissions;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Used to handle settings for the JIRA Watcher Field.
@@ -29,6 +31,9 @@ import javax.inject.Named;
  *
  */
 @Named
+@AdminOnly
+@WebSudoRequired
+@SupportedMethods({RequestMethod.GET})
 public class WatcherFieldSettings extends JiraWebActionSupport {
 	private static PropertySet propertySet;
 	private static final long serialVersionUID = -8378909066515942570L;
@@ -72,6 +77,8 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	/**
 	 * Called when editing the settings
 	 */
+	@RequiresXsrfCheck
+	@SupportedMethods({RequestMethod.POST})
 	public String doEdit() throws Exception {
 		if(!hasAdminPermission())
 			return PERMISSION_VIOLATION_RESULT;
@@ -82,6 +89,8 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 		if(params.containsKey("ignorePermissions") && propertySet.isSettable("ignorePermissions")) {
 			Object value = params.get("ignorePermissions");
 			if(value instanceof String[] && ((String[])value).length == 1) {
+				// Also the repair path for a tampered row: the cached entry store
+				// converts a type-conflicting row on set rather than throwing.
 				propertySet.setBoolean("ignorePermissions", Boolean.parseBoolean(((String[])value)[0]));
 			}
 		}
@@ -92,30 +101,19 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	 * Static method that returns the PropertySet used to get/store settings in the database
 	 * @return The PropertySet to reference the data
 	 */
-	public static PropertySet getPropertySet() {
+	public static synchronized PropertySet getPropertySet() {
 		if(propertySet == null) {
 			HashMap<String, Object> args = new HashMap<String, Object>();
 	        args.put("delegator.name", "default");
 	        args.put("entityName", "WatcherFieldSettings");
-	        args.put("entityId", new Long(1));
+	        args.put("entityId", 1L);
 
-	        propertySet = PropertySetManager.getInstance("ofbiz", args);
-
-	        try{
-		        // Set default settings
-				if(!propertySet.exists("ignorePermissions")) {
-					propertySet.setBoolean("ignorePermissions", false);
-				}else{
-		        	// Will throw an exception if of invalid type
-		        	propertySet.getBoolean("ignorePermissions");
-				}
-		    }catch (InvalidPropertyTypeException e) {
-		    	log.debug("Property ignorePermissions set to an invalid type.  Setting to default value, false.");
-		    	propertySet.setBoolean("ignorePermissions", false);
-			}catch (Exception e) {
-				log.debug("Error with ignorePermissions: "+e.getMessage());
-				propertySet.setBoolean("ignorePermissions", false);
-			}
+	        // "ofbiz-cached" wraps the same OFBiz storage in Jira's cluster-aware
+	        // cache (invalidated across Data Center nodes on write), so the
+	        // per-render reads in WatcherFieldType don't each hit the database.
+	        // No default is seeded here: readers treat an absent property as
+	        // false, and writing from a read path would race across nodes.
+	        propertySet = PropertySetManager.getInstance("ofbiz-cached", args);
 		}
 
 		return propertySet;
@@ -126,6 +124,22 @@ public class WatcherFieldSettings extends JiraWebActionSupport {
 	 */
 	public PropertySet getProperties() {
 		return WatcherFieldSettings.getPropertySet();
+	}
+
+	/**
+	 * Fail-safe read of the ignorePermissions setting for the velocity views:
+	 * a tampered stored type or a storage error must not take the settings
+	 * screens down (the edit form is also the only self-service repair path).
+	 * @return The configured value, or false when it is absent or unreadable.
+	 */
+	public boolean getIgnorePermissions() {
+		try {
+			PropertySet propertySet = getProperties();
+			return propertySet != null && propertySet.getBoolean("ignorePermissions");
+		} catch (PropertyException e) {
+			log.warn("Could not read the ignorePermissions setting; showing it as disabled", e);
+			return false;
+		}
 	}
 	
 	/**
