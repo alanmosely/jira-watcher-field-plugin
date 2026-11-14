@@ -27,29 +27,6 @@
 			location="templates/plugins/fields/edit/edit-watcherfield.vm"/>
 	</customfield-type>
  
-	<!-- Same resources as Jira's own userpickergroupsearcher module, which uses the
-	     same searcher class for the system multi-user picker field type. -->
-	<customfield-searcher
-			key="watcherfieldsearcher"
-		    i18n-name-key="watcherfield.searcher.name"
-		    class="com.burningcode.jira.issue.customfields.searchers.WatcherSearcher">
-	    <description key="watcherfield.searcher.desc" />
-	    <resource
-	    	type="velocity"
-	    	name="search"
-	    	location="templates/plugins/fields/edit-searcher/search-groupdropdown.vm"
-	    	/>
-	    <resource
-	    	type="velocity"
-	    	name="label"
-	    	location="templates/plugins/fields/view-searcher/label-searcher-user.vm"
-	    	/>
-	    <valid-customfield-type
-	    	package="${project.groupId}.${project.artifactId}"
-	    	key="watcherfieldtype"
-	    	/>
-	</customfield-searcher>
-
 	<web-section key="watchers-section" location="admin_plugins_menu">
 		<label key="watcherfield.section.label" />
 	</web-section>

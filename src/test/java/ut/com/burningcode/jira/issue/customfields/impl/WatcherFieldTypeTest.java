@@ -133,6 +133,50 @@ class WatcherFieldTypeTest {
                 .thenReturn(true);
     }
 
+    @Test
+    void issueViewersWithoutWatcherPermissionCannotReadWatcherIdentities() {
+        when(issue.isCreated()).thenReturn(true);
+        when(authenticationContext.getLoggedInUser()).thenReturn(actor);
+        when(permissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue, actor))
+                .thenReturn(true);
+
+        assertNull(fieldType.getValueFromIssue(customField, issue));
+
+        fieldType.getJsonFromIssue(customField, issue, false, null);
+        verify(userBeanFactory).createBeanCollection(null, actor);
+        verifyNoInteractions(watcherManager);
+    }
+
+    @Test
+    void watcherVisibilityRequiresIssueAccessAndEitherWatcherPermission() {
+        when(issue.isCreated()).thenReturn(true);
+        when(authenticationContext.getLoggedInUser()).thenReturn(actor);
+        when(authenticationContext.getLocale()).thenReturn(Locale.ENGLISH);
+        when(watcherManager.getWatchers(issue, Locale.ENGLISH))
+                .thenReturn(new ArrayList<>(List.of(alice)));
+        when(permissionManager.hasPermission(ProjectPermissions.VIEW_VOTERS_AND_WATCHERS, issue, actor))
+                .thenReturn(true);
+        assertNull(fieldType.getValueFromIssue(customField, issue));
+
+        when(permissionManager.hasPermission(ProjectPermissions.BROWSE_PROJECTS, issue, actor))
+                .thenReturn(true);
+        assertEquals(List.of(alice), fieldType.getValueFromIssue(customField, issue));
+
+        when(permissionManager.hasPermission(ProjectPermissions.VIEW_VOTERS_AND_WATCHERS, issue, actor))
+                .thenReturn(false);
+        when(permissionManager.hasPermission(ProjectPermissions.MANAGE_WATCHERS, issue, actor))
+                .thenReturn(true);
+        assertEquals(List.of(alice), fieldType.getValueFromIssue(customField, issue));
+
+        when(authenticationContext.getLoggedInUser()).thenReturn(null);
+        assertNull(fieldType.getValueFromIssue(customField, issue));
+    }
+
+    @Test
+    void watcherIdentitiesAreNotIndexedAsCustomFieldValues() {
+        assertTrue(fieldType.getIndexers(customField).isEmpty());
+    }
+
     // ---- valuesEqual ----
 
     @Test
@@ -175,11 +219,12 @@ class WatcherFieldTypeTest {
     }
 
     @Test
-    void changelogValueUsesDisplayNames() {
+    void changelogOnlyRecordsWatcherCounts() {
         when(alice.getDisplayName()).thenReturn("Alice A");
         when(bob.getDisplayName()).thenReturn("Bob B");
 
-        assertEquals("Alice A, Bob B", fieldType.getChangelogValue(customField, List.of(alice, bob)));
+        assertEquals("2 watchers", fieldType.getChangelogValue(customField, List.of(alice, bob)));
+        assertNull(fieldType.getChangelogString(customField, List.of(alice, bob)));
     }
 
     @Test
@@ -187,15 +232,7 @@ class WatcherFieldTypeTest {
         // JWFP-28
         when(alice.getDisplayName()).thenReturn("Alice A");
 
-        assertEquals("Alice A", fieldType.getChangelogValue(customField, Arrays.asList(null, alice)));
-    }
-
-    @Test
-    void changelogValueFallsBackToUsernameWhenDisplayNameMissing() {
-        // JWFP-25
-        when(alice.getDisplayName()).thenReturn(null);
-
-        assertEquals("alice", fieldType.getChangelogValue(customField, List.of(alice)));
+        assertEquals("1 watcher", fieldType.getChangelogValue(customField, Arrays.asList(null, alice)));
     }
 
     // ---- createValue -> addWatchers permission filtering ----
@@ -298,13 +335,40 @@ class WatcherFieldTypeTest {
         verify(watcherManager).stopWatching(alice, issue);
     }
 
+    @Test
+    void readOnlyEditAndForgedSubmissionCannotChangeWatchers() throws Exception {
+        permitEditing();
+        when(permissionManager.hasPermission(ProjectPermissions.MANAGE_WATCHERS, issue, actor))
+                .thenReturn(false);
+        MutableIssue submittedIssue = mock(MutableIssue.class);
+        when(submittedIssue.isCreated()).thenReturn(true);
+        IssueManager issueManager = mock(IssueManager.class);
+        installComponent(issueManager);
+        when(issueManager.getIssueObject(10001L)).thenReturn(submittedIssue);
+        CustomFieldParams params = mock(CustomFieldParams.class);
+        when(params.getFirstValueForKey(CustomFieldUtils.getParamKeyIssueId())).thenReturn("10001");
+        when(params.getValuesForNullKey()).thenReturn(List.of("alice"));
+
+        ErrorCollection errors = new SimpleErrorCollection();
+        fieldType.validateFromParams(params, errors, mock(FieldConfig.class));
+        assertFalse(errors.hasAnyErrors());
+        Collection<ApplicationUser> ignored = fieldType.getValueFromCustomFieldParams(params);
+        assertNull(ignored);
+        assertNull(fieldType.getChangelogValue(customField, ignored));
+        fieldType.updateValue(customField, issue, List.of(alice));
+        fieldType.updateValue(customField, issue, Collections.emptyList());
+
+        verify(watcherManager, never()).getWatchers(any(Issue.class), any(Locale.class));
+        verify(watcherManager, never()).startWatching(any(ApplicationUser.class), any(Issue.class));
+        verify(watcherManager, never()).stopWatching(any(ApplicationUser.class), any(Issue.class));
+    }
+
     // ---- validateFromParams ----
 
     @Test
     void validateGrandfathersNamesAlreadyWatching() {
-        // The read-only branch round-trips current watchers on every submit; a
-        // current watcher who is no longer a valid pickable user (deactivated,
-        // deleted) must not fail validation and block the whole edit.
+        // A current watcher who is no longer pickable must not block an
+        // authorized edit that keeps that watcher.
         CustomFieldParams params = mock(CustomFieldParams.class);
         when(params.getValuesForNullKey()).thenReturn(List.of("alice"));
         when(params.getFirstValueForKey(CustomFieldUtils.getParamKeyIssueId())).thenReturn("10001");
@@ -314,6 +378,9 @@ class WatcherFieldTypeTest {
         MutableIssue watchedIssue = mock(MutableIssue.class);
         installComponent(issueManager);
         when(issueManager.getIssueObject(10001L)).thenReturn(watchedIssue);
+        when(authenticationContext.getLoggedInUser()).thenReturn(actor);
+        when(permissionManager.hasPermission(ProjectPermissions.MANAGE_WATCHERS, watchedIssue, actor))
+                .thenReturn(true);
         when(authenticationContext.getLocale()).thenReturn(Locale.ENGLISH);
         when(watcherManager.getWatchers(watchedIssue, Locale.ENGLISH))
                 .thenReturn(new ArrayList<>(List.of(alice)));
