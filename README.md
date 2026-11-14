@@ -25,14 +25,20 @@ it in **Administration → Manage apps → Upload app**.
 
 1. Create a custom field of type **Watcher Field** (Administration → Issues → Custom fields)
    and add it to the relevant screens.
-2. Users who hold **Manage Watchers** on the project can then set watchers while creating
-   or editing an issue. Users without the permission see the current watcher list read-only.
+2. Users who hold **Manage Watchers** can set watchers. On existing issues, the field
+   shows the list to users who can browse the issue and have either **View Voters and
+   Watchers** or **Manage Watchers**. Users with view permission can read the list.
 3. Watchers added through the field must have the **Browse Projects** permission; anyone else
    in the submitted list is skipped with a logged warning, though the issue history may still
    record them as added.
 
 On update the field applies *replace* semantics: watchers missing from the submitted list are
 removed, new entries are added.
+
+Use Jira's built-in `watcher` JQL field for searches. Following an upgrade, set
+existing Watcher Fields' search template to **None** and run a full reindex to
+clear the old custom-field index. New custom-field history records watcher counts.
+Existing Jira history may still contain names recorded by older plugin versions.
 
 ## Settings
 
