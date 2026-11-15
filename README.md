@@ -35,10 +35,32 @@ it in **Administration → Manage apps → Upload app**.
 On update the field applies *replace* semantics: watchers missing from the submitted list are
 removed, new entries are added.
 
-Use Jira's built-in `watcher` JQL field for searches. Following an upgrade, set
-existing Watcher Fields' search template to **None** and run a full reindex to
-clear the old custom-field index. New custom-field history records watcher counts.
-Existing Jira history may still contain names recorded by older plugin versions.
+Use Jira's built-in `watcher` JQL field for searches.
+
+## Upgrading to 3.0.0-rc4
+
+This is a release candidate for Jira Data Center 11.x (tested on 11.3.10), with
+permission fixes for watcher identities. Validate the upgrade in a test instance
+before rolling it out.
+
+1. Upload `jira-watcher-field-3.0.0-rc4.jar` through **Administration → Manage apps →
+   Upload app**.
+2. In **Administration → Issues → Custom fields**, edit each existing **Watcher
+   Field** and set its search template to **None**. The plugin no longer supplies a
+   custom-field searcher or indexer.
+3. Replace saved filters that query the custom field with Jira's built-in `watcher`
+   JQL clause, which applies Jira's watcher permissions. For example, replace a
+   custom-field equality query with `watcher = username` for the same user.
+4. Run a **full reindex** to remove the old custom-field index values. Schedule this
+   using the normal reindex procedure for your Jira installation.
+5. Check the field with an issue viewer who has neither watcher permission, a user
+   with **View Voters and Watchers**, and a user with **Manage Watchers**. Only the
+   latter two should see identities; unrelated edits by a read-only user must
+   preserve the watcher list.
+
+New custom-field history records watcher counts instead of names. This upgrade
+does not rewrite existing Jira history: names recorded by older plugin versions
+may remain visible there. The watcher list itself is preserved by the upgrade.
 
 ## Settings
 

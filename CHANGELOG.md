@@ -4,6 +4,32 @@ Notable changes to the Jira Watcher Field plugin. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions correspond to git tags
 named `jira-watcher-field-<version>`.
 
+## [3.0.0-rc4] - 2026-11-15
+
+### Security
+- Existing-issue field values now require **Browse Projects** and either **View
+  Voters and Watchers** or **Manage Watchers**, including REST serialization.
+- Read-only edit markup no longer submits watcher names in hidden inputs, and
+  users without watcher visibility cannot see the names in the field.
+- New custom-field history records watcher counts instead of names. History
+  written by earlier versions is unchanged.
+
+### Fixed
+- Ignore unauthorized field submissions while preserving the watcher list and
+  avoiding false history during unrelated read-only edits.
+
+### Removed
+- The custom-field searcher and indexer, which could disclose watcher membership
+  through JQL to issue viewers without watcher permission. Use Jira's built-in
+  `watcher` JQL field instead.
+
+### Upgrade
+- Set existing Watcher Fields' search template to **None**, update saved filters
+  to use `watcher`, and run a full reindex to clear old custom-field index values.
+  See [the upgrade instructions](README.md#upgrading-to-300-rc4).
+- This remains a release candidate for Jira Data Center 11.x; it does not change
+  support for Jira 10 or earlier versions.
+
 ## [3.0.0-rc3] - 2026-09-02
 
 ### Security
